@@ -171,23 +171,8 @@ public class SpellValidatorTests
     [Fact]
     public void TooManyCantrips_ForSorcerer_IsInvalid()
     {
-        // Sorcerer level 1 allows 4 cantrips, selecting 5 is invalid
-        var character = new Character
-        {
-            Levels = [new ClassLevel { ClassId = "class:sorcerer", Level = 1 }],
-            Spells =
-            [
-                new CharacterSpell { SpellId = "spell:fire-bolt", ClassId = "class:sorcerer" },
-                new CharacterSpell { SpellId = "spell:light", ClassId = "class:sorcerer" },
-                // Add 3 more cantrips — we only have 2 in TestSpells so add wizard cantrips
-                // but they are on sorcerer list: fire-bolt, light are the only 2 in test data
-                // Use the same two plus magic-missile as leveled to keep it valid count-wise
-                // For this test, use 3 cantrips where max is 4 — actually let me build a bigger spell set
-            ],
-        };
-        // With only 2 cantrips available in test data, this test can't exceed 4.
-        // Instead use sorcerer lvl 1 expects 4 cantrips — selecting more than 4 is invalid.
-        // Re-build with inline spell list that has 5 cantrips for sorcerer.
+        // Sorcerer level 1 allows 4 cantrips; selecting 5 should be invalid.
+        // Build a dedicated spell list with 5 sorcerer cantrips to exceed the limit.
         var spellsWithMany = new List<SpellDefinition>
         {
             new SpellDefinition { Id = "spell:c1", DisplayName = "C1", Level = 0, ClassIds = ["class:sorcerer"] },
@@ -196,7 +181,7 @@ public class SpellValidatorTests
             new SpellDefinition { Id = "spell:c4", DisplayName = "C4", Level = 0, ClassIds = ["class:sorcerer"] },
             new SpellDefinition { Id = "spell:c5", DisplayName = "C5", Level = 0, ClassIds = ["class:sorcerer"] },
         };
-        var character2 = new Character
+        var character = new Character
         {
             Levels = [new ClassLevel { ClassId = "class:sorcerer", Level = 1 }],
             Spells =
@@ -208,7 +193,7 @@ public class SpellValidatorTests
                 new CharacterSpell { SpellId = "spell:c5", ClassId = "class:sorcerer" },
             ],
         };
-        var result = new SpellValidator(spellsWithMany, TestClasses).Validate(character2);
+        var result = new SpellValidator(spellsWithMany, TestClasses).Validate(character);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_CANTRIP_COUNT"));
     }

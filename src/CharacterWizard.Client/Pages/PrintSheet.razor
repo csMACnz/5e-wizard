@@ -3,6 +3,7 @@
 @using CharacterWizard.Shared.Models
 @inject CharacterWizardState State
 @inject IDataService DataService
+@inject IJSRuntime JS
 
 <PageTitle>Character Sheet — @(State.Character.Name is { Length: > 0 } n ? n : "Unnamed")</PageTitle>
 
@@ -25,7 +26,7 @@ else
             </MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary"
                        StartIcon="@Icons.Material.Filled.Print"
-                       OnClick="@(() => { })">
+                       OnClick="@PrintPage">
                 Print
             </MudButton>
         </MudStack>
@@ -229,6 +230,8 @@ else
         _equipment = await DataService.GetEquipmentAsync();
         _loading = false;
     }
+
+    private async Task PrintPage() => await JS.InvokeVoidAsync("window.print");
 
     private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
 
