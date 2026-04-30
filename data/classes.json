@@ -39,6 +39,11 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Primal Path",
+      "subclassOptions": [
+        { "id": "subclass:barbarian:berserker", "displayName": "Path of the Berserker" },
+        { "id": "subclass:barbarian:totem-warrior", "displayName": "Path of the Totem Warrior" }
+      ],
+      "startingEquipmentIds": ["item:greataxe", "item:handaxe", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.16"
     },
@@ -90,6 +95,11 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Bard College",
+      "subclassOptions": [
+        { "id": "subclass:bard:college-of-lore", "displayName": "College of Lore" },
+        { "id": "subclass:bard:college-of-valor", "displayName": "College of Valor" }
+      ],
+      "startingEquipmentIds": ["item:longsword", "item:dagger", "item:leather-armor", "item:explorers-pack", "item:light-crossbow"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.20"
     },
@@ -140,6 +150,16 @@
       },
       "subclassLevel": 1,
       "subclassLabel": "Divine Domain",
+      "subclassOptions": [
+        { "id": "subclass:cleric:knowledge", "displayName": "Knowledge Domain" },
+        { "id": "subclass:cleric:life", "displayName": "Life Domain" },
+        { "id": "subclass:cleric:light", "displayName": "Light Domain" },
+        { "id": "subclass:cleric:nature", "displayName": "Nature Domain" },
+        { "id": "subclass:cleric:tempest", "displayName": "Tempest Domain" },
+        { "id": "subclass:cleric:trickery", "displayName": "Trickery Domain" },
+        { "id": "subclass:cleric:war", "displayName": "War Domain" }
+      ],
+      "startingEquipmentIds": ["item:leather-armor", "item:chain-mail", "item:shield", "item:light-crossbow", "item:dagger", "item:explorers-pack", "item:holy-symbol"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.28"
     },
@@ -188,6 +208,11 @@
       },
       "subclassLevel": 2,
       "subclassLabel": "Druid Circle",
+      "subclassOptions": [
+        { "id": "subclass:druid:circle-of-the-land", "displayName": "Circle of the Land" },
+        { "id": "subclass:druid:circle-of-the-moon", "displayName": "Circle of the Moon" }
+      ],
+      "startingEquipmentIds": ["item:shield", "item:dagger", "item:leather-armor", "item:explorers-pack"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.37"
     },
@@ -232,6 +257,12 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Martial Archetype",
+      "subclassOptions": [
+        { "id": "subclass:fighter:champion", "displayName": "Champion" },
+        { "id": "subclass:fighter:battle-master", "displayName": "Battle Master" },
+        { "id": "subclass:fighter:eldritch-knight", "displayName": "Eldritch Knight" }
+      ],
+      "startingEquipmentIds": ["item:chain-mail", "item:leather-armor", "item:longsword", "item:shortsword", "item:handaxe", "item:greataxe", "item:light-crossbow", "item:shield", "item:dungeoneer-pack", "item:explorers-pack", "item:dagger"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.46"
     },
@@ -276,6 +307,12 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Monastic Tradition",
+      "subclassOptions": [
+        { "id": "subclass:monk:open-hand", "displayName": "Way of the Open Hand" },
+        { "id": "subclass:monk:shadow", "displayName": "Way of Shadow" },
+        { "id": "subclass:monk:four-elements", "displayName": "Way of the Four Elements" }
+      ],
+      "startingEquipmentIds": ["item:shortsword", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.55"
     },
@@ -326,6 +363,12 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Sacred Oath",
+      "subclassOptions": [
+        { "id": "subclass:paladin:devotion", "displayName": "Oath of Devotion" },
+        { "id": "subclass:paladin:ancients", "displayName": "Oath of the Ancients" },
+        { "id": "subclass:paladin:vengeance", "displayName": "Oath of Vengeance" }
+      ],
+      "startingEquipmentIds": ["item:longsword", "item:shortsword", "item:handaxe", "item:chain-mail", "item:shield", "item:explorers-pack", "item:holy-symbol", "item:dagger"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.64"
     },
@@ -376,6 +419,11 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Ranger Archetype",
+      "subclassOptions": [
+        { "id": "subclass:ranger:hunter", "displayName": "Hunter" },
+        { "id": "subclass:ranger:beast-master", "displayName": "Beast Master" }
+      ],
+      "startingEquipmentIds": ["item:leather-armor", "item:shortsword", "item:handaxe", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.72"
     },
@@ -420,6 +468,12 @@
       },
       "subclassLevel": 3,
       "subclassLabel": "Roguish Archetype",
+      "subclassOptions": [
+        { "id": "subclass:rogue:thief", "displayName": "Thief" },
+        { "id": "subclass:rogue:assassin", "displayName": "Assassin" },
+        { "id": "subclass:rogue:arcane-trickster", "displayName": "Arcane Trickster" }
+      ],
+      "startingEquipmentIds": ["item:shortsword", "item:dagger", "item:leather-armor", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.81"
     },
@@ -467,6 +521,11 @@
       },
       "subclassLevel": 1,
       "subclassLabel": "Sorcerous Origin",
+      "subclassOptions": [
+        { "id": "subclass:sorcerer:draconic-bloodline", "displayName": "Draconic Bloodline" },
+        { "id": "subclass:sorcerer:wild-magic", "displayName": "Wild Magic" }
+      ],
+      "startingEquipmentIds": ["item:light-crossbow", "item:dagger", "item:arcane-focus", "item:dungeoneer-pack", "item:explorers-pack"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.90"
     },
@@ -520,6 +579,12 @@
       },
       "subclassLevel": 1,
       "subclassLabel": "Otherworldly Patron",
+      "subclassOptions": [
+        { "id": "subclass:warlock:archfey", "displayName": "The Archfey" },
+        { "id": "subclass:warlock:fiend", "displayName": "The Fiend" },
+        { "id": "subclass:warlock:great-old-one", "displayName": "The Great Old One" }
+      ],
+      "startingEquipmentIds": ["item:light-crossbow", "item:dagger", "item:arcane-focus", "item:leather-armor", "item:dungeoneer-pack", "item:explorers-pack"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.99"
     },
@@ -565,6 +630,17 @@
       },
       "subclassLevel": 2,
       "subclassLabel": "Arcane Tradition",
+      "subclassOptions": [
+        { "id": "subclass:wizard:abjuration", "displayName": "School of Abjuration" },
+        { "id": "subclass:wizard:conjuration", "displayName": "School of Conjuration" },
+        { "id": "subclass:wizard:divination", "displayName": "School of Divination" },
+        { "id": "subclass:wizard:enchantment", "displayName": "School of Enchantment" },
+        { "id": "subclass:wizard:evocation", "displayName": "School of Evocation" },
+        { "id": "subclass:wizard:illusion", "displayName": "School of Illusion" },
+        { "id": "subclass:wizard:necromancy", "displayName": "School of Necromancy" },
+        { "id": "subclass:wizard:transmutation", "displayName": "School of Transmutation" }
+      ],
+      "startingEquipmentIds": ["item:dagger", "item:arcane-focus", "item:explorers-pack"],
       "source": "SRD 5.1",
       "srdReference": "SRD p.106"
     }

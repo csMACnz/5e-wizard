@@ -69,6 +69,32 @@ public class ClassValidator
             }
         }
 
+        // Validate subclass selection when required
+        foreach (var classLevel in character.Levels)
+        {
+            var classDef = _classes.FirstOrDefault(c => c.Id == classLevel.ClassId);
+            if (classDef == null) continue;
+
+            if (classDef.SubclassLevel > 0
+                && classDef.SubclassOptions.Count > 0
+                && classLevel.Level >= classDef.SubclassLevel)
+            {
+                string label = string.IsNullOrEmpty(classDef.SubclassLabel) ? "subclass" : classDef.SubclassLabel;
+                if (string.IsNullOrEmpty(classLevel.SubclassId))
+                {
+                    result.Errors.Add(
+                        $"ERR_SUBCLASS_REQUIRED: A {label} selection is required for " +
+                        $"'{classLevel.ClassId}' at level {classDef.SubclassLevel}.");
+                }
+                else if (!classDef.SubclassOptions.Any(s => s.Id == classLevel.SubclassId))
+                {
+                    result.Errors.Add(
+                        $"ERR_SUBCLASS_UNKNOWN: '{classLevel.SubclassId}' is not a valid " +
+                        $"{label} for class '{classLevel.ClassId}'.");
+                }
+            }
+        }
+
         return result;
     }
 

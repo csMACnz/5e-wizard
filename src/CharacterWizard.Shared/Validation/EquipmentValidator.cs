@@ -14,7 +14,7 @@ public class EquipmentValidator
         _equipment = equipment;
     }
 
-    public ValidationResult Validate(Character character)
+    public ValidationResult Validate(Character character, IReadOnlyList<string>? allowedIds = null)
     {
         var result = new ValidationResult();
 
@@ -35,11 +35,17 @@ public class EquipmentValidator
             if (!validIds.Contains(item.ItemId))
             {
                 result.Errors.Add($"ERR_EQUIPMENT_UNKNOWN: Item '{item.ItemId}' does not exist in the equipment data.");
+                continue;
             }
 
             if (item.Quantity < 1)
             {
                 result.Errors.Add($"ERR_EQUIPMENT_QUANTITY: Item '{item.ItemId}' must have a quantity of at least 1.");
+            }
+
+            if (allowedIds != null && !allowedIds.Contains(item.ItemId))
+            {
+                result.Errors.Add($"ERR_EQUIPMENT_NOT_ALLOWED: Item '{item.ItemId}' is not a standard starting equipment choice for this class.");
             }
         }
 
