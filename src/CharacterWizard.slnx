@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CharacterWizard.Client/CharacterWizard.Client.csproj" />
+  <Project Path="CharacterWizard.Shared/CharacterWizard.Shared.csproj" />
+  <Project Path="CharacterWizard.Tests/CharacterWizard.Tests.csproj" />
+</Solution>

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <!-- Default base href for local dev; override with -p:GHPagesBaseHref=/5e-wizard/ for GitHub Pages -->
+    <GHPagesBaseHref Condition="'$(GHPagesBaseHref)' == ''">/</GHPagesBaseHref>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CharacterWizard.Shared\CharacterWizard.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- Replace __BASE_HREF__ placeholder in published index.html -->
+  <Target Name="SetBaseHref" AfterTargets="Publish">
+    <PropertyGroup>
+      <_PublishedIndexHtml>$(PublishDir)wwwroot\index.html</_PublishedIndexHtml>
+      <_PublishedIndexHtmlUnix>$(PublishDir)wwwroot/index.html</_PublishedIndexHtmlUnix>
+    </PropertyGroup>
+    <ReadLinesFromFile File="$(_PublishedIndexHtmlUnix)" Condition="Exists('$(_PublishedIndexHtmlUnix)')">
+      <Output TaskParameter="Lines" ItemName="_IndexHtmlLines" />
+    </ReadLinesFromFile>
+    <WriteLinesToFile
+      File="$(_PublishedIndexHtmlUnix)"
+      Lines="@(_IndexHtmlLines->'%(Identity)'->Replace('__BASE_HREF__', '$(GHPagesBaseHref)'))"
+      Overwrite="true"
+      Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
+  </Target>
+
+</Project>

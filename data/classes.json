@@ -1,0 +1,572 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "classes": [
+    {
+      "id": "class:barbarian",
+      "displayName": "Barbarian",
+      "description": "Fierce warrior who enters a battle rage.",
+      "hitDie": 12,
+      "primaryAbility": ["STR"],
+      "savingThrows": ["STR", "CON"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "shields"],
+        "weapons": ["simple", "martial"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:animal-handling", "skill:athletics", "skill:intimidation", "skill:nature", "skill:perception", "skill:survival"]
+      },
+      "multiclassPrereqs": { "STR": 13 },
+      "featuresByLevel": {
+        "1": ["feat:rage", "feat:unarmored-defense-barbarian"],
+        "2": ["feat:reckless-attack", "feat:danger-sense"],
+        "3": ["feat:primal-path", "feat:primal-knowledge"],
+        "4": ["feat:asi"],
+        "5": ["feat:extra-attack-barbarian", "feat:fast-movement"],
+        "7": ["feat:feral-instinct"],
+        "8": ["feat:asi"],
+        "9": ["feat:brutal-critical-1"],
+        "11": ["feat:relentless-rage"],
+        "12": ["feat:asi"],
+        "13": ["feat:brutal-critical-2"],
+        "15": ["feat:persistent-rage"],
+        "16": ["feat:asi"],
+        "17": ["feat:brutal-critical-3"],
+        "19": ["feat:asi"],
+        "20": ["feat:primal-champion"]
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Primal Path",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.16"
+    },
+    {
+      "id": "class:bard",
+      "displayName": "Bard",
+      "description": "Inspiring performer and versatile spellcaster.",
+      "hitDie": 8,
+      "primaryAbility": ["CHA"],
+      "savingThrows": ["DEX", "CHA"],
+      "proficienciesGranted": {
+        "armor": ["light"],
+        "weapons": ["simple", "hand-crossbow", "longsword", "rapier", "shortsword"],
+        "tools": ["tool:three-musical-instruments"]
+      },
+      "skillChoices": {
+        "count": 3,
+        "options": ["skill:any"]
+      },
+      "multiclassPrereqs": { "CHA": 13 },
+      "featuresByLevel": {
+        "1": ["feat:spellcasting-bard", "feat:bardic-inspiration-d6"],
+        "2": ["feat:jack-of-all-trades", "feat:song-of-rest-d6"],
+        "3": ["feat:bard-college", "feat:expertise-bard"],
+        "4": ["feat:asi"],
+        "5": ["feat:bardic-inspiration-d8", "feat:font-of-inspiration"],
+        "6": ["feat:countercharm", "feat:bard-college-feature"],
+        "8": ["feat:asi"],
+        "9": ["feat:song-of-rest-d8"],
+        "10": ["feat:bardic-inspiration-d10", "feat:expertise-bard", "feat:magical-secrets-10"],
+        "11": ["feat:song-of-rest-d10"],
+        "12": ["feat:asi"],
+        "13": ["feat:song-of-rest-d12"],
+        "14": ["feat:magical-secrets-14", "feat:bard-college-feature"],
+        "15": ["feat:bardic-inspiration-d12"],
+        "16": ["feat:asi"],
+        "18": ["feat:magical-secrets-18"],
+        "19": ["feat:asi"],
+        "20": ["feat:superior-inspiration"]
+      },
+      "spellcasting": {
+        "castingType": "full",
+        "spellcastingAbility": "CHA",
+        "prepareSpells": false,
+        "spellListId": "spelllist:bard",
+        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+        "spellsKnownByLevel": [4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 15, 16, 18, 19, 19, 20, 22, 22, 22],
+        "ritualCasting": true
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Bard College",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.20"
+    },
+    {
+      "id": "class:cleric",
+      "displayName": "Cleric",
+      "description": "Divine spellcaster channeling the power of a deity.",
+      "hitDie": 8,
+      "primaryAbility": ["WIS"],
+      "savingThrows": ["WIS", "CHA"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "shields"],
+        "weapons": ["simple"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:history", "skill:insight", "skill:medicine", "skill:persuasion", "skill:religion"]
+      },
+      "multiclassPrereqs": { "WIS": 13 },
+      "featuresByLevel": {
+        "1": ["feat:spellcasting-cleric", "feat:divine-domain"],
+        "2": ["feat:channel-divinity-1", "feat:divine-domain-feature"],
+        "3": ["feat:channel-divinity-2"],
+        "4": ["feat:asi"],
+        "5": ["feat:destroy-undead-cr-half"],
+        "6": ["feat:channel-divinity-3", "feat:divine-domain-feature"],
+        "7": ["feat:divine-domain-feature"],
+        "8": ["feat:asi", "feat:destroy-undead-cr-1", "feat:divine-domain-feature"],
+        "10": ["feat:divine-intervention"],
+        "11": ["feat:destroy-undead-cr-2"],
+        "12": ["feat:asi"],
+        "14": ["feat:destroy-undead-cr-3"],
+        "16": ["feat:asi"],
+        "17": ["feat:destroy-undead-cr-4", "feat:divine-domain-feature"],
+        "18": ["feat:channel-divinity-unlimited"],
+        "19": ["feat:asi"],
+        "20": ["feat:divine-intervention-auto"]
+      },
+      "spellcasting": {
+        "castingType": "full",
+        "spellcastingAbility": "WIS",
+        "prepareSpells": true,
+        "spellListId": "spelllist:cleric",
+        "cantripsKnownByLevel": [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "ritualCasting": true
+      },
+      "subclassLevel": 1,
+      "subclassLabel": "Divine Domain",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.28"
+    },
+    {
+      "id": "class:druid",
+      "displayName": "Druid",
+      "description": "Nature spellcaster with wild shape ability.",
+      "hitDie": 8,
+      "primaryAbility": ["WIS"],
+      "savingThrows": ["INT", "WIS"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "shields"],
+        "weapons": ["clubs", "daggers", "darts", "javelins", "maces", "quarterstaffs", "scimitars", "sickles", "slings", "spears"],
+        "tools": ["tool:herbalism-kit"]
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:arcana", "skill:animal-handling", "skill:insight", "skill:medicine", "skill:nature", "skill:perception", "skill:religion", "skill:survival"]
+      },
+      "multiclassPrereqs": { "WIS": 13 },
+      "featuresByLevel": {
+        "1": ["feat:spellcasting-druid", "feat:druidic"],
+        "2": ["feat:wild-shape", "feat:druid-circle"],
+        "3": [],
+        "4": ["feat:asi", "feat:wild-shape-cr-half-fly"],
+        "5": [],
+        "6": ["feat:druid-circle-feature"],
+        "7": [],
+        "8": ["feat:asi", "feat:wild-shape-cr-1"],
+        "10": ["feat:druid-circle-feature"],
+        "12": ["feat:asi"],
+        "14": ["feat:druid-circle-feature"],
+        "16": ["feat:asi"],
+        "18": ["feat:timeless-body-druid", "feat:beast-spells"],
+        "19": ["feat:asi"],
+        "20": ["feat:archdruid"]
+      },
+      "spellcasting": {
+        "castingType": "full",
+        "spellcastingAbility": "WIS",
+        "prepareSpells": true,
+        "spellListId": "spelllist:druid",
+        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "ritualCasting": true
+      },
+      "subclassLevel": 2,
+      "subclassLabel": "Druid Circle",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.37"
+    },
+    {
+      "id": "class:fighter",
+      "displayName": "Fighter",
+      "description": "Martial warrior with broad weapon and armor mastery.",
+      "hitDie": 10,
+      "primaryAbility": ["STR", "DEX"],
+      "savingThrows": ["STR", "CON"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "heavy", "shields"],
+        "weapons": ["simple", "martial"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:acrobatics", "skill:animal-handling", "skill:athletics", "skill:history", "skill:insight", "skill:intimidation", "skill:perception", "skill:survival"]
+      },
+      "multiclassPrereqs": { "STR": 13 },
+      "featuresByLevel": {
+        "1": ["feat:fighting-style", "feat:second-wind"],
+        "2": ["feat:action-surge-1"],
+        "3": ["feat:martial-archetype"],
+        "4": ["feat:asi"],
+        "5": ["feat:extra-attack-1"],
+        "6": ["feat:asi"],
+        "7": ["feat:martial-archetype-feature"],
+        "8": ["feat:asi"],
+        "9": ["feat:indomitable-1"],
+        "10": ["feat:martial-archetype-feature"],
+        "11": ["feat:extra-attack-2"],
+        "12": ["feat:asi"],
+        "13": ["feat:indomitable-2"],
+        "14": ["feat:asi"],
+        "15": ["feat:martial-archetype-feature"],
+        "16": ["feat:asi"],
+        "17": ["feat:action-surge-2", "feat:indomitable-3"],
+        "18": ["feat:martial-archetype-feature"],
+        "19": ["feat:asi"],
+        "20": ["feat:extra-attack-3"]
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Martial Archetype",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.46"
+    },
+    {
+      "id": "class:monk",
+      "displayName": "Monk",
+      "description": "Martial artist who harnesses ki energy.",
+      "hitDie": 8,
+      "primaryAbility": ["DEX", "WIS"],
+      "savingThrows": ["STR", "DEX"],
+      "proficienciesGranted": {
+        "armor": [],
+        "weapons": ["simple", "shortsword"],
+        "tools": ["tool:artisans-or-musical-instrument"]
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:acrobatics", "skill:athletics", "skill:history", "skill:insight", "skill:religion", "skill:stealth"]
+      },
+      "multiclassPrereqs": { "DEX": 13, "WIS": 13 },
+      "featuresByLevel": {
+        "1": ["feat:unarmored-defense-monk", "feat:martial-arts"],
+        "2": ["feat:ki", "feat:unarmored-movement-10"],
+        "3": ["feat:monastic-tradition", "feat:deflect-missiles"],
+        "4": ["feat:asi", "feat:slow-fall"],
+        "5": ["feat:extra-attack-monk", "feat:stunning-strike"],
+        "6": ["feat:ki-empowered-strikes", "feat:monastic-tradition-feature", "feat:unarmored-movement-15"],
+        "7": ["feat:evasion-monk", "feat:stillness-of-mind"],
+        "8": ["feat:asi"],
+        "9": ["feat:unarmored-movement-15"],
+        "10": ["feat:purity-of-body"],
+        "11": ["feat:monastic-tradition-feature"],
+        "12": ["feat:asi"],
+        "13": ["feat:tongue-of-sun-moon"],
+        "14": ["feat:diamond-soul"],
+        "15": ["feat:timeless-body-monk"],
+        "16": ["feat:asi"],
+        "17": ["feat:monastic-tradition-feature"],
+        "18": ["feat:empty-body"],
+        "19": ["feat:asi"],
+        "20": ["feat:perfect-self"]
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Monastic Tradition",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.55"
+    },
+    {
+      "id": "class:paladin",
+      "displayName": "Paladin",
+      "description": "Holy warrior bound by an oath, half-caster.",
+      "hitDie": 10,
+      "primaryAbility": ["STR", "CHA"],
+      "savingThrows": ["WIS", "CHA"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "heavy", "shields"],
+        "weapons": ["simple", "martial"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:athletics", "skill:insight", "skill:intimidation", "skill:medicine", "skill:persuasion", "skill:religion"]
+      },
+      "multiclassPrereqs": { "STR": 13, "CHA": 13 },
+      "featuresByLevel": {
+        "1": ["feat:divine-sense", "feat:lay-on-hands"],
+        "2": ["feat:fighting-style-paladin", "feat:spellcasting-paladin", "feat:divine-smite"],
+        "3": ["feat:divine-health", "feat:sacred-oath"],
+        "4": ["feat:asi"],
+        "5": ["feat:extra-attack-paladin"],
+        "6": ["feat:aura-of-protection"],
+        "7": ["feat:sacred-oath-feature"],
+        "8": ["feat:asi"],
+        "10": ["feat:aura-of-courage"],
+        "11": ["feat:improved-divine-smite"],
+        "12": ["feat:asi"],
+        "14": ["feat:cleansing-touch"],
+        "15": ["feat:sacred-oath-feature"],
+        "16": ["feat:asi"],
+        "18": ["feat:aura-improvements"],
+        "19": ["feat:asi"],
+        "20": ["feat:sacred-oath-feature"]
+      },
+      "spellcasting": {
+        "castingType": "half",
+        "spellcastingAbility": "CHA",
+        "prepareSpells": true,
+        "spellListId": "spelllist:paladin",
+        "cantripsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "ritualCasting": false
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Sacred Oath",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64"
+    },
+    {
+      "id": "class:ranger",
+      "displayName": "Ranger",
+      "description": "Skilled hunter and tracker, half-caster.",
+      "hitDie": 10,
+      "primaryAbility": ["DEX", "WIS"],
+      "savingThrows": ["STR", "DEX"],
+      "proficienciesGranted": {
+        "armor": ["light", "medium", "shields"],
+        "weapons": ["simple", "martial"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 3,
+        "options": ["skill:animal-handling", "skill:athletics", "skill:insight", "skill:investigation", "skill:nature", "skill:perception", "skill:stealth", "skill:survival"]
+      },
+      "multiclassPrereqs": { "DEX": 13, "WIS": 13 },
+      "featuresByLevel": {
+        "1": ["feat:favored-enemy", "feat:natural-explorer"],
+        "2": ["feat:fighting-style-ranger", "feat:spellcasting-ranger"],
+        "3": ["feat:ranger-archetype", "feat:primeval-awareness"],
+        "4": ["feat:asi"],
+        "5": ["feat:extra-attack-ranger"],
+        "6": ["feat:favored-enemy-improvement", "feat:natural-explorer-improvement"],
+        "7": ["feat:ranger-archetype-feature"],
+        "8": ["feat:asi", "feat:lands-stride"],
+        "10": ["feat:natural-explorer-improvement", "feat:hide-in-plain-sight"],
+        "11": ["feat:ranger-archetype-feature"],
+        "12": ["feat:asi"],
+        "14": ["feat:favored-enemy-improvement", "feat:vanish"],
+        "15": ["feat:ranger-archetype-feature"],
+        "16": ["feat:asi"],
+        "18": ["feat:feral-senses"],
+        "19": ["feat:asi"],
+        "20": ["feat:foe-slayer"]
+      },
+      "spellcasting": {
+        "castingType": "half",
+        "spellcastingAbility": "WIS",
+        "prepareSpells": false,
+        "spellListId": "spelllist:ranger",
+        "cantripsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "spellsKnownByLevel": [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11],
+        "ritualCasting": false
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Ranger Archetype",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.72"
+    },
+    {
+      "id": "class:rogue",
+      "displayName": "Rogue",
+      "description": "Cunning expert with sneak attack and high skill variety.",
+      "hitDie": 8,
+      "primaryAbility": ["DEX"],
+      "savingThrows": ["DEX", "INT"],
+      "proficienciesGranted": {
+        "armor": ["light"],
+        "weapons": ["simple", "hand-crossbow", "longsword", "rapier", "shortsword"],
+        "tools": ["tool:thieves-tools"]
+      },
+      "skillChoices": {
+        "count": 4,
+        "options": ["skill:acrobatics", "skill:athletics", "skill:deception", "skill:insight", "skill:intimidation", "skill:investigation", "skill:perception", "skill:performance", "skill:persuasion", "skill:sleight-of-hand", "skill:stealth"]
+      },
+      "multiclassPrereqs": { "DEX": 13 },
+      "featuresByLevel": {
+        "1": ["feat:expertise-rogue", "feat:sneak-attack-1d6", "feat:thieves-cant"],
+        "2": ["feat:cunning-action"],
+        "3": ["feat:roguish-archetype", "feat:sneak-attack-2d6"],
+        "4": ["feat:asi"],
+        "5": ["feat:uncanny-dodge", "feat:sneak-attack-3d6"],
+        "6": ["feat:expertise-rogue"],
+        "7": ["feat:evasion-rogue", "feat:sneak-attack-4d6"],
+        "8": ["feat:asi"],
+        "9": ["feat:roguish-archetype-feature", "feat:sneak-attack-5d6"],
+        "10": ["feat:asi"],
+        "11": ["feat:reliable-talent", "feat:sneak-attack-6d6"],
+        "12": ["feat:asi"],
+        "13": ["feat:roguish-archetype-feature", "feat:sneak-attack-7d6"],
+        "14": ["feat:blindsense"],
+        "15": ["feat:slippery-mind", "feat:sneak-attack-8d6"],
+        "16": ["feat:asi"],
+        "17": ["feat:roguish-archetype-feature", "feat:sneak-attack-9d6"],
+        "18": ["feat:elusive"],
+        "19": ["feat:asi", "feat:sneak-attack-10d6"],
+        "20": ["feat:stroke-of-luck"]
+      },
+      "subclassLevel": 3,
+      "subclassLabel": "Roguish Archetype",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81"
+    },
+    {
+      "id": "class:sorcerer",
+      "displayName": "Sorcerer",
+      "description": "Innate magic wielder with flexible metamagic.",
+      "hitDie": 6,
+      "primaryAbility": ["CHA"],
+      "savingThrows": ["CON", "CHA"],
+      "proficienciesGranted": {
+        "armor": [],
+        "weapons": ["daggers", "darts", "slings", "quarterstaffs", "light-crossbows"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:arcana", "skill:deception", "skill:insight", "skill:intimidation", "skill:persuasion", "skill:religion"]
+      },
+      "multiclassPrereqs": { "CHA": 13 },
+      "featuresByLevel": {
+        "1": ["feat:spellcasting-sorcerer", "feat:sorcerous-origin"],
+        "2": ["feat:font-of-magic"],
+        "3": ["feat:metamagic"],
+        "4": ["feat:asi"],
+        "6": ["feat:sorcerous-origin-feature"],
+        "8": ["feat:asi"],
+        "10": ["feat:metamagic-additional"],
+        "12": ["feat:asi"],
+        "14": ["feat:sorcerous-origin-feature"],
+        "16": ["feat:asi"],
+        "17": ["feat:metamagic-additional"],
+        "18": ["feat:sorcerous-origin-feature"],
+        "19": ["feat:asi"],
+        "20": ["feat:sorcerous-restoration"]
+      },
+      "spellcasting": {
+        "castingType": "full",
+        "spellcastingAbility": "CHA",
+        "prepareSpells": false,
+        "spellListId": "spelllist:sorcerer",
+        "cantripsKnownByLevel": [4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+        "spellsKnownByLevel": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15, 15],
+        "ritualCasting": false
+      },
+      "subclassLevel": 1,
+      "subclassLabel": "Sorcerous Origin",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.90"
+    },
+    {
+      "id": "class:warlock",
+      "displayName": "Warlock",
+      "description": "Pact magic wielder with an otherworldly patron.",
+      "hitDie": 8,
+      "primaryAbility": ["CHA"],
+      "savingThrows": ["WIS", "CHA"],
+      "proficienciesGranted": {
+        "armor": ["light"],
+        "weapons": ["simple"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:arcana", "skill:deception", "skill:history", "skill:intimidation", "skill:investigation", "skill:nature", "skill:religion"]
+      },
+      "multiclassPrereqs": { "CHA": 13 },
+      "featuresByLevel": {
+        "1": ["feat:otherworldly-patron", "feat:pact-magic"],
+        "2": ["feat:eldritch-invocations"],
+        "3": ["feat:pact-boon"],
+        "4": ["feat:asi"],
+        "5": ["feat:eldritch-invocations-improvement"],
+        "6": ["feat:otherworldly-patron-feature"],
+        "7": ["feat:eldritch-invocations-improvement"],
+        "8": ["feat:asi"],
+        "9": ["feat:eldritch-invocations-improvement"],
+        "10": ["feat:otherworldly-patron-feature"],
+        "11": ["feat:mystic-arcanum-6"],
+        "12": ["feat:asi"],
+        "13": ["feat:mystic-arcanum-7"],
+        "14": ["feat:otherworldly-patron-feature"],
+        "15": ["feat:mystic-arcanum-8"],
+        "16": ["feat:asi"],
+        "17": ["feat:mystic-arcanum-9"],
+        "18": ["feat:eldritch-invocations-improvement"],
+        "19": ["feat:asi"],
+        "20": ["feat:eldritch-master"]
+      },
+      "spellcasting": {
+        "castingType": "pact",
+        "spellcastingAbility": "CHA",
+        "prepareSpells": false,
+        "spellListId": "spelllist:warlock",
+        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+        "spellsKnownByLevel": [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+        "ritualCasting": false
+      },
+      "subclassLevel": 1,
+      "subclassLabel": "Otherworldly Patron",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99"
+    },
+    {
+      "id": "class:wizard",
+      "displayName": "Wizard",
+      "description": "Scholarly arcane spellcaster with a broad spell repertoire.",
+      "hitDie": 6,
+      "primaryAbility": ["INT"],
+      "savingThrows": ["INT", "WIS"],
+      "proficienciesGranted": {
+        "armor": [],
+        "weapons": ["daggers", "darts", "slings", "quarterstaffs", "light-crossbows"],
+        "tools": []
+      },
+      "skillChoices": {
+        "count": 2,
+        "options": ["skill:arcana", "skill:history", "skill:insight", "skill:investigation", "skill:medicine", "skill:religion"]
+      },
+      "multiclassPrereqs": { "INT": 13 },
+      "featuresByLevel": {
+        "1": ["feat:spellcasting-wizard", "feat:arcane-recovery"],
+        "2": ["feat:arcane-tradition"],
+        "4": ["feat:asi"],
+        "6": ["feat:arcane-tradition-feature"],
+        "8": ["feat:asi"],
+        "10": ["feat:arcane-tradition-feature"],
+        "12": ["feat:asi"],
+        "14": ["feat:arcane-tradition-feature"],
+        "16": ["feat:asi"],
+        "18": ["feat:spell-mastery"],
+        "19": ["feat:asi"],
+        "20": ["feat:signature-spells"]
+      },
+      "spellcasting": {
+        "castingType": "full",
+        "spellcastingAbility": "INT",
+        "prepareSpells": true,
+        "spellListId": "spelllist:wizard",
+        "cantripsKnownByLevel": [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "ritualCasting": true
+      },
+      "subclassLevel": 2,
+      "subclassLabel": "Arcane Tradition",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.106"
+    }
+  ]
+}

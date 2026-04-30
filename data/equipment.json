@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "equipment": [
+    {
+      "id": "item:longsword",
+      "displayName": "Longsword",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": { "amount": 15, "unit": "gp" },
+      "weight": 3,
+      "damage": "1d8",
+      "damageType": "slashing",
+      "properties": ["versatile"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:shortsword",
+      "displayName": "Shortsword",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": { "amount": 10, "unit": "gp" },
+      "weight": 2,
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": ["finesse", "light"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.67"
+    },
+    {
+      "id": "item:dagger",
+      "displayName": "Dagger",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": { "amount": 2, "unit": "gp" },
+      "weight": 1,
+      "damage": "1d4",
+      "damageType": "piercing",
+      "properties": ["finesse", "light", "thrown"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:handaxe",
+      "displayName": "Handaxe",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": { "amount": 5, "unit": "gp" },
+      "weight": 2,
+      "damage": "1d6",
+      "damageType": "slashing",
+      "properties": ["light", "thrown"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:greataxe",
+      "displayName": "Greataxe",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": { "amount": 30, "unit": "gp" },
+      "weight": 7,
+      "damage": "1d12",
+      "damageType": "slashing",
+      "properties": ["heavy", "two-handed"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:light-crossbow",
+      "displayName": "Light Crossbow",
+      "category": "weapon",
+      "subcategory": "simple-ranged",
+      "cost": { "amount": 25, "unit": "gp" },
+      "weight": 5,
+      "damage": "1d8",
+      "damageType": "piercing",
+      "properties": ["ammunition", "loading", "two-handed"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:leather-armor",
+      "displayName": "Leather Armor",
+      "category": "armor",
+      "subcategory": "light",
+      "cost": { "amount": 10, "unit": "gp" },
+      "weight": 10,
+      "armorClass": 11,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:chain-mail",
+      "displayName": "Chain Mail",
+      "category": "armor",
+      "subcategory": "heavy",
+      "cost": { "amount": 75, "unit": "gp" },
+      "weight": 55,
+      "armorClass": 16,
+      "strengthRequirement": 13,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:shield",
+      "displayName": "Shield",
+      "category": "armor",
+      "subcategory": "shield",
+      "cost": { "amount": 10, "unit": "gp" },
+      "weight": 6,
+      "armorClass": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64"
+    },
+    {
+      "id": "item:explorers-pack",
+      "displayName": "Explorer's Pack",
+      "category": "adventuring-gear",
+      "subcategory": "pack",
+      "cost": { "amount": 10, "unit": "gp" },
+      "weight": 59,
+      "contents": ["item:backpack", "item:bedroll", "item:mess-kit", "item:tinderbox", "item:torch-10", "item:rations-10", "item:waterskin", "item:rope-hempen-50"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.69"
+    },
+    {
+      "id": "item:dungeoneer-pack",
+      "displayName": "Dungeoneers Pack",
+      "category": "adventuring-gear",
+      "subcategory": "pack",
+      "cost": { "amount": 12, "unit": "gp" },
+      "weight": 61,
+      "contents": ["item:backpack", "item:crowbar", "item:hammer", "item:piton-10", "item:torch-10", "item:tinderbox", "item:rations-10", "item:waterskin", "item:rope-hempen-50"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.69"
+    },
+    {
+      "id": "item:holy-symbol",
+      "displayName": "Holy Symbol",
+      "category": "adventuring-gear",
+      "subcategory": "focus",
+      "cost": { "amount": 5, "unit": "gp" },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:arcane-focus",
+      "displayName": "Arcane Focus",
+      "category": "adventuring-gear",
+      "subcategory": "focus",
+      "cost": { "amount": 10, "unit": "gp" },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    }
+  ]
+}

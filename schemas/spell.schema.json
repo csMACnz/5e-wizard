@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/spell.schema.json",
+  "title": "SpellDataFile",
+  "description": "Collection of SRD spells with mechanical fields.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "spells"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": { "type": "string" },
+    "spells": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Spell" }
+    }
+  },
+  "definitions": {
+    "Spell": {
+      "type": "object",
+      "required": ["id", "displayName", "level", "school", "castingTime", "range", "duration", "components", "classIds", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^spell:[a-z0-9-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 140 },
+        "level": { "type": "integer", "minimum": 0, "maximum": 9 },
+        "school": {
+          "type": "string",
+          "enum": ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"]
+        },
+        "castingTime": { "type": "string" },
+        "range": { "type": "string" },
+        "duration": { "type": "string" },
+        "components": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verbal": { "type": "boolean" },
+            "somatic": { "type": "boolean" },
+            "material": { "type": "string" }
+          }
+        },
+        "concentration": { "type": "boolean" },
+        "ritual": { "type": "boolean" },
+        "damageType": { "type": "string" },
+        "saveType": { "type": "string" },
+        "classIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "source": { "type": "string" },
+        "srdReference": { "type": "string" }
+      }
+    }
+  }
+}

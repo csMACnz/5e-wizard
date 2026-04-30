@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/character.schema.json",
+  "title": "Character",
+  "description": "A validated D&D 5e SRD character export.",
+  "type": "object",
+  "required": ["id", "name", "totalLevel", "levels", "abilityScores", "generationMethod", "raceId", "backgroundId"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "Unique character id (uuid or slug)." },
+    "name": { "type": "string", "minLength": 1 },
+    "playerName": { "type": "string" },
+    "campaign": { "type": "string" },
+    "totalLevel": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "levels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["classId", "level"],
+        "additionalProperties": false,
+        "properties": {
+          "classId": { "type": "string" },
+          "subclassId": { "type": "string" },
+          "level": { "type": "integer", "minimum": 1, "maximum": 20 }
+        }
+      }
+    },
+    "abilityScores": {
+      "type": "object",
+      "required": ["STR", "DEX", "CON", "INT", "WIS", "CHA"],
+      "additionalProperties": false,
+      "properties": {
+        "STR": { "$ref": "#/definitions/abilityBlock" },
+        "DEX": { "$ref": "#/definitions/abilityBlock" },
+        "CON": { "$ref": "#/definitions/abilityBlock" },
+        "INT": { "$ref": "#/definitions/abilityBlock" },
+        "WIS": { "$ref": "#/definitions/abilityBlock" },
+        "CHA": { "$ref": "#/definitions/abilityBlock" }
+      }
+    },
+    "generationMethod": {
+      "type": "string",
+      "enum": ["standardArray", "pointBuy", "roll"]
+    },
+    "raceId": { "type": "string" },
+    "subraceId": { "type": "string" },
+    "backgroundId": { "type": "string" },
+    "proficiencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "weapons": { "type": "array", "items": { "type": "string" } },
+        "armor": { "type": "array", "items": { "type": "string" } },
+        "tools": { "type": "array", "items": { "type": "string" } },
+        "languages": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["none", "proficient", "expert"]
+      }
+    },
+    "hitPoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maximum": { "type": "integer" },
+        "current": { "type": "integer" },
+        "temporary": { "type": "integer" }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["featureId", "sourceId"],
+        "additionalProperties": false,
+        "properties": {
+          "featureId": { "type": "string" },
+          "sourceId": { "type": "string" },
+          "displayOverride": { "type": "string" }
+        }
+      }
+    },
+    "spells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["spellId", "classId"],
+        "additionalProperties": false,
+        "properties": {
+          "spellId": { "type": "string" },
+          "classId": { "type": "string" },
+          "prepared": { "type": "boolean" }
+        }
+      }
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["itemId", "quantity"],
+        "additionalProperties": false,
+        "properties": {
+          "itemId": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "validationReport": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "code", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "severity": { "type": "string", "enum": ["error", "warning"] },
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "detail": { "type": "string" },
+          "path": { "type": "string" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "abilityBlock": {
+      "type": "object",
+      "required": ["base"],
+      "additionalProperties": false,
+      "properties": {
+        "base": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "racialBonus": { "type": "integer" },
+        "otherBonus": { "type": "integer" },
+        "final": { "type": "integer", "minimum": 1, "maximum": 30 }
+      }
+    }
+  }
+}
