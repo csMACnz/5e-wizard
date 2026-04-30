@@ -1,4 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@inject BuildInfoService BuildInfoSvc
+
+<!-- Skip Navigation for keyboard/screen-reader users -->
+<a href="#main-content" class="skip-nav">Skip to main content</a>
 
 <MudThemeProvider Theme="@_theme" />
 <MudPopoverProvider />
@@ -11,21 +15,44 @@
                        OnClick="@ToggleDrawer" aria-label="Toggle navigation menu" />
         <MudText Typo="Typo.h6" Class="ml-2">5e Character Wizard</MudText>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Responsive">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="@DrawerVariant.Responsive"
+               aria-label="Site navigation">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6" Class="mt-1">Navigation</MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 mb-6">
-            @Body
-        </MudContainer>
+        <main id="main-content" tabindex="-1">
+            <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6 mb-6">
+                @Body
+            </MudContainer>
+        </main>
+        <footer class="app-footer" role="contentinfo">
+            <MudText Typo="Typo.caption" Align="Align.Center" Class="footer-text">
+                5e Character Wizard &mdash; SRD content under
+                <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer"
+                   aria-label="Creative Commons Attribution 4.0 International (opens in new tab)">CC BY 4.0</a>
+                &nbsp;|&nbsp; Code:
+                <a href="https://github.com/csMACnz/5e-wizard" target="_blank" rel="noopener noreferrer"
+                   aria-label="View source on GitHub (opens in new tab)">MIT</a>
+                @if (_buildInfo is not null && _buildInfo.CommitSha != "local")
+                {
+                    <span>&nbsp;|&nbsp; Build: <span title="@_buildInfo.CommitSha" aria-label="Build commit @_buildInfo.ShortSha">@_buildInfo.ShortSha</span></span>
+                }
+            </MudText>
+        </footer>
     </MudMainContent>
 </MudLayout>
 
 @code {
     private bool _drawerOpen = false;
+    private BuildInfo? _buildInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _buildInfo = await BuildInfoSvc.GetAsync();
+    }
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 
@@ -47,6 +74,23 @@
             TextSecondary = "#5D4E3A",
             ActionDefault = "#8B0000",
             Divider = "#D4B896",
+        },
+        Typography = new Typography
+        {
+            Default = new DefaultTypography
+            {
+                FontFamily = ["Palatino Linotype", "Palatino", "Book Antiqua", "Georgia", "serif"],
+                FontSize = "1rem",
+                FontWeight = "400",
+                LineHeight = "1.6",
+            },
+            H1 = new H1Typography { FontSize = "2.2rem", FontWeight = "700" },
+            H2 = new H2Typography { FontSize = "1.9rem", FontWeight = "700" },
+            H3 = new H3Typography { FontSize = "1.6rem", FontWeight = "600" },
+            H4 = new H4Typography { FontSize = "1.4rem", FontWeight = "600" },
+            H5 = new H5Typography { FontSize = "1.2rem", FontWeight = "600" },
+            H6 = new H6Typography { FontSize = "1.1rem", FontWeight = "600" },
+            Button = new ButtonTypography { TextTransform = "none", FontWeight = "600" },
         },
     };
 }

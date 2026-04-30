@@ -27,7 +27,7 @@ jobs:
         run: dotnet build src/CharacterWizard.slnx -c Release --no-restore
 
       - name: Test (includes schema + data validation)
-        run: dotnet test src/CharacterWizard.slnx -c Release --no-build
+        run: dotnet test src/CharacterWizard.slnx -c Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage-results
 
       - name: Format check
         run: dotnet format src/CharacterWizard.slnx --verify-no-changes

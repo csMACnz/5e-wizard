@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    This file is the default (English) string resource file for 5e Character Wizard.
+    To add a translation, create a sibling file named Strings.<culture>.resx
+    (e.g., Strings.fr.resx for French) and translate the <value> elements.
+
+    Guidelines:
+    - Keep keys in PascalCase, grouped by feature area using underscores (e.g., Nav_Home).
+    - Do not rename or delete existing keys without a corresponding code change.
+  -->
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ── App / Navigation ──────────────────────────────────────────────── -->
+  <data name="App_Title" xml:space="preserve">
+    <value>5e Character Wizard</value>
+  </data>
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav_NewCharacter" xml:space="preserve">
+    <value>New Character</value>
+  </data>
+  <data name="Nav_ImportCharacter" xml:space="preserve">
+    <value>Import Character</value>
+  </data>
+  <data name="Nav_ToggleMenu" xml:space="preserve">
+    <value>Toggle navigation menu</value>
+  </data>
+  <data name="Nav_Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="Nav_SkipToMain" xml:space="preserve">
+    <value>Skip to main content</value>
+  </data>
+
+  <!-- ── Home Page ─────────────────────────────────────────────────────── -->
+  <data name="Home_Title" xml:space="preserve">
+    <value>5e Character Wizard</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>Build a D&amp;D 5e character using System Reference Document (SRD) mechanics. Walk through character meta, ability scores, race, class, background, and review.</value>
+  </data>
+  <data name="Home_StartButton" xml:space="preserve">
+    <value>Start New Character</value>
+  </data>
+
+  <!-- ── Wizard Steps ───────────────────────────────────────────────────── -->
+  <data name="Wizard_Title" xml:space="preserve">
+    <value>Create Your Character</value>
+  </data>
+  <data name="Wizard_Loading" xml:space="preserve">
+    <value>Loading character data…</value>
+  </data>
+  <data name="Wizard_StepLabel" xml:space="preserve">
+    <value>Step {0}: {1}</value>
+    <comment>Placeholders: {0} = step number, {1} = step name</comment>
+  </data>
+  <data name="Wizard_BackButton" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Wizard_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+
+  <!-- Step 1: Meta -->
+  <data name="Step1_Title" xml:space="preserve">
+    <value>Step 1 — Character Meta</value>
+  </data>
+  <data name="Step1_CharacterName" xml:space="preserve">
+    <value>Character Name</value>
+  </data>
+  <data name="Step1_PlayerName" xml:space="preserve">
+    <value>Player Name</value>
+  </data>
+  <data name="Step1_Campaign" xml:space="preserve">
+    <value>Campaign</value>
+  </data>
+  <data name="Step1_GenerationMethod" xml:space="preserve">
+    <value>Ability Score Method</value>
+  </data>
+
+  <!-- Step 2: Abilities -->
+  <data name="Step2_Title" xml:space="preserve">
+    <value>Step 2 — Ability Scores</value>
+  </data>
+  <data name="Step2_Decrease" xml:space="preserve">
+    <value>Decrease {0}</value>
+    <comment>Placeholder {0} = ability name (e.g., STR)</comment>
+  </data>
+  <data name="Step2_Increase" xml:space="preserve">
+    <value>Increase {0}</value>
+    <comment>Placeholder {0} = ability name</comment>
+  </data>
+  <data name="Step2_PointsRemaining" xml:space="preserve">
+    <value>Points remaining: {0}</value>
+    <comment>Point Buy budget remaining</comment>
+  </data>
+
+  <!-- Step 3: Race -->
+  <data name="Step3_Title" xml:space="preserve">
+    <value>Step 3 — Race &amp; Subrace</value>
+  </data>
+  <data name="Step3_SelectRace" xml:space="preserve">
+    <value>— select race —</value>
+  </data>
+  <data name="Step3_SelectSubrace" xml:space="preserve">
+    <value>— select subrace —</value>
+  </data>
+
+  <!-- Step 4: Class -->
+  <data name="Step4_Title" xml:space="preserve">
+    <value>Step 4 — Class &amp; Level</value>
+  </data>
+  <data name="Step4_SelectClass" xml:space="preserve">
+    <value>— select class —</value>
+  </data>
+
+  <!-- Step 5: Background -->
+  <data name="Step5_Title" xml:space="preserve">
+    <value>Step 5 — Background &amp; Proficiencies</value>
+  </data>
+  <data name="Step5_SelectBackground" xml:space="preserve">
+    <value>— select background —</value>
+  </data>
+
+  <!-- Step 6: Spells -->
+  <data name="Step6_Title" xml:space="preserve">
+    <value>Step 6 — Spells</value>
+  </data>
+  <data name="Step6_NoSpells" xml:space="preserve">
+    <value>Your class combination does not include any spellcasting. Skip to the next step.</value>
+  </data>
+
+  <!-- Step 7: Equipment -->
+  <data name="Step7_Title" xml:space="preserve">
+    <value>Step 7 — Equipment</value>
+  </data>
+
+  <!-- Step 8: Review -->
+  <data name="Step8_Title" xml:space="preserve">
+    <value>Step 8 — Review &amp; Final Validation</value>
+  </data>
+  <data name="Step8_ValidationPassed" xml:space="preserve">
+    <value>✓ Character is valid — all checks passed.</value>
+  </data>
+  <data name="Step8_ExportJson" xml:space="preserve">
+    <value>Export JSON</value>
+  </data>
+  <data name="Step8_PrintSheet" xml:space="preserve">
+    <value>Print Sheet</value>
+  </data>
+
+  <!-- ── Print Sheet ────────────────────────────────────────────────────── -->
+  <data name="Print_Title" xml:space="preserve">
+    <value>D&amp;D 5e Character Sheet</value>
+  </data>
+  <data name="Print_BackToWizard" xml:space="preserve">
+    <value>Back to Wizard</value>
+  </data>
+  <data name="Print_PrintButton" xml:space="preserve">
+    <value>Print</value>
+  </data>
+
+  <!-- ── Import Page ────────────────────────────────────────────────────── -->
+  <data name="Import_Title" xml:space="preserve">
+    <value>Import Character</value>
+  </data>
+  <data name="Import_ComingSoon" xml:space="preserve">
+    <value>Character import from JSON is coming in a future milestone.</value>
+  </data>
+
+  <!-- ── Common / Shared ───────────────────────────────────────────────── -->
+  <data name="Common_BackToHome" xml:space="preserve">
+    <value>Back to Home</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="Common_Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Common_Warnings" xml:space="preserve">
+    <value>Warnings (non-blocking)</value>
+  </data>
+</root>

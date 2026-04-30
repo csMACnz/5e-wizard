@@ -42,6 +42,18 @@ jobs:
             -o out \
             -p:GHPagesBaseHref=/5e-wizard/
 
+      - name: Inject build info
+        run: |
+          COMMIT_SHA="${{ github.sha }}"
+          BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          cat > out/wwwroot/build-info.json <<EOF
+          {
+            "version": "${{ github.run_number }}",
+            "commitSha": "${COMMIT_SHA}",
+            "buildDate": "${BUILD_DATE}"
+          }
+          EOF
+
       - name: Add .nojekyll
         run: touch out/wwwroot/.nojekyll
 
