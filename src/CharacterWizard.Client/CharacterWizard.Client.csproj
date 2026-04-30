@@ -64,4 +64,26 @@
       Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
   </Target>
 
+  <!-- Create 404.html and per-route index.html copies for GitHub Pages SPA routing -->
+  <Target Name="CreateGitHubPagesRoutes" AfterTargets="SetBaseHref">
+    <PropertyGroup>
+      <_PublishedIndexHtmlUnix>$(PublishDir)wwwroot/index.html</_PublishedIndexHtmlUnix>
+    </PropertyGroup>
+    <ItemGroup>
+      <_BlazorRoutes Include="wizard;import;print;not-found" />
+    </ItemGroup>
+    <!-- 404.html catches any URL not matched by a static file and lets Blazor handle routing -->
+    <Copy
+      SourceFiles="$(_PublishedIndexHtmlUnix)"
+      DestinationFiles="$(PublishDir)wwwroot/404.html"
+      Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
+    <!-- Subdirectory index.html for each Blazor route so direct navigation works without the 404 fallback -->
+    <MakeDir Directories="$(PublishDir)wwwroot/%(_BlazorRoutes.Identity)"
+             Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
+    <Copy
+      SourceFiles="$(_PublishedIndexHtmlUnix)"
+      DestinationFiles="$(PublishDir)wwwroot/%(_BlazorRoutes.Identity)/index.html"
+      Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
+  </Target>
+
 </Project>
