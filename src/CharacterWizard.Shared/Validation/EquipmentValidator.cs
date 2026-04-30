@@ -35,7 +35,6 @@ public class EquipmentValidator
             if (!validIds.Contains(item.ItemId))
             {
                 result.Errors.Add($"ERR_EQUIPMENT_UNKNOWN: Item '{item.ItemId}' does not exist in the equipment data.");
-                continue;
             }
 
             if (item.Quantity < 1)
