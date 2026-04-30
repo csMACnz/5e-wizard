@@ -52,23 +52,38 @@ else
             <MudText Typo="Typo.h5" GutterBottom="true">Step 1 — Character Meta</MudText>
             <MudGrid>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_characterName" Label="Character Name" Required="true"
+                    <MudTextField Value="@_characterName"
+                                  ValueChanged="@((string v) => { _characterName = v; ValidateAndShowStepErrors(); })"
+                                  Label="Character Name" Required="true"
                                   Variant="Variant.Outlined" HelperText="Required"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Casino"
+                                  OnAdornmentClick="RandomizeCharacterName"
+                                  AdornmentAriaLabel="Random character name"
                                   aria-required="true" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="_playerName" Label="Player Name"
-                                  Variant="Variant.Outlined" />
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Casino"
+                                  OnAdornmentClick="RandomizePlayerName"
+                                  AdornmentAriaLabel="Random player name" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="_campaignName" Label="Campaign Name"
-                                  Variant="Variant.Outlined" />
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.Casino"
+                                  OnAdornmentClick="RandomizeCampaignName"
+                                  AdornmentAriaLabel="Random campaign name" />
                 </MudItem>
             </MudGrid>
             <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2">
                 <strong>Ability Score Generation Method</strong>
             </MudText>
-            <MudRadioGroup @bind-Value="_generationMethodStr" T="string">
+            <MudRadioGroup @bind-Value="_generationMethodStr" T="string"
+                           @bind-Value:after="ValidateAndShowStepErrors">
                 <MudStack Spacing="2">
                     <MudRadio Value="@nameof(GenerationMethod.StandardArray)" Color="Color.Primary">
                         <MudText><strong>Standard Array</strong> — Assign [15, 14, 13, 12, 10, 8] to your abilities</MudText>
@@ -89,13 +104,22 @@ else
             <MudText Typo="Typo.h5" GutterBottom="true">Step 2 — Ability Scores</MudText>
             @if (State.Character.GenerationMethod == GenerationMethod.StandardArray)
             {
-                <MudText Class="mb-3">Assign each value from [15, 14, 13, 12, 10, 8] to an ability. Each value must be used exactly once.</MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                    <MudText>Assign each value from [15, 14, 13, 12, 10, 8] to an ability. Each value must be used exactly once.</MudText>
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                               StartIcon="@Icons.Material.Filled.Casino"
+                               OnClick="@RandomlyAssignStandardArray">
+                        Random Assign
+                    </MudButton>
+                </MudStack>
                 <MudGrid>
                     @foreach (var ability in Abilities)
                     {
                         string ab = ability;
                         <MudItem xs="12" sm="6" md="4">
-                            <MudSelect T="int" Label="@ab" @bind-Value="@_abilitySelections[ab]"
+                            <MudSelect T="int" Label="@ab"
+                                       Value="@_abilitySelections[ab]"
+                                       ValueChanged="@((int v) => { _abilitySelections[ab] = v; ValidateAndShowStepErrors(); })"
                                        Variant="Variant.Outlined">
                                 <MudSelectItem Value="0">— select —</MudSelectItem>
                                 @foreach (int v in _standardArray)
@@ -145,15 +169,28 @@ else
             }
             else if (State.Character.GenerationMethod == GenerationMethod.Roll)
             {
-                <MudText Class="mb-3">Enter the 6 rolled values (4d6 drop lowest, range 3–18).</MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                    <MudText>Enter the 6 rolled values (4d6 drop lowest, range 3–18).</MudText>
+                    <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Secondary"
+                               StartIcon="@Icons.Material.Filled.Casino"
+                               OnClick="@RollAllAbilities">
+                        Roll All
+                    </MudButton>
+                </MudStack>
                 <MudGrid>
                     @foreach (var ability in Abilities)
                     {
                         string ab = ability;
                         <MudItem xs="12" sm="6" md="4">
-                            <MudNumericField T="int" Label="@ab" @bind-Value="@_rollValues[ab]"
+                            <MudNumericField T="int" Label="@ab"
+                                            Value="@_rollValues[ab]"
+                                            ValueChanged="@((int v) => { _rollValues[ab] = v; ValidateAndShowStepErrors(); })"
                                             Min="3" Max="18" Variant="Variant.Outlined"
-                                            HelperText="@($"mod {Modifier(_rollValues[ab])}")" />
+                                            HelperText="@($"mod {Modifier(_rollValues[ab])}")"
+                                            Adornment="Adornment.End"
+                                            AdornmentIcon="@Icons.Material.Filled.Casino"
+                                            OnAdornmentClick="@(() => RerollAbility(ab))"
+                                            AdornmentAriaLabel="@($"Reroll {ab}")" />
                         </MudItem>
                     }
                 </MudGrid>
@@ -167,7 +204,9 @@ else
             <MudText Typo="Typo.h5" GutterBottom="true">Step 3 — Race &amp; Subrace</MudText>
             <MudGrid>
                 <MudItem xs="12" sm="6">
-                    <MudSelect T="string" Label="Race" @bind-Value="_selectedRaceId"
+                    <MudSelect T="string" Label="Race"
+                               Value="_selectedRaceId"
+                               ValueChanged="@((string v) => { _selectedRaceId = v; _selectedSubraceId = string.Empty; ValidateAndShowStepErrors(); })"
                                Variant="Variant.Outlined" Required="true">
                         <MudSelectItem Value="@string.Empty">— select race —</MudSelectItem>
                         @foreach (var race in _races)
@@ -179,7 +218,9 @@ else
                 @if (currentRace?.Subraces.Count > 0)
                 {
                     <MudItem xs="12" sm="6">
-                        <MudSelect T="string" Label="Subrace" @bind-Value="_selectedSubraceId"
+                        <MudSelect T="string" Label="Subrace"
+                                   Value="_selectedSubraceId"
+                                   ValueChanged="@((string v) => { _selectedSubraceId = v; ValidateAndShowStepErrors(); })"
                                    Variant="Variant.Outlined" Required="true">
                             <MudSelectItem Value="@string.Empty">— select subrace —</MudSelectItem>
                             @foreach (var sub in currentRace.Subraces)
@@ -269,7 +310,9 @@ else
                         </MudStack>
                         <MudGrid>
                             <MudItem xs="12" sm="7">
-                                <MudSelect T="string" Label="Class" @bind-Value="entry.ClassId"
+                                <MudSelect T="string" Label="Class"
+                                           Value="@_classEntries[classIdx].ClassId"
+                                           ValueChanged="@((string v) => { _classEntries[classIdx].ClassId = v; _classEntries[classIdx].SubclassId = string.Empty; ValidateAndShowStepErrors(); })"
                                            Variant="Variant.Outlined" Required="true">
                                     <MudSelectItem Value="@string.Empty">— select class —</MudSelectItem>
                                     @foreach (var cls in _classes)
@@ -281,17 +324,32 @@ else
                                 </MudSelect>
                             </MudItem>
                             <MudItem xs="12" sm="3">
-                                <MudNumericField T="int" Label="Level" @bind-Value="entry.Level"
+                                <MudNumericField T="int" Label="Level"
+                                                Value="@_classEntries[classIdx].Level"
+                                                ValueChanged="@((int v) => { _classEntries[classIdx].Level = v; ValidateAndShowStepErrors(); })"
                                                 Min="1" Max="20" Variant="Variant.Outlined" />
                             </MudItem>
                         </MudGrid>
                         @{
                             var clsDef = _classes.FirstOrDefault(cd => cd.Id == entry.ClassId);
                         }
-                        @if (clsDef != null && clsDef.SubclassLevel > 0 && entry.Level >= clsDef.SubclassLevel)
+                        @if (clsDef != null && clsDef.SubclassLevel > 0 && clsDef.SubclassOptions.Count > 0 && entry.Level >= clsDef.SubclassLevel)
+                        {
+                            <MudSelect T="string" Label="@clsDef.SubclassLabel"
+                                       Value="@_classEntries[classIdx].SubclassId"
+                                       ValueChanged="@((string v) => { _classEntries[classIdx].SubclassId = v; ValidateAndShowStepErrors(); })"
+                                       Variant="Variant.Outlined" Required="true" Class="mt-2">
+                                <MudSelectItem Value="@string.Empty">— select @(clsDef.SubclassLabel.ToLowerInvariant()) —</MudSelectItem>
+                                @foreach (var sub in clsDef.SubclassOptions)
+                                {
+                                    <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
+                                }
+                            </MudSelect>
+                        }
+                        else if (clsDef != null && clsDef.SubclassLevel > 0 && clsDef.SubclassOptions.Count > 0)
                         {
                             <MudText Typo="Typo.caption" Class="mt-2" Color="Color.Secondary">
-                                Subclass available at level @clsDef.SubclassLevel (full subclass picker in a future milestone)
+                                @clsDef.SubclassLabel selection unlocks at level @clsDef.SubclassLevel
                             </MudText>
                         }
                     </MudCardContent>
@@ -370,7 +428,8 @@ else
                             && _classSkillSelections.Count(s => s) >= primaryClass.SkillChoices.Count;
                         bool skillDisabled = isGrantedByBackground || alreadyMaxed;
                         <MudItem xs="12" sm="6" md="4">
-                            <MudCheckBox T="bool" @bind-Value="_classSkillSelections[skillIdx]"
+                            <MudCheckBox T="bool" Value="_classSkillSelections[skillIdx]"
+                                         ValueChanged="@((bool v) => { _classSkillSelections[skillIdx] = v; ValidateAndShowStepErrors(); })"
                                          Disabled="@skillDisabled"
                                          Color="Color.Primary"
                                          Label="@(SkillLabel(_classSkillOptionIds[skillIdx]) + (isGrantedByBackground ? " (from background)" : string.Empty))" />
@@ -509,7 +568,25 @@ else
         {
             var bgForEquip = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
             var bgEquipIds = bgForEquip?.StartingEquipmentIds ?? [];
+            var primaryClsForEquip = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
+            var classEquipIds = primaryClsForEquip?.StartingEquipmentIds ?? [];
+            var equipmentToShow = _strictEquipment && classEquipIds.Count > 0
+                ? _equipment.Where(e => classEquipIds.Contains(e.Id)).ToList()
+                : (IReadOnlyList<EquipmentItemDefinition>)_equipment;
             <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Equipment</MudText>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                <MudSwitch T="bool" Value="_strictEquipment"
+                           ValueChanged="@OnStrictEquipmentChanged"
+                           Color="Color.Primary"
+                           Label="Strict mode: standard PHB starting equipment only" />
+                @if (!_strictEquipment)
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Warning">
+                        All items available — selections are not validated against class starting equipment.
+                    </MudText>
+                }
+            </MudStack>
 
             @if (bgForEquip != null && bgEquipIds.Count > 0)
             {
@@ -539,9 +616,14 @@ else
             }
 
             <MudText Typo="Typo.subtitle1" Class="mb-2">
-                <strong>Select Additional Equipment</strong> (@_selectedEquipmentIds.Count item(s) selected)
+                <strong>Select @(primaryClsForEquip != null ? primaryClsForEquip.DisplayName + " " : string.Empty)Starting Equipment</strong>
+                @if (_strictEquipment && classEquipIds.Count > 0)
+                {
+                    <span class="mud-typography mud-typography-caption"> — showing standard PHB choices</span>
+                }
+                <span> (@_selectedEquipmentIds.Count item(s) selected)</span>
             </MudText>
-            @foreach (var group in _equipment.GroupBy(e => e.Category).OrderBy(g => g.Key))
+            @foreach (var group in equipmentToShow.GroupBy(e => e.Category).OrderBy(g => g.Key))
             {
                 <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1" Style="text-transform:capitalize">
                     @group.Key
@@ -912,6 +994,7 @@ else
     {
         public string ClassId { get; set; } = string.Empty;
         public int Level { get; set; } = 1;
+        public string SubclassId { get; set; } = string.Empty;
     }
 
     private List<ClassEntry> _classEntries = [new ClassEntry()];
@@ -928,6 +1011,7 @@ else
     // ── Step 7 state (Equipment) ──────────────────────────────────────────
     // ItemId → selected (quantity always 1)
     private readonly HashSet<string> _selectedEquipmentIds = [];
+    private bool _strictEquipment = true;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
     protected override async Task OnInitializedAsync()
@@ -966,7 +1050,7 @@ else
         if (c.Levels.Count > 0)
         {
             _classEntries = c.Levels
-                .Select(l => new ClassEntry { ClassId = l.ClassId, Level = l.Level })
+                .Select(l => new ClassEntry { ClassId = l.ClassId, Level = l.Level, SubclassId = l.SubclassId ?? string.Empty })
                 .ToList();
         }
 
@@ -1070,6 +1154,7 @@ else
             _selectedSpells[classId].Add(spellId);
         else
             _selectedSpells[classId].Remove(spellId);
+        ValidateAndShowStepErrors();
     }
 
     // ── Equipment helpers ─────────────────────────────────────────────────
@@ -1079,6 +1164,25 @@ else
             _selectedEquipmentIds.Add(itemId);
         else
             _selectedEquipmentIds.Remove(itemId);
+        ValidateAndShowStepErrors();
+    }
+
+    private void OnStrictEquipmentChanged(bool strict)
+    {
+        _strictEquipment = strict;
+        if (strict)
+        {
+            // Deselect items that are outside the allowed list
+            var primaryClsId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+            var allowedIds = _classes.FirstOrDefault(c => c.Id == primaryClsId)?.StartingEquipmentIds ?? [];
+            if (allowedIds.Count > 0)
+            {
+                var toRemove = _selectedEquipmentIds.Where(id => !allowedIds.Contains(id)).ToList();
+                foreach (var id in toRemove)
+                    _selectedEquipmentIds.Remove(id);
+            }
+        }
+        ValidateAndShowStepErrors();
     }
 
     // ── Point buy helpers ─────────────────────────────────────────────────
@@ -1090,12 +1194,14 @@ else
         int nextCost = PointBuyCost(current + 1) - PointBuyCost(current);
         if (spent + nextCost <= 27)
             _pointBuyValues[ability] = current + 1;
+        ValidateAndShowStepErrors();
     }
 
     private void DecrementAbility(string ability)
     {
         int current = _pointBuyValues.GetValueOrDefault(ability, 8);
         if (current > 8) _pointBuyValues[ability] = current - 1;
+        ValidateAndShowStepErrors();
     }
 
     // ── Class entry helpers ───────────────────────────────────────────────
@@ -1146,6 +1252,7 @@ else
                 if (_classSkillSelections[i] && newBg.SkillProficiencies.Contains(_classSkillOptionIds[i]))
                     _classSkillSelections[i] = false;
         }
+        ValidateAndShowStepErrors();
     }
 
     // ── Commit state → character model ───────────────────────────────────
@@ -1189,7 +1296,7 @@ else
         // Step 4
         c.Levels = _classEntries
             .Where(e => !string.IsNullOrEmpty(e.ClassId))
-            .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+            .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level, SubclassId = string.IsNullOrEmpty(e.SubclassId) ? null : e.SubclassId })
             .ToList();
         c.TotalLevel = c.Levels.Sum(l => l.Level);
 
@@ -1279,7 +1386,7 @@ else
                     TotalLevel = TotalClassLevel,
                     Levels = _classEntries
                         .Where(e => !string.IsNullOrEmpty(e.ClassId))
-                        .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+                        .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level, SubclassId = string.IsNullOrEmpty(e.SubclassId) ? null : e.SubclassId })
                         .ToList(),
                     AbilityScores = BuildTempAbilityScores(),
                 };
@@ -1354,7 +1461,15 @@ else
                         equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
                     if (equipTemp.Equipment.Count > 0)
                     {
-                        var equipResult = new EquipmentValidator(_equipment).Validate(equipTemp);
+                        IReadOnlyList<string>? strictAllowedIds = null;
+                        if (_strictEquipment)
+                        {
+                            var primaryClsId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+                            var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryClsId);
+                            if (primaryCls?.StartingEquipmentIds.Count > 0)
+                                strictAllowedIds = primaryCls.StartingEquipmentIds;
+                        }
+                        var equipResult = new EquipmentValidator(_equipment).Validate(equipTemp, strictAllowedIds);
                         result.Errors.AddRange(equipResult.Errors);
                         result.Warnings.AddRange(equipResult.Warnings);
                     }
@@ -1406,6 +1521,85 @@ else
 
     private bool IsCurrentStepValid() => ValidateStep(_activeStep).IsValid;
 
+    // ── Validation display ────────────────────────────────────────────────
+    private void ValidateAndShowStepErrors()
+    {
+        var result = ValidateStep(_activeStep);
+        _stepErrors = result.Errors;
+    }
+
+    // ── Randomizer helpers ────────────────────────────────────────────────
+    private static readonly string[] _characterNameOptions =
+    [
+        "Aric Stonehammer", "Lyra Swiftwind", "Gareth Ironwood", "Senna Brightflame",
+        "Dorin Ashgrove", "Mira Dawnwhisper", "Talon Greymark", "Elara Frostweave",
+        "Bram Coldstone", "Zara Nightfall", "Owen Steelforge", "Nara Moonveil",
+        "Caden Embercroft", "Isra Thistledown", "Finn Blackthorn", "Selene Goldleaf",
+        "Rowan Whitepeak", "Vex Shadowmere", "Cleo Starhelm", "Drake Thornfield",
+    ];
+
+    private static readonly string[] _playerNameOptions =
+    [
+        "Alex", "Sam", "Jordan", "Morgan", "Taylor", "Casey", "Quinn", "Riley",
+        "Blake", "Sage", "Avery", "Skyler", "Rowan", "Phoenix", "Dana", "Harley",
+    ];
+
+    private static readonly string[] _campaignNameOptions =
+    [
+        "Curse of Strahd", "Descent into Avernus", "Icewind Dale", "Waterdeep Adventures",
+        "The Lost Mines", "Secrets of the Sunken City", "The Dragon's Lair",
+        "Shadows of the Underdark", "The Ancient Ruins", "War of the Five Kingdoms",
+        "The Emerald Enclave", "Tomb of the Old Gods",
+    ];
+
+    private void RandomizeCharacterName()
+    {
+        _characterName = _characterNameOptions[Random.Shared.Next(_characterNameOptions.Length)];
+        ValidateAndShowStepErrors();
+    }
+
+    private void RandomizePlayerName()
+    {
+        _playerName = _playerNameOptions[Random.Shared.Next(_playerNameOptions.Length)];
+    }
+
+    private void RandomizeCampaignName()
+    {
+        _campaignName = _campaignNameOptions[Random.Shared.Next(_campaignNameOptions.Length)];
+    }
+
+    // ── Ability score roll helpers ────────────────────────────────────────
+    private static int RollAbilityScore()
+    {
+        // Roll 4d6, drop lowest, return sum
+        int r1 = Random.Shared.Next(1, 7);
+        int r2 = Random.Shared.Next(1, 7);
+        int r3 = Random.Shared.Next(1, 7);
+        int r4 = Random.Shared.Next(1, 7);
+        return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
+    }
+
+    private void RollAllAbilities()
+    {
+        foreach (var ab in Abilities)
+            _rollValues[ab] = RollAbilityScore();
+        ValidateAndShowStepErrors();
+    }
+
+    private void RerollAbility(string ability)
+    {
+        _rollValues[ability] = RollAbilityScore();
+        ValidateAndShowStepErrors();
+    }
+
+    private void RandomlyAssignStandardArray()
+    {
+        var shuffled = _standardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
+        for (int i = 0; i < Abilities.Length; i++)
+            _abilitySelections[Abilities[i]] = shuffled[i];
+        ValidateAndShowStepErrors();
+    }
+
     // ── Navigation ────────────────────────────────────────────────────────
     private void GoBack()
     {
@@ -1413,7 +1607,7 @@ else
         {
             _activeStep--;
             State.ActiveStep = _activeStep;
-            _stepErrors = [];
+            _stepErrors = ValidateStep(_activeStep).Errors;
         }
     }
 

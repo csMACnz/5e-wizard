@@ -36,18 +36,26 @@ High-level goals / success criteria
 Functional Requirements (FR)
 FR1 — Wizard flows
 - FR1.1: Start: meta (name, player, campaign), choose ability generation method (Standard Array, Point Buy [PHB rules], Roll with configurable reroll policy).
+  - FR1.1.1: All character data entry fields (name, player name, campaign name) shall have randomizer dice buttons to generate a suggested value.
 - FR1.2: Ability score assignment and modifiers (apply racial bonuses after assignment; allow custom name/flavor but preserve mechanic IDs).
+  - FR1.2.1: Rolled method — include a "Roll All" button to roll 4d6-drop-lowest for all abilities, and per-ability "Reroll" buttons to regenerate individual scores.
+  - FR1.2.2: Standard Array method — include a "Random Assign" button to randomly shuffle the standard array values across the six abilities.
 - FR1.3: Race/Subrace selection and mechanical feature application.
 - FR1.4: Class selection and subclass picker; allow multiclass entries (class + level), enforce total level ≤ 20.
+  - FR1.4.1: Subclass picker is enabled/visible when the character's class level reaches the class's required subclass level; hidden or disabled otherwise.
 - FR1.5: Background selection; grant proficiencies and feature references.
 - FR1.6: Skill and proficiency assignment: enforce class/background/tool restrictions and counts.
-- FR1.7: Equipment: starting choices enforced against allowed options.
+- FR1.7: Equipment: starting choices guided by standard PHB-ruleset choices from the character's class.
+  - FR1.7.1: A "Strict starting equipment" toggle (default: on) limits visible/selectable items to only the standard choices for the character's class.
+  - FR1.7.2: When strict mode is enabled, any equipment selections outside the allowed list are automatically deselected and validation errors are shown.
+  - FR1.7.3: The toggle can be turned off by the user to allow free selection of any valid item; in non-strict mode a warning is displayed.
 - FR1.8: Spells: enforce known/prepared rules per class and spell slot table.
 - FR1.9: Level progression: show features unlocked per class level, including ASIs and feature choices.
 - FR1.10: Review & final validation with explicit errors/warnings.
 
 FR2 — Validation
 - FR2.1: Step-level validation: run relevant validators for immediate feedback.
+  - FR2.1.1 (BUG-FIX): Step validation errors shall be visible on screen after any field change/edit within a step, not only on "Next" click. This applies to all input field wizard steps.
 - FR2.2: Full validation engine producing structured report: errors (fatal) and warnings.
 - FR2.3: Provide machine-readable error codes and human-friendly messages (e.g., ERR_MULTICLASS_PREREQ — "Strength 13 is required to multiclass into Barbarian").
 - FR2.4: CI validates canonical /data JSON files against JSON schemas and custom rules.
