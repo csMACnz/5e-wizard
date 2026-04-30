@@ -1,0 +1,1128 @@
+﻿@page "/wizard"
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Validation
+@using System.Text.Json
+@inject IDataService DataService
+@inject CharacterWizardState State
+@inject IJSRuntime JS
+
+<PageTitle>Character Wizard</PageTitle>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+    <MudText Typo="Typo.h5" Align="Align.Center">Loading character data…</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-2">Create Your Character</MudText>
+
+    <!-- Step Indicator -->
+    <MudPaper Elevation="1" Class="pa-3 mb-4">
+        <MudStack Row="true" Spacing="0" Justify="Justify.SpaceAround" AlignItems="AlignItems.Center">
+            @for (int i = 0; i < _steps.Length; i++)
+            {
+                int idx = i;
+                bool isActive = _activeStep == idx;
+                bool isDone = _activeStep > idx;
+                <MudStack AlignItems="AlignItems.Center" Spacing="1" Style="flex:1;min-width:0">
+                    <MudIconButton
+                        Icon="@(isDone ? Icons.Material.Filled.CheckCircle : isActive ? Icons.Material.Filled.RadioButtonChecked : Icons.Material.Outlined.RadioButtonUnchecked)"
+                        Color="@(isActive ? Color.Primary : isDone ? Color.Success : Color.Default)"
+                        Size="Size.Medium"
+                        OnClick="@(() => TryGoToStep(idx))"
+                        aria-label="@($"Step {idx + 1}: {_steps[idx]}")" />
+                    <MudText Typo="Typo.caption"
+                             Color="@(isActive ? Color.Primary : isDone ? Color.Success : Color.Default)"
+                             Style="text-align:center;max-width:80px;word-break:break-word;">
+                        @_steps[idx]
+                    </MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <!-- Step Content -->
+    <MudPaper Elevation="2" Class="pa-4 mb-3">
+
+        @* ── Step 1: Character Meta ── *@
+        @if (_activeStep == 0)
+        {
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 1 — Character Meta</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_characterName" Label="Character Name" Required="true"
+                                  Variant="Variant.Outlined" HelperText="Required"
+                                  aria-required="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_playerName" Label="Player Name"
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="_campaignName" Label="Campaign Name"
+                                  Variant="Variant.Outlined" />
+                </MudItem>
+            </MudGrid>
+            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2">
+                <strong>Ability Score Generation Method</strong>
+            </MudText>
+            <MudRadioGroup @bind-Value="_generationMethodStr" T="string">
+                <MudStack Spacing="2">
+                    <MudRadio Value="@nameof(GenerationMethod.StandardArray)" Color="Color.Primary">
+                        <MudText><strong>Standard Array</strong> — Assign [15, 14, 13, 12, 10, 8] to your abilities</MudText>
+                    </MudRadio>
+                    <MudRadio Value="@nameof(GenerationMethod.PointBuy)" Color="Color.Primary">
+                        <MudText><strong>Point Buy</strong> — Spend 27 points (scores 8–15)</MudText>
+                    </MudRadio>
+                    <MudRadio Value="@nameof(GenerationMethod.Roll)" Color="Color.Primary">
+                        <MudText><strong>Rolled Scores</strong> — Enter 4d6 drop lowest results (range 3–18)</MudText>
+                    </MudRadio>
+                </MudStack>
+            </MudRadioGroup>
+        }
+
+        @* ── Step 2: Ability Scores ── *@
+        @if (_activeStep == 1)
+        {
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 2 — Ability Scores</MudText>
+            @if (State.Character.GenerationMethod == GenerationMethod.StandardArray)
+            {
+                <MudText Class="mb-3">Assign each value from [15, 14, 13, 12, 10, 8] to an ability. Each value must be used exactly once.</MudText>
+                <MudGrid>
+                    @foreach (var ability in Abilities)
+                    {
+                        string ab = ability;
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudSelect T="int" Label="@ab" @bind-Value="@_abilitySelections[ab]"
+                                       Variant="Variant.Outlined">
+                                <MudSelectItem Value="0">— select —</MudSelectItem>
+                                @foreach (int v in _standardArray)
+                                {
+                                    <MudSelectItem Value="@v">@v (mod @Modifier(v))</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+            else if (State.Character.GenerationMethod == GenerationMethod.PointBuy)
+            {
+                int pbSpent = Abilities.Sum(a => PointBuyCost(_pointBuyValues[a]));
+                int pbRemaining = 27 - pbSpent;
+                <MudText Class="mb-2">Use +/− to allocate scores between 8 and 15. Budget: 27 points.</MudText>
+                <MudAlert Severity="@(pbRemaining < 0 ? Severity.Error : Severity.Info)" Class="mb-3">
+                    Points remaining: <strong>@pbRemaining</strong>
+                </MudAlert>
+                <MudGrid>
+                    @foreach (var ability in Abilities)
+                    {
+                        string ab = ability;
+                        int baseScore = _pointBuyValues[ab];
+                        int nextExtra = baseScore < 15 ? PointBuyCost(baseScore + 1) - PointBuyCost(baseScore) : int.MaxValue;
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudPaper Elevation="1" Class="pa-3">
+                                <MudText Typo="Typo.subtitle2">@ab</MudText>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-1">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Remove" Size="Size.Small"
+                                                   Color="Color.Primary" Disabled="@(baseScore <= 8)"
+                                                   OnClick="@(() => DecrementAbility(ab))"
+                                                   aria-label="@($"Decrease {ab}")" />
+                                    <MudText Typo="Typo.h6" Style="min-width:2em;text-align:center">@baseScore</MudText>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small"
+                                                   Color="Color.Primary"
+                                                   Disabled="@(baseScore >= 15 || pbSpent + nextExtra > 27)"
+                                                   OnClick="@(() => IncrementAbility(ab))"
+                                                   aria-label="@($"Increase {ab}")" />
+                                    <MudText Color="Color.Secondary">mod @Modifier(baseScore)</MudText>
+                                </MudStack>
+                                <MudText Typo="Typo.caption">Cost: @PointBuyCost(baseScore)</MudText>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+            else if (State.Character.GenerationMethod == GenerationMethod.Roll)
+            {
+                <MudText Class="mb-3">Enter the 6 rolled values (4d6 drop lowest, range 3–18).</MudText>
+                <MudGrid>
+                    @foreach (var ability in Abilities)
+                    {
+                        string ab = ability;
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudNumericField T="int" Label="@ab" @bind-Value="@_rollValues[ab]"
+                                            Min="3" Max="18" Variant="Variant.Outlined"
+                                            HelperText="@($"mod {Modifier(_rollValues[ab])}")" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        }
+
+        @* ── Step 3: Race & Subrace ── *@
+        @if (_activeStep == 2)
+        {
+            var currentRace = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 3 — Race &amp; Subrace</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="string" Label="Race" @bind-Value="_selectedRaceId"
+                               Variant="Variant.Outlined" Required="true">
+                        <MudSelectItem Value="@string.Empty">— select race —</MudSelectItem>
+                        @foreach (var race in _races)
+                        {
+                            <MudSelectItem Value="@race.Id">@race.DisplayName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                @if (currentRace?.Subraces.Count > 0)
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudSelect T="string" Label="Subrace" @bind-Value="_selectedSubraceId"
+                                   Variant="Variant.Outlined" Required="true">
+                            <MudSelectItem Value="@string.Empty">— select subrace —</MudSelectItem>
+                            @foreach (var sub in currentRace.Subraces)
+                            {
+                                <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+            </MudGrid>
+
+            @if (currentRace != null)
+            {
+                var raceBonuses = GetCombinedRacialBonuses(currentRace, _selectedSubraceId);
+                <MudCard Class="mt-4" Elevation="1">
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle1">
+                            <strong>@currentRace.DisplayName</strong> Racial Bonuses
+                        </MudText>
+                        <MudChipSet T="string" Class="mt-2">
+                            @foreach (var (ab, bonus) in raceBonuses)
+                            {
+                                <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                                    @ab +@bonus
+                                </MudChip>
+                            }
+                        </MudChipSet>
+                        @if (currentRace.TraitIds.Count > 0)
+                        {
+                            <MudText Typo="Typo.subtitle2" Class="mt-2">Traits</MudText>
+                            <MudChipSet T="string" Class="mt-1">
+                                @foreach (var trait in currentRace.TraitIds)
+                                {
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                                        @TraitName(trait)
+                                    </MudChip>
+                                }
+                            </MudChipSet>
+                        }
+                        <MudText Typo="Typo.subtitle2" Class="mt-3">
+                            Preview: Final Ability Scores (base + racial bonuses)
+                        </MudText>
+                        <MudGrid Class="mt-1">
+                            @foreach (var ability in Abilities)
+                            {
+                                int baseVal = GetAbilityBase(ability);
+                                int racial = raceBonuses.TryGetValue(ability, out int rb) ? rb : 0;
+                                int final = baseVal + racial;
+                                <MudItem xs="4" sm="2">
+                                    <MudPaper Elevation="0" Class="pa-2 text-center"
+                                              Style="border:1px solid #ccc;border-radius:4px">
+                                        <MudText Typo="Typo.caption">@ability</MudText>
+                                        <MudText Typo="Typo.h6">@final</MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                            mod @Modifier(final)
+                                        </MudText>
+                                    </MudPaper>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            }
+        }
+
+        @* ── Step 4: Class & Multiclass ── *@
+        @if (_activeStep == 3)
+        {
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 4 — Class &amp; Multiclass</MudText>
+            @for (int ci = 0; ci < _classEntries.Count; ci++)
+            {
+                int classIdx = ci;
+                var entry = _classEntries[classIdx];
+                <MudCard Class="mb-3" Elevation="1">
+                    <MudCardContent>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudText Typo="Typo.subtitle1">
+                                @(classIdx == 0 ? "Primary Class" : $"Multiclass {classIdx + 1}")
+                            </MudText>
+                            @if (classIdx > 0)
+                            {
+                                <MudSpacer />
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                               Color="Color.Error" OnClick="@(() => RemoveClassEntry(classIdx))"
+                                               aria-label="Remove class" />
+                            }
+                        </MudStack>
+                        <MudGrid>
+                            <MudItem xs="12" sm="7">
+                                <MudSelect T="string" Label="Class" @bind-Value="entry.ClassId"
+                                           Variant="Variant.Outlined" Required="true">
+                                    <MudSelectItem Value="@string.Empty">— select class —</MudSelectItem>
+                                    @foreach (var cls in _classes)
+                                    {
+                                        <MudSelectItem Value="@cls.Id">
+                                            @cls.DisplayName (d@(cls.HitDie), saves: @string.Join("/", cls.SavingThrows))
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="12" sm="3">
+                                <MudNumericField T="int" Label="Level" @bind-Value="entry.Level"
+                                                Min="1" Max="20" Variant="Variant.Outlined" />
+                            </MudItem>
+                        </MudGrid>
+                        @{
+                            var clsDef = _classes.FirstOrDefault(cd => cd.Id == entry.ClassId);
+                        }
+                        @if (clsDef != null && clsDef.SubclassLevel > 0 && entry.Level >= clsDef.SubclassLevel)
+                        {
+                            <MudText Typo="Typo.caption" Class="mt-2" Color="Color.Secondary">
+                                Subclass available at level @clsDef.SubclassLevel (full subclass picker in a future milestone)
+                            </MudText>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           Disabled="@(TotalClassLevel >= 20 || _classEntries.Count >= 12)"
+                           OnClick="@AddClassEntry">
+                    Add Multiclass
+                </MudButton>
+                <MudText Typo="Typo.caption">Total level: @TotalClassLevel / 20</MudText>
+            </MudStack>
+        }
+
+        @* ── Step 5: Background & Proficiencies ── *@
+        @if (_activeStep == 4)
+        {
+            var selectedBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+            var primaryCls2 = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
+            var bgSkills2 = selectedBg?.SkillProficiencies ?? [];
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 5 — Background &amp; Proficiencies</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudSelect T="string" Label="Background"
+                               Value="@_selectedBackgroundId"
+                               ValueChanged="@OnBackgroundChanged"
+                               Variant="Variant.Outlined" Required="true">
+                        <MudSelectItem Value="@string.Empty">— select background —</MudSelectItem>
+                        @foreach (var bg in _backgrounds)
+                        {
+                            <MudSelectItem Value="@bg.Id">@bg.DisplayName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            @if (selectedBg != null)
+            {
+                <MudCard Class="mt-3 mb-4" Elevation="1">
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle1"><strong>@selectedBg.DisplayName</strong></MudText>
+                        <MudText Typo="Typo.subtitle2" Class="mt-1">Granted Skill Proficiencies:</MudText>
+                        <MudChipSet T="string" Class="mt-1">
+                            @foreach (var sk in selectedBg.SkillProficiencies)
+                            {
+                                <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                                    @SkillLabel(sk)
+                                </MudChip>
+                            }
+                        </MudChipSet>
+                        @if (!string.IsNullOrEmpty(selectedBg.FeatureId))
+                        {
+                            <MudText Typo="Typo.caption" Class="mt-2">
+                                Background Feature: @selectedBg.FeatureId
+                            </MudText>
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            @if (primaryCls2 != null && _classSkillOptionIds.Count > 0)
+            {
+                int chosen = _classSkillSelections.Count(s => s);
+                <MudText Typo="Typo.subtitle1" Class="mt-3 mb-1">
+                    <strong>Class Skill Proficiencies</strong> — Choose @primaryCls2.SkillChoices.Count
+                    from @primaryCls2.DisplayName's allowed list (@chosen / @primaryCls2.SkillChoices.Count selected)
+                </MudText>
+                <MudGrid>
+                    @for (int si = 0; si < _classSkillOptionIds.Count; si++)
+                    {
+                        int skillIdx = si;
+                        bool isFromBg2 = bgSkills2.Contains(_classSkillOptionIds[skillIdx]);
+                        bool alreadyMaxed = !_classSkillSelections[skillIdx]
+                            && _classSkillSelections.Count(s => s) >= primaryCls2.SkillChoices.Count;
+                        bool skillDisabled = isFromBg2 || alreadyMaxed;
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudCheckBox T="bool" @bind-Value="_classSkillSelections[skillIdx]"
+                                         Disabled="@skillDisabled"
+                                         Color="Color.Primary"
+                                         Label="@(SkillLabel(_classSkillOptionIds[skillIdx]) + (isFromBg2 ? " (from background)" : string.Empty))" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+
+            @if (selectedBg != null || _classSkillSelections.Any(s => s))
+            {
+                var allSkillIds = GetAllSkillIds(selectedBg);
+                <MudText Typo="Typo.subtitle1" Class="mt-4 mb-1"><strong>All Skill Proficiencies</strong></MudText>
+                <MudChipSet T="string" Class="mt-1">
+                    @foreach (var sk in allSkillIds)
+                    {
+                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">@SkillLabel(sk)</MudChip>
+                    }
+                </MudChipSet>
+            }
+        }
+
+        @* ── Step 6: Review & Final Validation ── *@
+        @if (_activeStep == 5)
+        {
+            var c = State.Character;
+            var reviewRace = _races.FirstOrDefault(r => r.Id == c.RaceId);
+            var reviewBg = _backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Review &amp; Final Validation</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.subtitle1"><strong>Character</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText>Name: <strong>@(string.IsNullOrEmpty(c.Name) ? "—" : c.Name)</strong></MudText>
+                            @if (!string.IsNullOrEmpty(c.PlayerName))
+                            {
+                                <MudText>Player: @c.PlayerName</MudText>
+                            }
+                            @if (!string.IsNullOrEmpty(c.Campaign))
+                            {
+                                <MudText>Campaign: @c.Campaign</MudText>
+                            }
+                            <MudText>Generation: @c.GenerationMethod</MudText>
+                            <MudText>Race: <strong>@(reviewRace?.DisplayName ?? c.RaceId)</strong></MudText>
+                            @if (!string.IsNullOrEmpty(c.SubraceId))
+                            {
+                                var sub = reviewRace?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
+                                <MudText>Subrace: @(sub?.DisplayName ?? c.SubraceId)</MudText>
+                            }
+                            <MudText>Background: <strong>@(reviewBg?.DisplayName ?? c.BackgroundId)</strong></MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.subtitle1"><strong>Ability Scores (Final)</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid>
+                                @foreach (var ability in Abilities)
+                                {
+                                    var block = GetAbilityBlock(c, ability);
+                                    <MudItem xs="4">
+                                        <MudPaper Elevation="0" Class="pa-2 text-center"
+                                                  Style="border:1px solid #ccc;border-radius:4px;">
+                                            <MudText Typo="Typo.caption">@ability</MudText>
+                                            <MudText Typo="Typo.h6">@block.Final</MudText>
+                                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                                mod @Modifier(block.Final)
+                                            </MudText>
+                                            @if (block.RacialBonus != 0)
+                                            {
+                                                <MudText Typo="Typo.caption">(+@block.RacialBonus racial)</MudText>
+                                            }
+                                        </MudPaper>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.subtitle1"><strong>Classes</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            @foreach (var lvl in c.Levels)
+                            {
+                                var cls = _classes.FirstOrDefault(cl => cl.Id == lvl.ClassId);
+                                <MudText>@(cls?.DisplayName ?? lvl.ClassId) Level @lvl.Level (d@(cls?.HitDie ?? 0))</MudText>
+                            }
+                            <MudText Typo="Typo.caption" Class="mt-1">Total Level: @c.TotalLevel</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" md="6">
+                    <MudCard Elevation="1">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.subtitle1"><strong>Proficiencies</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            @if (c.Skills.Count > 0)
+                            {
+                                <MudText Typo="Typo.subtitle2">Skills:</MudText>
+                                <MudChipSet T="string" Class="mt-1">
+                                    @foreach (var (skill, source) in c.Skills)
+                                    {
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                            @SkillLabel(skill) (@source)
+                                        </MudChip>
+                                    }
+                                </MudChipSet>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.caption">No skills recorded.</MudText>
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Validation Report -->
+            <MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Validation Report</strong></MudText>
+            @if (_reviewValidation == null)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+            }
+            else if (_reviewValidation.IsValid && _reviewValidation.Warnings.Count == 0)
+            {
+                <MudAlert Severity="Severity.Success" Class="mb-2">
+                    ✓ Character is valid — all checks passed.
+                </MudAlert>
+            }
+            else
+            {
+                @if (_reviewValidation.Errors.Count > 0)
+                {
+                    <MudAlert Severity="Severity.Error" Class="mb-2">
+                        <MudText Typo="Typo.subtitle2">Errors</MudText>
+                        <ul style="margin:0.25em 0;padding-left:1.4em;">
+                            @foreach (var err in _reviewValidation.Errors)
+                            {
+                                <li>@err</li>
+                            }
+                        </ul>
+                    </MudAlert>
+                }
+                @if (_reviewValidation.Warnings.Count > 0)
+                {
+                    <MudAlert Severity="Severity.Warning" Class="mb-2">
+                        <MudText Typo="Typo.subtitle2">Warnings (non-blocking)</MudText>
+                        <ul style="margin:0.25em 0;padding-left:1.4em;">
+                            @foreach (var warn in _reviewValidation.Warnings)
+                            {
+                                <li>@warn</li>
+                            }
+                        </ul>
+                    </MudAlert>
+                }
+            }
+
+            <MudStack Row="true" Spacing="2" Class="mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Success"
+                           StartIcon="@Icons.Material.Filled.Download"
+                           OnClick="@ExportJson">
+                    Export JSON
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                           StartIcon="@Icons.Material.Filled.Print"
+                           Disabled="true"
+                           title="Print sheet coming in a future milestone">
+                    Print Sheet
+                </MudButton>
+            </MudStack>
+        }
+
+    </MudPaper>
+
+    <!-- Per-step validation feedback -->
+    @if (_stepErrors.Count > 0)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-3">
+            <ul style="margin:0;padding-left:1.2em;">
+                @foreach (var err in _stepErrors)
+                {
+                    <li>@err</li>
+                }
+            </ul>
+        </MudAlert>
+    }
+
+    <!-- Navigation Buttons -->
+    <MudStack Row="true" Spacing="2" Justify="Justify.SpaceBetween" Class="mt-2">
+        <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                   Disabled="@(_activeStep == 0)"
+                   StartIcon="@Icons.Material.Filled.ArrowBack"
+                   OnClick="@GoBack">
+            Back
+        </MudButton>
+        @if (_activeStep < _steps.Length - 1)
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       Disabled="@(!IsCurrentStepValid())"
+                       EndIcon="@Icons.Material.Filled.ArrowForward"
+                       OnClick="@GoNext">
+                Next
+            </MudButton>
+        }
+    </MudStack>
+}
+
+@code {
+    // ── Constants ────────────────────────────────────────────────────────
+    internal static readonly string[] Abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+
+    private static readonly int[] _standardArray = [15, 14, 13, 12, 10, 8];
+
+    private static readonly string[] _steps =
+    [
+        "Meta", "Abilities", "Race", "Class", "Background", "Review",
+    ];
+
+    private static readonly Dictionary<int, int> _pbCosts = new()
+    {
+        { 8, 0 }, { 9, 1 }, { 10, 2 }, { 11, 3 }, { 12, 4 }, { 13, 5 }, { 14, 7 }, { 15, 9 },
+    };
+
+    private static readonly Dictionary<string, string> _skillNames = new()
+    {
+        ["skill:acrobatics"] = "Acrobatics",
+        ["skill:animal-handling"] = "Animal Handling",
+        ["skill:arcana"] = "Arcana",
+        ["skill:athletics"] = "Athletics",
+        ["skill:deception"] = "Deception",
+        ["skill:history"] = "History",
+        ["skill:insight"] = "Insight",
+        ["skill:intimidation"] = "Intimidation",
+        ["skill:investigation"] = "Investigation",
+        ["skill:medicine"] = "Medicine",
+        ["skill:nature"] = "Nature",
+        ["skill:perception"] = "Perception",
+        ["skill:performance"] = "Performance",
+        ["skill:persuasion"] = "Persuasion",
+        ["skill:religion"] = "Religion",
+        ["skill:sleight-of-hand"] = "Sleight of Hand",
+        ["skill:stealth"] = "Stealth",
+        ["skill:survival"] = "Survival",
+    };
+
+    private static readonly List<string> _allSkillIds =
+    [
+        "skill:acrobatics", "skill:animal-handling", "skill:arcana", "skill:athletics",
+        "skill:deception", "skill:history", "skill:insight", "skill:intimidation",
+        "skill:investigation", "skill:medicine", "skill:nature", "skill:perception",
+        "skill:performance", "skill:persuasion", "skill:religion", "skill:sleight-of-hand",
+        "skill:stealth", "skill:survival",
+    ];
+
+    // ── Loaded data ──────────────────────────────────────────────────────
+    private bool _loading = true;
+    private int _activeStep = 0;
+    private IReadOnlyList<RaceDefinition> _races = [];
+    private IReadOnlyList<ClassDefinition> _classes = [];
+    private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
+    private ValidationResult? _reviewValidation;
+    private List<string> _stepErrors = [];
+
+    // ── Step 1 state ─────────────────────────────────────────────────────
+    private string _characterName = string.Empty;
+    private string _playerName = string.Empty;
+    private string _campaignName = string.Empty;
+    private string _generationMethodStr = nameof(GenerationMethod.StandardArray);
+
+    // ── Step 2 state ─────────────────────────────────────────────────────
+    private readonly Dictionary<string, int> _abilitySelections = new()
+    {
+        ["STR"] = 0, ["DEX"] = 0, ["CON"] = 0, ["INT"] = 0, ["WIS"] = 0, ["CHA"] = 0,
+    };
+
+    private readonly Dictionary<string, int> _pointBuyValues = new()
+    {
+        ["STR"] = 8, ["DEX"] = 8, ["CON"] = 8, ["INT"] = 8, ["WIS"] = 8, ["CHA"] = 8,
+    };
+
+    private readonly Dictionary<string, int> _rollValues = new()
+    {
+        ["STR"] = 8, ["DEX"] = 8, ["CON"] = 8, ["INT"] = 8, ["WIS"] = 8, ["CHA"] = 8,
+    };
+
+    // ── Step 3 state ─────────────────────────────────────────────────────
+    private string _selectedRaceId = string.Empty;
+    private string _selectedSubraceId = string.Empty;
+
+    // ── Step 4 state ─────────────────────────────────────────────────────
+    private sealed class ClassEntry
+    {
+        public string ClassId { get; set; } = string.Empty;
+        public int Level { get; set; } = 1;
+    }
+
+    private List<ClassEntry> _classEntries = [new ClassEntry()];
+
+    // ── Step 5 state ─────────────────────────────────────────────────────
+    private string _selectedBackgroundId = string.Empty;
+    private List<string> _classSkillOptionIds = [];
+    private List<bool> _classSkillSelections = [];
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────
+    protected override async Task OnInitializedAsync()
+    {
+        _races = await DataService.GetRacesAsync();
+        _classes = await DataService.GetClassesAsync();
+        _backgrounds = await DataService.GetBackgroundsAsync();
+        _loading = false;
+        RestoreFromState();
+    }
+
+    private void RestoreFromState()
+    {
+        var c = State.Character;
+        _characterName = c.Name;
+        _playerName = c.PlayerName ?? string.Empty;
+        _campaignName = c.Campaign ?? string.Empty;
+        _generationMethodStr = c.GenerationMethod.ToString();
+
+        foreach (var ab in Abilities)
+        {
+            var block = GetAbilityBlock(c, ab);
+            if (block.Base != 0)
+            {
+                _abilitySelections[ab] = block.Base;
+                _pointBuyValues[ab] = block.Base;
+                _rollValues[ab] = block.Base;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(c.RaceId)) _selectedRaceId = c.RaceId;
+        _selectedSubraceId = c.SubraceId ?? string.Empty;
+
+        if (c.Levels.Count > 0)
+        {
+            _classEntries = c.Levels
+                .Select(l => new ClassEntry { ClassId = l.ClassId, Level = l.Level })
+                .ToList();
+        }
+
+        if (!string.IsNullOrEmpty(c.BackgroundId)) _selectedBackgroundId = c.BackgroundId;
+
+        SyncClassSkillOptions();
+
+        foreach (var (skill, source) in c.Skills)
+        {
+            if (source == "class")
+            {
+                int idx = _classSkillOptionIds.IndexOf(skill);
+                if (idx >= 0) _classSkillSelections[idx] = true;
+            }
+        }
+
+        _activeStep = State.ActiveStep;
+    }
+
+    // ── Pure helpers ──────────────────────────────────────────────────────
+    internal static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+
+    private static int PointBuyCost(int score) =>
+        _pbCosts.TryGetValue(score, out int cost) ? cost : 0;
+
+    internal static string SkillLabel(string id) =>
+        _skillNames.TryGetValue(id, out string? name) ? name : id;
+
+    private static string TraitName(string id)
+    {
+        var s = id.Replace("trait:", string.Empty).Replace("-", " ");
+        return s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : id;
+    }
+
+    private int GetAbilityBase(string ability) =>
+        State.Character.GenerationMethod switch
+        {
+            GenerationMethod.StandardArray => _abilitySelections.GetValueOrDefault(ability, 0),
+            GenerationMethod.PointBuy => _pointBuyValues.GetValueOrDefault(ability, 8),
+            GenerationMethod.Roll => _rollValues.GetValueOrDefault(ability, 8),
+            _ => 0,
+        };
+
+    private static AbilityBlock GetAbilityBlock(Character c, string ability) => ability switch
+    {
+        "STR" => c.AbilityScores.STR,
+        "DEX" => c.AbilityScores.DEX,
+        "CON" => c.AbilityScores.CON,
+        "INT" => c.AbilityScores.INT,
+        "WIS" => c.AbilityScores.WIS,
+        "CHA" => c.AbilityScores.CHA,
+        _ => new AbilityBlock(),
+    };
+
+    private static Dictionary<string, int> GetCombinedRacialBonuses(RaceDefinition race, string subraceId)
+    {
+        var bonuses = new Dictionary<string, int>(race.AbilityBonuses);
+        if (!string.IsNullOrEmpty(subraceId))
+        {
+            var sub = race.Subraces.FirstOrDefault(s => s.Id == subraceId);
+            if (sub != null)
+                foreach (var (ab, v) in sub.AbilityBonuses)
+                    bonuses[ab] = bonuses.TryGetValue(ab, out int e) ? e + v : v;
+        }
+
+        return bonuses;
+    }
+
+    private int TotalClassLevel => _classEntries.Sum(e => e.Level);
+
+    private List<string> GetAllSkillIds(BackgroundDefinition? bg)
+    {
+        var result = new HashSet<string>();
+        if (bg != null)
+            foreach (var s in bg.SkillProficiencies) result.Add(s);
+        for (int i = 0; i < _classSkillOptionIds.Count; i++)
+            if (_classSkillSelections[i]) result.Add(_classSkillOptionIds[i]);
+        return [.. result];
+    }
+
+    // ── Point buy helpers ─────────────────────────────────────────────────
+    private void IncrementAbility(string ability)
+    {
+        int current = _pointBuyValues.GetValueOrDefault(ability, 8);
+        if (current >= 15) return;
+        int spent = Abilities.Sum(a => PointBuyCost(_pointBuyValues.GetValueOrDefault(a, 8)));
+        int nextCost = PointBuyCost(current + 1) - PointBuyCost(current);
+        if (spent + nextCost <= 27)
+            _pointBuyValues[ability] = current + 1;
+    }
+
+    private void DecrementAbility(string ability)
+    {
+        int current = _pointBuyValues.GetValueOrDefault(ability, 8);
+        if (current > 8) _pointBuyValues[ability] = current - 1;
+    }
+
+    // ── Class entry helpers ───────────────────────────────────────────────
+    private void AddClassEntry() => _classEntries.Add(new ClassEntry());
+
+    private void RemoveClassEntry(int idx)
+    {
+        if (idx > 0 && idx < _classEntries.Count)
+            _classEntries.RemoveAt(idx);
+    }
+
+    // ── Skill option helpers ──────────────────────────────────────────────
+    private void SyncClassSkillOptions()
+    {
+        var primaryId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+        var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryId);
+        if (primaryCls == null)
+        {
+            _classSkillOptionIds = [];
+            _classSkillSelections = [];
+            return;
+        }
+
+        var options = primaryCls.SkillChoices.Options.Contains("skill:any")
+            ? _allSkillIds
+            : primaryCls.SkillChoices.Options;
+
+        var newIds = options.ToList();
+        var newSel = new List<bool>(new bool[newIds.Count]);
+        for (int i = 0; i < newIds.Count; i++)
+        {
+            int oldIdx = _classSkillOptionIds.IndexOf(newIds[i]);
+            if (oldIdx >= 0 && oldIdx < _classSkillSelections.Count)
+                newSel[i] = _classSkillSelections[oldIdx];
+        }
+
+        _classSkillOptionIds = newIds;
+        _classSkillSelections = newSel;
+    }
+
+    private void OnBackgroundChanged(string value)
+    {
+        _selectedBackgroundId = value;
+        var newBg = _backgrounds.FirstOrDefault(b => b.Id == value);
+        if (newBg != null)
+        {
+            for (int i = 0; i < _classSkillOptionIds.Count; i++)
+                if (_classSkillSelections[i] && newBg.SkillProficiencies.Contains(_classSkillOptionIds[i]))
+                    _classSkillSelections[i] = false;
+        }
+    }
+
+    // ── Commit state → character model ───────────────────────────────────
+    private void CommitAllToCharacter()
+    {
+        var c = State.Character;
+
+        // Step 1
+        c.Name = _characterName;
+        c.PlayerName = string.IsNullOrWhiteSpace(_playerName) ? null : _playerName;
+        c.Campaign = string.IsNullOrWhiteSpace(_campaignName) ? null : _campaignName;
+        if (Enum.TryParse<GenerationMethod>(_generationMethodStr, out var gm))
+            c.GenerationMethod = gm;
+
+        // Step 2
+        void SetBase(AbilityBlock block, string ab) => block.Base = GetAbilityBase(ab);
+        SetBase(c.AbilityScores.STR, "STR");
+        SetBase(c.AbilityScores.DEX, "DEX");
+        SetBase(c.AbilityScores.CON, "CON");
+        SetBase(c.AbilityScores.INT, "INT");
+        SetBase(c.AbilityScores.WIS, "WIS");
+        SetBase(c.AbilityScores.CHA, "CHA");
+
+        // Step 3
+        c.RaceId = _selectedRaceId;
+        c.SubraceId = string.IsNullOrEmpty(_selectedSubraceId) ? null : _selectedSubraceId;
+        var selectedRace = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
+        if (selectedRace != null)
+        {
+            var bonuses = GetCombinedRacialBonuses(selectedRace, _selectedSubraceId);
+            void SetRacial(AbilityBlock block, string ab) =>
+                block.RacialBonus = bonuses.TryGetValue(ab, out int b) ? b : 0;
+            SetRacial(c.AbilityScores.STR, "STR");
+            SetRacial(c.AbilityScores.DEX, "DEX");
+            SetRacial(c.AbilityScores.CON, "CON");
+            SetRacial(c.AbilityScores.INT, "INT");
+            SetRacial(c.AbilityScores.WIS, "WIS");
+            SetRacial(c.AbilityScores.CHA, "CHA");
+        }
+
+        // Step 4
+        c.Levels = _classEntries
+            .Where(e => !string.IsNullOrEmpty(e.ClassId))
+            .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+            .ToList();
+        c.TotalLevel = c.Levels.Sum(l => l.Level);
+
+        // Step 5
+        c.BackgroundId = _selectedBackgroundId;
+        c.Skills.Clear();
+        var bg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+        if (bg != null)
+            foreach (var sk in bg.SkillProficiencies)
+                c.Skills[sk] = "background";
+        for (int i = 0; i < _classSkillOptionIds.Count; i++)
+            if (_classSkillSelections[i] && !c.Skills.ContainsKey(_classSkillOptionIds[i]))
+                c.Skills[_classSkillOptionIds[i]] = "class";
+    }
+
+    // ── Step validation (no side effects on character model) ──────────────
+    internal ValidationResult ValidateStep(int step)
+    {
+        var result = new ValidationResult();
+        switch (step)
+        {
+            case 0:
+                if (string.IsNullOrWhiteSpace(_characterName))
+                    result.Errors.Add("Character name is required.");
+                if (!Enum.TryParse<GenerationMethod>(_generationMethodStr, out _))
+                    result.Errors.Add("A generation method must be selected.");
+                break;
+
+            case 1:
+                int[] bases =
+                [
+                    GetAbilityBase("STR"), GetAbilityBase("DEX"), GetAbilityBase("CON"),
+                    GetAbilityBase("INT"), GetAbilityBase("WIS"), GetAbilityBase("CHA"),
+                ];
+                var abilityResult = State.Character.GenerationMethod switch
+                {
+                    GenerationMethod.StandardArray => StandardArrayValidator.Validate(bases),
+                    GenerationMethod.PointBuy => PointBuyValidator.Validate(bases),
+                    GenerationMethod.Roll => RollValidator.Validate(bases),
+                    _ => new ValidationResult(),
+                };
+                result.Errors.AddRange(abilityResult.Errors);
+                result.Warnings.AddRange(abilityResult.Warnings);
+                break;
+
+            case 2:
+                if (string.IsNullOrEmpty(_selectedRaceId))
+                {
+                    result.Errors.Add("A race must be selected.");
+                    break;
+                }
+
+                var raceTemp = BuildTempCharacterForRace();
+                var raceResult = new RaceValidator(_races).Validate(raceTemp);
+                result.Errors.AddRange(raceResult.Errors);
+                result.Warnings.AddRange(raceResult.Warnings);
+                break;
+
+            case 3:
+                if (_classEntries.All(e => string.IsNullOrEmpty(e.ClassId)))
+                {
+                    result.Errors.Add("At least one class must be selected.");
+                    break;
+                }
+
+                var classTemp = new Character
+                {
+                    TotalLevel = TotalClassLevel,
+                    Levels = _classEntries
+                        .Where(e => !string.IsNullOrEmpty(e.ClassId))
+                        .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+                        .ToList(),
+                    AbilityScores = BuildTempAbilityScores(),
+                };
+                var classResult = new ClassValidator(_classes).Validate(classTemp);
+                result.Errors.AddRange(classResult.Errors);
+                result.Warnings.AddRange(classResult.Warnings);
+                break;
+
+            case 4:
+                if (string.IsNullOrEmpty(_selectedBackgroundId))
+                {
+                    result.Errors.Add("A background must be selected.");
+                    break;
+                }
+
+                var profTemp = new Character
+                {
+                    BackgroundId = _selectedBackgroundId,
+                    Levels = _classEntries
+                        .Where(e => !string.IsNullOrEmpty(e.ClassId))
+                        .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+                        .ToList(),
+                };
+                var bgDef = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+                if (bgDef != null)
+                    foreach (var sk in bgDef.SkillProficiencies)
+                        profTemp.Skills[sk] = "background";
+                for (int i = 0; i < _classSkillOptionIds.Count; i++)
+                    if (_classSkillSelections[i] && !profTemp.Skills.ContainsKey(_classSkillOptionIds[i]))
+                        profTemp.Skills[_classSkillOptionIds[i]] = "class";
+                var profResult = new ProficiencyValidator(_classes, _backgrounds).Validate(profTemp);
+                result.Errors.AddRange(profResult.Errors);
+                result.Warnings.AddRange(profResult.Warnings);
+                break;
+
+            case 5:
+                // Review step is always passable
+                break;
+        }
+
+        return result;
+    }
+
+    private Character BuildTempCharacterForRace()
+    {
+        var temp = new Character
+        {
+            RaceId = _selectedRaceId,
+            SubraceId = string.IsNullOrEmpty(_selectedSubraceId) ? null : _selectedSubraceId,
+            AbilityScores = BuildTempAbilityScores(),
+        };
+        var race = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
+        if (race != null)
+        {
+            var bonuses = GetCombinedRacialBonuses(race, _selectedSubraceId);
+            void SetRacial(AbilityBlock block, string ab) =>
+                block.RacialBonus = bonuses.TryGetValue(ab, out int b) ? b : 0;
+            SetRacial(temp.AbilityScores.STR, "STR");
+            SetRacial(temp.AbilityScores.DEX, "DEX");
+            SetRacial(temp.AbilityScores.CON, "CON");
+            SetRacial(temp.AbilityScores.INT, "INT");
+            SetRacial(temp.AbilityScores.WIS, "WIS");
+            SetRacial(temp.AbilityScores.CHA, "CHA");
+        }
+
+        return temp;
+    }
+
+    private AbilityScores BuildTempAbilityScores() => new()
+    {
+        STR = new AbilityBlock { Base = GetAbilityBase("STR") },
+        DEX = new AbilityBlock { Base = GetAbilityBase("DEX") },
+        CON = new AbilityBlock { Base = GetAbilityBase("CON") },
+        INT = new AbilityBlock { Base = GetAbilityBase("INT") },
+        WIS = new AbilityBlock { Base = GetAbilityBase("WIS") },
+        CHA = new AbilityBlock { Base = GetAbilityBase("CHA") },
+    };
+
+    private bool IsCurrentStepValid() => ValidateStep(_activeStep).IsValid;
+
+    // ── Navigation ────────────────────────────────────────────────────────
+    private void GoBack()
+    {
+        if (_activeStep > 0)
+        {
+            _activeStep--;
+            State.ActiveStep = _activeStep;
+            _stepErrors = [];
+        }
+    }
+
+    private void GoNext()
+    {
+        var valid = ValidateStep(_activeStep);
+        _stepErrors = valid.Errors;
+        if (!valid.IsValid) return;
+
+        CommitAllToCharacter();
+
+        if (_activeStep < _steps.Length - 1)
+        {
+            _activeStep++;
+            State.ActiveStep = _activeStep;
+            _stepErrors = [];
+
+            if (_activeStep == 4) SyncClassSkillOptions();
+            if (_activeStep == 5) RunReviewValidation();
+        }
+    }
+
+    private void TryGoToStep(int idx)
+    {
+        if (idx <= _activeStep)
+        {
+            _activeStep = idx;
+            State.ActiveStep = _activeStep;
+            _stepErrors = [];
+            if (_activeStep == 5) RunReviewValidation();
+        }
+    }
+
+    private void RunReviewValidation()
+    {
+        _reviewValidation = null;
+        CommitAllToCharacter();
+        _reviewValidation = new CharacterValidator(_races, _classes, _backgrounds)
+            .Validate(State.Character);
+    }
+
+    private async Task ExportJson()
+    {
+        CommitAllToCharacter();
+        var json = JsonSerializer.Serialize(State.Character, new JsonSerializerOptions { WriteIndented = true });
+        await JS.InvokeVoidAsync("downloadFile", "character.json", "application/json", json);
+    }
+}

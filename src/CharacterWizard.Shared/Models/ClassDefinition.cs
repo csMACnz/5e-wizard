@@ -16,11 +16,23 @@ public class ClassDefinition
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
+    [JsonPropertyName("displayName")]
+    public string DisplayName { get; set; } = string.Empty;
+
+    [JsonPropertyName("hitDie")]
+    public int HitDie { get; set; }
+
+    [JsonPropertyName("savingThrows")]
+    public List<string> SavingThrows { get; set; } = [];
+
     [JsonPropertyName("skillChoices")]
     public SkillChoices SkillChoices { get; set; } = new();
 
     [JsonPropertyName("multiclassPrereqs")]
     public Dictionary<string, int> MulticlassPrereqs { get; set; } = [];
+
+    [JsonPropertyName("subclassLevel")]
+    public int SubclassLevel { get; set; }
 }
 
 public class ClassesData

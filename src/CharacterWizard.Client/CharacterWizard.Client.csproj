@@ -19,6 +19,25 @@
     <ProjectReference Include="..\CharacterWizard.Shared\CharacterWizard.Shared.csproj" />
   </ItemGroup>
 
+  <!-- Include SRD data files as static web assets served from /data/ -->
+  <ItemGroup>
+    <Content Include="..\..\data\races.json">
+      <Link>wwwroot\data\races.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\..\data\classes.json">
+      <Link>wwwroot\data\classes.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\..\data\backgrounds.json">
+      <Link>wwwroot\data\backgrounds.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
   <!-- Replace __BASE_HREF__ placeholder in published index.html -->
   <Target Name="SetBaseHref" AfterTargets="Publish">
     <PropertyGroup>
