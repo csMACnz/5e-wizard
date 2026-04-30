@@ -37,7 +37,11 @@ public sealed class BuildInfoService
                 _info = await _http.GetFromJsonAsync<BuildInfo>("build-info.json")
                         ?? new BuildInfo();
             }
-            catch
+            catch (HttpRequestException)
+            {
+                _info = new BuildInfo();
+            }
+            catch (System.Text.Json.JsonException)
             {
                 _info = new BuildInfo();
             }

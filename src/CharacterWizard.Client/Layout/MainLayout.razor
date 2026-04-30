@@ -38,7 +38,7 @@
                    aria-label="View source on GitHub (opens in new tab)">MIT</a>
                 @if (_buildInfo is not null && _buildInfo.CommitSha != "local")
                 {
-                    <span>&nbsp;|&nbsp; Build: <span title="@_buildInfo.CommitSha" aria-label="Build commit @_buildInfo.ShortSha">@_buildInfo.ShortSha</span></span>
+                    <span>&nbsp;|&nbsp; Build: <span title="@_buildInfo.CommitSha">@_buildInfo.ShortSha</span></span>
                 }
             </MudText>
         </footer>
