@@ -312,32 +312,21 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step5_DuplicateSkillFromBackground_IsInvalid()
+    public void Step5_ClassSkillDuplicatesBackgroundSkill_IsInvalid()
     {
-        var character = new Character
-        {
-            BackgroundId = "background:soldier",
-            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
-            Skills = new Dictionary<string, string>
-            {
-                ["skill:athletics"] = "class",    // athletics is also granted by soldier background
-                ["skill:perception"] = "class",
-                ["skill:athletics_dup"] = "background",   // simulated duplicate attempt
-                ["skill:intimidation"] = "background",
-            },
-        };
-
-        // Build a character that has the same skill as both class and background
+        // Soldier background grants skill:athletics.
+        // If the player also picks skill:athletics as a class skill, that's a duplicate.
         var charDup = new Character
         {
             BackgroundId = "background:soldier",
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
             Skills = new Dictionary<string, string>
             {
-                ["skill:athletics"] = "class",   // already granted by background
+                // skill:athletics is chosen as a class skill AND is granted by soldier background
+                ["skill:athletics"] = "class",
                 ["skill:survival"] = "class",
-                ["skill:athletics"] = "background",
-                ["skill:intimidation"] = "background",
+                ["skill:intimidation"] = "background",  // soldier grants this
+                // skill:athletics is in soldier's SkillProficiencies, so validator flags it as duplicate
             },
         };
 

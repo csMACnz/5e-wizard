@@ -312,8 +312,8 @@ else
         @if (_activeStep == 4)
         {
             var selectedBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
-            var primaryCls2 = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
-            var bgSkills2 = selectedBg?.SkillProficiencies ?? [];
+            var primaryClass = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
+            var backgroundSkills = selectedBg?.SkillProficiencies ?? [];
             <MudText Typo="Typo.h5" GutterBottom="true">Step 5 — Background &amp; Proficiencies</MudText>
             <MudGrid>
                 <MudItem xs="12" sm="6">
@@ -354,26 +354,26 @@ else
                 </MudCard>
             }
 
-            @if (primaryCls2 != null && _classSkillOptionIds.Count > 0)
+            @if (primaryClass != null && _classSkillOptionIds.Count > 0)
             {
                 int chosen = _classSkillSelections.Count(s => s);
                 <MudText Typo="Typo.subtitle1" Class="mt-3 mb-1">
-                    <strong>Class Skill Proficiencies</strong> — Choose @primaryCls2.SkillChoices.Count
-                    from @primaryCls2.DisplayName's allowed list (@chosen / @primaryCls2.SkillChoices.Count selected)
+                    <strong>Class Skill Proficiencies</strong> — Choose @primaryClass.SkillChoices.Count
+                    from @primaryClass.DisplayName's allowed list (@chosen / @primaryClass.SkillChoices.Count selected)
                 </MudText>
                 <MudGrid>
                     @for (int si = 0; si < _classSkillOptionIds.Count; si++)
                     {
                         int skillIdx = si;
-                        bool isFromBg2 = bgSkills2.Contains(_classSkillOptionIds[skillIdx]);
+                        bool isGrantedByBackground = backgroundSkills.Contains(_classSkillOptionIds[skillIdx]);
                         bool alreadyMaxed = !_classSkillSelections[skillIdx]
-                            && _classSkillSelections.Count(s => s) >= primaryCls2.SkillChoices.Count;
-                        bool skillDisabled = isFromBg2 || alreadyMaxed;
+                            && _classSkillSelections.Count(s => s) >= primaryClass.SkillChoices.Count;
+                        bool skillDisabled = isGrantedByBackground || alreadyMaxed;
                         <MudItem xs="12" sm="6" md="4">
                             <MudCheckBox T="bool" @bind-Value="_classSkillSelections[skillIdx]"
                                          Disabled="@skillDisabled"
                                          Color="Color.Primary"
-                                         Label="@(SkillLabel(_classSkillOptionIds[skillIdx]) + (isFromBg2 ? " (from background)" : string.Empty))" />
+                                         Label="@(SkillLabel(_classSkillOptionIds[skillIdx]) + (isGrantedByBackground ? " (from background)" : string.Empty))" />
                         </MudItem>
                     }
                 </MudGrid>
