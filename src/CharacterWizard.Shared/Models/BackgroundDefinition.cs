@@ -7,6 +7,12 @@ public class BackgroundDefinition
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
+    [JsonPropertyName("displayName")]
+    public string DisplayName { get; set; } = string.Empty;
+
+    [JsonPropertyName("featureId")]
+    public string FeatureId { get; set; } = string.Empty;
+
     [JsonPropertyName("skillProficiencies")]
     public List<string> SkillProficiencies { get; set; } = [];
 }
