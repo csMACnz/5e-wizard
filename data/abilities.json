@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "standardArray": [15, 14, 13, 12, 10, 8],
+  "pointBuy": {
+    "budget": 27,
+    "minScore": 8,
+    "maxScore": 15,
+    "costs": [
+      { "score": 8, "cost": 0 },
+      { "score": 9, "cost": 1 },
+      { "score": 10, "cost": 2 },
+      { "score": 11, "cost": 3 },
+      { "score": 12, "cost": 4 },
+      { "score": 13, "cost": 5 },
+      { "score": 14, "cost": 7 },
+      { "score": 15, "cost": 9 }
+    ]
+  },
+  "roll": {
+    "method": "4d6-drop-lowest",
+    "count": 6
+  }
+}

@@ -1,0 +1,21 @@
+# Build outputs
+bin/
+obj/
+out/
+publish/
+
+# IDE
+.vs/
+.vscode/
+*.user
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Test results
+TestResults/
+
+# OS
+.DS_Store
+Thumbs.db

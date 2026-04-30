@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/class.schema.json",
+  "title": "ClassDataFile",
+  "description": "Collection of SRD classes with mechanical fields.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "classes"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": { "type": "string" },
+    "classes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Class" }
+    }
+  },
+  "definitions": {
+    "Class": {
+      "type": "object",
+      "required": ["id", "displayName", "hitDie", "primaryAbility", "savingThrows", "proficienciesGranted", "skillChoices", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^class:[a-z0-9-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 140 },
+        "hitDie": { "type": "integer", "enum": [6, 8, 10, 12] },
+        "primaryAbility": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["STR", "DEX", "CON", "INT", "WIS", "CHA"] }
+        },
+        "savingThrows": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["STR", "DEX", "CON", "INT", "WIS", "CHA"] },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "proficienciesGranted": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "armor": { "type": "array", "items": { "type": "string" } },
+            "weapons": { "type": "array", "items": { "type": "string" } },
+            "tools": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "skillChoices": {
+          "type": "object",
+          "required": ["count", "options"],
+          "additionalProperties": false,
+          "properties": {
+            "count": { "type": "integer", "minimum": 1 },
+            "options": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "multiclassPrereqs": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "featuresByLevel": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "spellcasting": { "$ref": "#/definitions/Spellcasting" },
+        "subclassLevel": { "type": "integer" },
+        "subclassLabel": { "type": "string" },
+        "source": { "type": "string" },
+        "srdReference": { "type": "string" }
+      }
+    },
+    "Spellcasting": {
+      "type": "object",
+      "required": ["castingType", "spellcastingAbility"],
+      "additionalProperties": false,
+      "properties": {
+        "castingType": {
+          "type": "string",
+          "enum": ["full", "half", "third", "pact", "none"]
+        },
+        "spellcastingAbility": {
+          "type": "string",
+          "enum": ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
+        },
+        "prepareSpells": { "type": "boolean" },
+        "spellListId": { "type": "string" },
+        "cantripsKnownByLevel": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 20,
+          "maxItems": 20
+        },
+        "spellsKnownByLevel": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 20,
+          "maxItems": 20
+        },
+        "ritualCasting": { "type": "boolean" }
+      }
+    }
+  }
+}

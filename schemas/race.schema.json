@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/race.schema.json",
+  "title": "RaceDataFile",
+  "description": "Collection of SRD races and subraces with mechanical fields.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "races"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": { "type": "string" },
+    "races": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Race" }
+    }
+  },
+  "definitions": {
+    "Race": {
+      "type": "object",
+      "required": ["id", "displayName", "abilityBonuses", "speed", "size", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^race:[a-z0-9-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 140 },
+        "abilityBonuses": { "$ref": "#/definitions/AbilityBonuses" },
+        "speed": { "type": "integer", "minimum": 0 },
+        "size": { "type": "string", "enum": ["Tiny", "Small", "Medium", "Large"] },
+        "darkvision": { "type": "integer", "minimum": 0 },
+        "languageIds": { "type": "array", "items": { "type": "string" } },
+        "traitIds": { "type": "array", "items": { "type": "string" } },
+        "proficiencyIds": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string" },
+        "srdReference": { "type": "string" },
+        "subraces": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Subrace" }
+        }
+      }
+    },
+    "Subrace": {
+      "type": "object",
+      "required": ["id", "displayName", "abilityBonuses", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^subrace:[a-z0-9-]+$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 140 },
+        "abilityBonuses": { "$ref": "#/definitions/AbilityBonuses" },
+        "darkvision": { "type": "integer", "minimum": 0 },
+        "traitIds": { "type": "array", "items": { "type": "string" } },
+        "proficiencyIds": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string" },
+        "srdReference": { "type": "string" }
+      }
+    },
+    "AbilityBonuses": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "STR": { "type": "integer" },
+        "DEX": { "type": "integer" },
+        "CON": { "type": "integer" },
+        "INT": { "type": "integer" },
+        "WIS": { "type": "integer" },
+        "CHA": { "type": "integer" }
+      }
+    }
+  }
+}

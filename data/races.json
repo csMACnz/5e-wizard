@@ -1,0 +1,173 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "races": [
+    {
+      "id": "race:dwarf",
+      "displayName": "Dwarf",
+      "description": "Durable and stoic mountain folk.",
+      "abilityBonuses": { "CON": 2 },
+      "speed": 25,
+      "size": "Medium",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:dwarvish"],
+      "traitIds": ["trait:darkvision", "trait:dwarven-resilience", "trait:stonecunning"],
+      "proficiencyIds": ["prof:battleaxe", "prof:handaxe", "prof:light-hammer", "prof:warhammer", "tool:smith-or-brewer-or-mason"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.4",
+      "subraces": [
+        {
+          "id": "subrace:hill-dwarf",
+          "displayName": "Hill Dwarf",
+          "description": "Keen senses and deep intuition.",
+          "abilityBonuses": { "WIS": 1 },
+          "traitIds": ["trait:dwarven-toughness"],
+          "source": "SRD 5.1",
+          "srdReference": "SRD p.5"
+        }
+      ]
+    },
+    {
+      "id": "race:elf",
+      "displayName": "Elf",
+      "description": "Graceful and long-lived, with keen senses.",
+      "abilityBonuses": { "DEX": 2 },
+      "speed": 30,
+      "size": "Medium",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:elvish"],
+      "traitIds": ["trait:darkvision", "trait:keen-senses", "trait:fey-ancestry", "trait:trance"],
+      "proficiencyIds": ["skill:perception"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.6",
+      "subraces": [
+        {
+          "id": "subrace:high-elf",
+          "displayName": "High Elf",
+          "description": "Attuned to magic, skilled with blades and bows.",
+          "abilityBonuses": { "INT": 1 },
+          "traitIds": ["trait:elf-weapon-training", "trait:cantrip", "trait:extra-language"],
+          "proficiencyIds": ["prof:longsword", "prof:shortsword", "prof:shortbow", "prof:longbow"],
+          "source": "SRD 5.1",
+          "srdReference": "SRD p.7"
+        }
+      ]
+    },
+    {
+      "id": "race:halfling",
+      "displayName": "Halfling",
+      "description": "Small and nimble folk with fortunate luck.",
+      "abilityBonuses": { "DEX": 2 },
+      "speed": 25,
+      "size": "Small",
+      "languageIds": ["lang:common", "lang:halfling"],
+      "traitIds": ["trait:lucky", "trait:brave", "trait:halfling-nimbleness"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.8",
+      "subraces": [
+        {
+          "id": "subrace:lightfoot-halfling",
+          "displayName": "Lightfoot Halfling",
+          "description": "Naturally stealthy and easy-going.",
+          "abilityBonuses": { "CHA": 1 },
+          "traitIds": ["trait:naturally-stealthy"],
+          "source": "SRD 5.1",
+          "srdReference": "SRD p.9"
+        }
+      ]
+    },
+    {
+      "id": "race:human",
+      "displayName": "Human",
+      "description": "Versatile and ambitious, with broad potential.",
+      "abilityBonuses": { "STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1 },
+      "speed": 30,
+      "size": "Medium",
+      "languageIds": ["lang:common"],
+      "traitIds": ["trait:extra-language"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.10",
+      "subraces": []
+    },
+    {
+      "id": "race:dragonborn",
+      "displayName": "Dragonborn",
+      "description": "Draconic heritage grants breath weapons and resistance.",
+      "abilityBonuses": { "STR": 2, "CHA": 1 },
+      "speed": 30,
+      "size": "Medium",
+      "languageIds": ["lang:common", "lang:draconic"],
+      "traitIds": ["trait:draconic-ancestry", "trait:breath-weapon", "trait:damage-resistance"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.11",
+      "subraces": []
+    },
+    {
+      "id": "race:gnome",
+      "displayName": "Gnome",
+      "description": "Curious and inventive small folk with innate magic.",
+      "abilityBonuses": { "INT": 2 },
+      "speed": 25,
+      "size": "Small",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:gnomish"],
+      "traitIds": ["trait:darkvision", "trait:gnome-cunning"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.12",
+      "subraces": [
+        {
+          "id": "subrace:rock-gnome",
+          "displayName": "Rock Gnome",
+          "description": "Inventive tinkerers and artificers.",
+          "abilityBonuses": { "CON": 1 },
+          "traitIds": ["trait:artificers-lore", "trait:tinker"],
+          "source": "SRD 5.1",
+          "srdReference": "SRD p.13"
+        }
+      ]
+    },
+    {
+      "id": "race:half-elf",
+      "displayName": "Half-Elf",
+      "description": "Diplomatic and adaptable, bridging two worlds.",
+      "abilityBonuses": { "CHA": 2 },
+      "speed": 30,
+      "size": "Medium",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:elvish"],
+      "traitIds": ["trait:darkvision", "trait:fey-ancestry", "trait:skill-versatility"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.13",
+      "subraces": []
+    },
+    {
+      "id": "race:half-orc",
+      "displayName": "Half-Orc",
+      "description": "Fierce and enduring, with orcish tenacity.",
+      "abilityBonuses": { "STR": 2, "CON": 1 },
+      "speed": 30,
+      "size": "Medium",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:orc"],
+      "traitIds": ["trait:darkvision", "trait:menacing", "trait:relentless-endurance", "trait:savage-attacks"],
+      "proficiencyIds": ["skill:intimidation"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.14",
+      "subraces": []
+    },
+    {
+      "id": "race:tiefling",
+      "displayName": "Tiefling",
+      "description": "Touched by infernal heritage with innate dark magic.",
+      "abilityBonuses": { "INT": 1, "CHA": 2 },
+      "speed": 30,
+      "size": "Medium",
+      "darkvision": 60,
+      "languageIds": ["lang:common", "lang:infernal"],
+      "traitIds": ["trait:darkvision", "trait:hellish-resistance", "trait:infernal-legacy"],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.15",
+      "subraces": []
+    }
+  ]
+}

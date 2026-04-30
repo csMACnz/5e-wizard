@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build, Test & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore src/CharacterWizard.slnx
+
+      - name: Build
+        run: dotnet build src/CharacterWizard.slnx -c Release --no-restore
+
+      - name: Test (includes schema + data validation)
+        run: dotnet test src/CharacterWizard.slnx -c Release --no-build
+
+      - name: Format check
+        run: dotnet format src/CharacterWizard.slnx --verify-no-changes

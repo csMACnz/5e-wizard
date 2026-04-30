@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "backgrounds": [
+    {
+      "id": "background:acolyte",
+      "displayName": "Acolyte",
+      "description": "Spent life in service of a temple.",
+      "skillProficiencies": ["skill:insight", "skill:religion"],
+      "toolProficiencies": [],
+      "languageCount": 2,
+      "startingEquipmentIds": ["item:holy-symbol", "item:prayer-book-or-wheel", "item:vestments", "item:common-clothes", "item:belt-pouch"],
+      "startingGold": 15,
+      "featureId": "feat:shelter-of-the-faithful",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.125"
+    },
+    {
+      "id": "background:criminal",
+      "displayName": "Criminal",
+      "description": "History of breaking the law for profit.",
+      "skillProficiencies": ["skill:deception", "skill:stealth"],
+      "toolProficiencies": ["tool:thieves-tools", "tool:gaming-set"],
+      "languageCount": 0,
+      "startingEquipmentIds": ["item:crowbar", "item:common-clothes", "item:belt-pouch"],
+      "startingGold": 15,
+      "featureId": "feat:criminal-contact",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.125"
+    },
+    {
+      "id": "background:folk-hero",
+      "displayName": "Folk Hero",
+      "description": "Champion of the common people.",
+      "skillProficiencies": ["skill:animal-handling", "skill:survival"],
+      "toolProficiencies": ["tool:artisans-tools", "tool:vehicles-land"],
+      "languageCount": 0,
+      "startingEquipmentIds": ["item:artisans-tools", "item:shovel", "item:iron-pot", "item:common-clothes", "item:belt-pouch"],
+      "startingGold": 10,
+      "featureId": "feat:rustic-hospitality",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.131"
+    },
+    {
+      "id": "background:noble",
+      "displayName": "Noble",
+      "description": "Born into wealth and privilege.",
+      "skillProficiencies": ["skill:history", "skill:persuasion"],
+      "toolProficiencies": ["tool:gaming-set"],
+      "languageCount": 1,
+      "startingEquipmentIds": ["item:fine-clothes", "item:signet-ring", "item:scroll-of-pedigree", "item:purse"],
+      "startingGold": 25,
+      "featureId": "feat:position-of-privilege",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.135"
+    },
+    {
+      "id": "background:sage",
+      "displayName": "Sage",
+      "description": "Devoted years to study and scholarship.",
+      "skillProficiencies": ["skill:arcana", "skill:history"],
+      "toolProficiencies": [],
+      "languageCount": 2,
+      "startingEquipmentIds": ["item:bottle-of-ink", "item:ink-pen", "item:small-knife", "item:letter-with-unanswered-question", "item:common-clothes", "item:belt-pouch"],
+      "startingGold": 10,
+      "featureId": "feat:researcher",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.138"
+    },
+    {
+      "id": "background:soldier",
+      "displayName": "Soldier",
+      "description": "Trained for war as part of a military force.",
+      "skillProficiencies": ["skill:athletics", "skill:intimidation"],
+      "toolProficiencies": ["tool:gaming-set", "tool:vehicles-land"],
+      "languageCount": 0,
+      "startingEquipmentIds": ["item:insignia-of-rank", "item:trophy-from-fallen-enemy", "item:bone-dice-or-deck", "item:common-clothes", "item:belt-pouch"],
+      "startingGold": 10,
+      "featureId": "feat:military-rank",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.140"
+    }
+  ]
+}
