@@ -1,5 +1,6 @@
 ﻿@page "/wizard"
 @using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Export
 @using CharacterWizard.Shared.Models
 @using CharacterWizard.Shared.Validation
 @using System.Text.Json
@@ -861,6 +862,11 @@ else
                            OnClick="@ExportJson">
                     Export JSON
                 </MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.MobileScreenShare"
+                           OnClick="@ExportFightClub5e">
+                    Export FC5 XML
+                </MudButton>
                 <MudButton Variant="Variant.Outlined" Color="Color.Default"
                            StartIcon="@Icons.Material.Filled.Print"
                            Href="/print"
@@ -1654,5 +1660,13 @@ else
         CommitAllToCharacter();
         var json = JsonSerializer.Serialize(State.Character, new JsonSerializerOptions { WriteIndented = true });
         await JS.InvokeVoidAsync("downloadFile", "character.json", "application/json", json);
+    }
+
+    private async Task ExportFightClub5e()
+    {
+        CommitAllToCharacter();
+        var xml = new FightClub5eExporter(_races, _classes, _backgrounds, _spells, _equipment)
+            .Export(State.Character);
+        await JS.InvokeVoidAsync("downloadFile", "character.xml", "application/xml", xml);
     }
 }
