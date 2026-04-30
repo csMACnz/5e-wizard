@@ -2,6 +2,24 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .mud-appbar,
+    .mud-drawer,
+    nav {
+        display: none !important;
+    }
+
+    .print-sheet {
+        padding: 0.5rem;
+        font-size: 11pt;
+    }
+}
+
 h1:focus {
     outline: none;
 }

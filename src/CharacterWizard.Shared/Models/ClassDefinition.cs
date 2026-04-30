@@ -2,6 +2,30 @@ using System.Text.Json.Serialization;
 
 namespace CharacterWizard.Shared.Models;
 
+public class SpellcastingInfo
+{
+    [JsonPropertyName("castingType")]
+    public string CastingType { get; set; } = string.Empty;
+
+    [JsonPropertyName("spellcastingAbility")]
+    public string SpellcastingAbility { get; set; } = string.Empty;
+
+    [JsonPropertyName("prepareSpells")]
+    public bool PrepareSpells { get; set; }
+
+    [JsonPropertyName("spellListId")]
+    public string SpellListId { get; set; } = string.Empty;
+
+    [JsonPropertyName("cantripsKnownByLevel")]
+    public List<int> CantripsKnownByLevel { get; set; } = [];
+
+    [JsonPropertyName("spellsKnownByLevel")]
+    public List<int> SpellsKnownByLevel { get; set; } = [];
+
+    [JsonPropertyName("ritualCasting")]
+    public bool RitualCasting { get; set; }
+}
+
 public class SkillChoices
 {
     [JsonPropertyName("count")]
@@ -33,6 +57,9 @@ public class ClassDefinition
 
     [JsonPropertyName("subclassLevel")]
     public int SubclassLevel { get; set; }
+
+    [JsonPropertyName("spellcasting")]
+    public SpellcastingInfo? Spellcasting { get; set; }
 }
 
 public class ClassesData

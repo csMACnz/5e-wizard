@@ -392,13 +392,184 @@ else
             }
         }
 
-        @* ── Step 6: Review & Final Validation ── *@
+        @* ── Step 6: Spells ── *@
         @if (_activeStep == 5)
+        {
+            var casterEntries = _classEntries
+                .Where(e => !string.IsNullOrEmpty(e.ClassId))
+                .Select(e => (Entry: e, Class: _classes.FirstOrDefault(c => c.Id == e.ClassId)))
+                .Where(x => x.Class?.Spellcasting != null)
+                .ToList();
+
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Spells</MudText>
+
+            @if (casterEntries.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info">
+                    None of your selected classes are spellcasters. You can skip this step.
+                </MudAlert>
+            }
+            else
+            {
+                @foreach (var (entry, classDef) in casterEntries)
+                {
+                    var sc = classDef!.Spellcasting!;
+                    int level = Math.Clamp(entry.Level, 1, 20);
+                    int maxCantrips = sc.CantripsKnownByLevel.Count >= level ? sc.CantripsKnownByLevel[level - 1] : 0;
+                    int maxKnown = sc.SpellsKnownByLevel.Count >= level ? sc.SpellsKnownByLevel[level - 1] : 0;
+                    var classSpells = _spells.Where(s => s.ClassIds.Contains(entry.ClassId)).ToList();
+                    var cantrips = classSpells.Where(s => s.Level == 0).ToList();
+                    var leveledSpells = classSpells.Where(s => s.Level > 0).ToList();
+                    if (!_selectedSpells.ContainsKey(entry.ClassId))
+                        _selectedSpells[entry.ClassId] = [];
+                    var selected = _selectedSpells[entry.ClassId];
+                    int selectedCantrips = cantrips.Count(s => selected.Contains(s.Id));
+                    int selectedLeveled = leveledSpells.Count(s => selected.Contains(s.Id));
+
+                    <MudCard Class="mb-4" Elevation="1">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.subtitle1">
+                                    <strong>@classDef.DisplayName</strong> — Level @level
+                                    (Casting ability: @sc.SpellcastingAbility)
+                                </MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            @if (maxCantrips > 0)
+                            {
+                                <MudText Typo="Typo.subtitle2" Class="mb-1">
+                                    Cantrips — @selectedCantrips / @maxCantrips selected
+                                </MudText>
+                                <MudGrid>
+                                    @foreach (var spell in cantrips)
+                                    {
+                                        string spellId = spell.Id;
+                                        bool isSelected = selected.Contains(spellId);
+                                        bool disableAdd = !isSelected && selectedCantrips >= maxCantrips;
+                                        <MudItem xs="12" sm="6" md="4">
+                                            <MudCheckBox T="bool"
+                                                         Value="@isSelected"
+                                                         ValueChanged="@((bool v) => ToggleSpell(entry.ClassId, spellId, v))"
+                                                         Disabled="@disableAdd"
+                                                         Color="Color.Primary"
+                                                         Label="@spell.DisplayName" />
+                                        </MudItem>
+                                    }
+                                </MudGrid>
+                            }
+
+                            @if (leveledSpells.Count > 0)
+                            {
+                                bool isPrepare = sc.PrepareSpells;
+                                <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">
+                                    @(isPrepare ? "Prepared Spells" : "Known Spells")
+                                    @if (!isPrepare && maxKnown > 0)
+                                    {
+                                        <span> — @selectedLeveled / @maxKnown selected</span>
+                                    }
+                                    @if (isPrepare)
+                                    {
+                                        <span> — @selectedLeveled selected (prepare as many as you like)</span>
+                                    }
+                                </MudText>
+                                @foreach (var spellLevel in leveledSpells.Select(s => s.Level).Distinct().Order())
+                                {
+                                    <MudText Typo="Typo.caption" Class="mt-2 mb-1">
+                                        <em>Level @spellLevel spells</em>
+                                    </MudText>
+                                    <MudGrid>
+                                        @foreach (var spell in leveledSpells.Where(s => s.Level == spellLevel))
+                                        {
+                                            string spellId = spell.Id;
+                                            bool isSelected = selected.Contains(spellId);
+                                            bool disableAdd = !isPrepare && !isSelected && maxKnown > 0 && selectedLeveled >= maxKnown;
+                                            <MudItem xs="12" sm="6" md="4">
+                                                <MudTooltip Text="@spell.Description" Placement="Placement.Top">
+                                                    <MudCheckBox T="bool"
+                                                                 Value="@isSelected"
+                                                                 ValueChanged="@((bool v) => ToggleSpell(entry.ClassId, spellId, v))"
+                                                                 Disabled="@disableAdd"
+                                                                 Color="Color.Secondary"
+                                                                 Label="@($"{spell.DisplayName}{(spell.Ritual ? " (R)" : string.Empty)}{(spell.Concentration ? " (C)" : string.Empty)}")" />
+                                                </MudTooltip>
+                                            </MudItem>
+                                        }
+                                    </MudGrid>
+                                }
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                }
+            }
+        }
+
+        @* ── Step 7: Equipment ── *@
+        @if (_activeStep == 6)
+        {
+            var bgForEquip = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+            var bgEquipIds = bgForEquip?.StartingEquipmentIds ?? [];
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Equipment</MudText>
+
+            @if (bgForEquip != null && bgEquipIds.Count > 0)
+            {
+                <MudCard Class="mb-4" Elevation="1">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.subtitle1">
+                                <strong>@bgForEquip.DisplayName</strong> Starting Equipment
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudChipSet T="string" Class="mb-2">
+                            @foreach (var itemId in bgEquipIds)
+                            {
+                                var itemDef = _equipment.FirstOrDefault(e => e.Id == itemId);
+                                <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                                    @(itemDef?.DisplayName ?? itemId)
+                                </MudChip>
+                            }
+                        </MudChipSet>
+                        <MudText Typo="Typo.caption">
+                            Starting gold: @(bgForEquip.StartingGold) gp
+                        </MudText>
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            <MudText Typo="Typo.subtitle1" Class="mb-2">
+                <strong>Select Additional Equipment</strong> (@_selectedEquipmentIds.Count item(s) selected)
+            </MudText>
+            @foreach (var group in _equipment.GroupBy(e => e.Category).OrderBy(g => g.Key))
+            {
+                <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1" Style="text-transform:capitalize">
+                    @group.Key
+                </MudText>
+                <MudGrid>
+                    @foreach (var item in group.OrderBy(e => e.DisplayName))
+                    {
+                        string itemId = item.Id;
+                        bool isSelected = _selectedEquipmentIds.Contains(itemId);
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudCheckBox T="bool"
+                                         Value="@isSelected"
+                                         ValueChanged="@((bool v) => ToggleEquipment(itemId, v))"
+                                         Color="Color.Primary"
+                                         Label="@item.DisplayName" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        }
+
+        @* ── Step 8: Review & Final Validation ── *@
+        @if (_activeStep == 7)
         {
             var c = State.Character;
             var reviewRace = _races.FirstOrDefault(r => r.Id == c.RaceId);
             var reviewBg = _backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
-            <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Review &amp; Final Validation</MudText>
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 8 — Review &amp; Final Validation</MudText>
             <MudGrid>
                 <MudItem xs="12" md="6">
                     <MudCard Elevation="1">
@@ -506,6 +677,60 @@ else
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
+
+                @if (c.Spells.Count > 0)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="1">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.subtitle1"><strong>Spells</strong></MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @foreach (var classSpellGroup in c.Spells.GroupBy(s => s.ClassId))
+                                {
+                                    var reviewCls = _classes.FirstOrDefault(cl => cl.Id == classSpellGroup.Key);
+                                    <MudText Typo="Typo.subtitle2">@(reviewCls?.DisplayName ?? classSpellGroup.Key)</MudText>
+                                    <MudChipSet T="string" Class="mt-1 mb-2">
+                                        @foreach (var cs in classSpellGroup)
+                                        {
+                                            var spellDef = _spells.FirstOrDefault(s => s.Id == cs.SpellId);
+                                            <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                                                @(spellDef?.DisplayName ?? cs.SpellId)
+                                                @(spellDef?.Level == 0 ? " (cantrip)" : $" (lvl {spellDef?.Level})")
+                                            </MudChip>
+                                        }
+                                    </MudChipSet>
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
+
+                @if (c.Equipment.Count > 0)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudCard Elevation="1">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.subtitle1"><strong>Equipment</strong></MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudChipSet T="string" Class="mt-1">
+                                    @foreach (var eq in c.Equipment)
+                                    {
+                                        var equipDef = _equipment.FirstOrDefault(e => e.Id == eq.ItemId);
+                                        <MudChip T="string" Color="Color.Default" Size="Size.Small">
+                                            @(equipDef?.DisplayName ?? eq.ItemId) ×@eq.Quantity
+                                        </MudChip>
+                                    }
+                                </MudChipSet>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                }
             </MudGrid>
 
             <!-- Validation Report -->
@@ -556,8 +781,8 @@ else
                 </MudButton>
                 <MudButton Variant="Variant.Outlined" Color="Color.Default"
                            StartIcon="@Icons.Material.Filled.Print"
-                           Disabled="true"
-                           title="Print sheet coming in a future milestone">
+                           Href="/print"
+                           Target="_blank">
                     Print Sheet
                 </MudButton>
             </MudStack>
@@ -606,7 +831,7 @@ else
 
     private static readonly string[] _steps =
     [
-        "Meta", "Abilities", "Race", "Class", "Background", "Review",
+        "Meta", "Abilities", "Race", "Class", "Background", "Spells", "Equipment", "Review",
     ];
 
     private static readonly Dictionary<int, int> _pbCosts = new()
@@ -651,6 +876,8 @@ else
     private IReadOnlyList<RaceDefinition> _races = [];
     private IReadOnlyList<ClassDefinition> _classes = [];
     private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
+    private IReadOnlyList<SpellDefinition> _spells = [];
+    private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
     private ValidationResult? _reviewValidation;
     private List<string> _stepErrors = [];
 
@@ -694,12 +921,22 @@ else
     private List<string> _classSkillOptionIds = [];
     private List<bool> _classSkillSelections = [];
 
+    // ── Step 6 state (Spells) ─────────────────────────────────────────────
+    // Spells selected per class: key = classId, value = set of spell IDs
+    private readonly Dictionary<string, HashSet<string>> _selectedSpells = [];
+
+    // ── Step 7 state (Equipment) ──────────────────────────────────────────
+    // ItemId → selected (quantity always 1)
+    private readonly HashSet<string> _selectedEquipmentIds = [];
+
     // ── Lifecycle ─────────────────────────────────────────────────────────
     protected override async Task OnInitializedAsync()
     {
         _races = await DataService.GetRacesAsync();
         _classes = await DataService.GetClassesAsync();
         _backgrounds = await DataService.GetBackgroundsAsync();
+        _spells = await DataService.GetSpellsAsync();
+        _equipment = await DataService.GetEquipmentAsync();
         _loading = false;
         RestoreFromState();
     }
@@ -745,6 +982,20 @@ else
                 if (idx >= 0) _classSkillSelections[idx] = true;
             }
         }
+
+        // Restore spells
+        _selectedSpells.Clear();
+        foreach (var cs in c.Spells)
+        {
+            if (!_selectedSpells.ContainsKey(cs.ClassId))
+                _selectedSpells[cs.ClassId] = [];
+            _selectedSpells[cs.ClassId].Add(cs.SpellId);
+        }
+
+        // Restore equipment
+        _selectedEquipmentIds.Clear();
+        foreach (var eq in c.Equipment)
+            _selectedEquipmentIds.Add(eq.ItemId);
 
         _activeStep = State.ActiveStep;
     }
@@ -808,6 +1059,26 @@ else
         for (int i = 0; i < _classSkillOptionIds.Count; i++)
             if (_classSkillSelections[i]) result.Add(_classSkillOptionIds[i]);
         return [.. result];
+    }
+
+    // ── Spell helpers ─────────────────────────────────────────────────────
+    private void ToggleSpell(string classId, string spellId, bool selected)
+    {
+        if (!_selectedSpells.ContainsKey(classId))
+            _selectedSpells[classId] = [];
+        if (selected)
+            _selectedSpells[classId].Add(spellId);
+        else
+            _selectedSpells[classId].Remove(spellId);
+    }
+
+    // ── Equipment helpers ─────────────────────────────────────────────────
+    private void ToggleEquipment(string itemId, bool selected)
+    {
+        if (selected)
+            _selectedEquipmentIds.Add(itemId);
+        else
+            _selectedEquipmentIds.Remove(itemId);
     }
 
     // ── Point buy helpers ─────────────────────────────────────────────────
@@ -932,6 +1203,25 @@ else
         for (int i = 0; i < _classSkillOptionIds.Count; i++)
             if (_classSkillSelections[i] && !c.Skills.ContainsKey(_classSkillOptionIds[i]))
                 c.Skills[_classSkillOptionIds[i]] = "class";
+
+        // Step 6 — Spells
+        c.Spells.Clear();
+        foreach (var (classId, spellIds) in _selectedSpells)
+            foreach (var spellId in spellIds)
+            {
+                var spellDef = _spells.FirstOrDefault(s => s.Id == spellId);
+                c.Spells.Add(new CharacterSpell
+                {
+                    SpellId = spellId,
+                    ClassId = classId,
+                    Prepared = spellDef?.Level > 0,
+                });
+            }
+
+        // Step 7 — Equipment
+        c.Equipment.Clear();
+        foreach (var itemId in _selectedEquipmentIds)
+            c.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
     }
 
     // ── Step validation (no side effects on character model) ──────────────
@@ -1026,6 +1316,52 @@ else
                 break;
 
             case 5:
+                // Spell step: validate using SpellValidator
+                {
+                    var spellTemp = new Character
+                    {
+                        Levels = _classEntries
+                            .Where(e => !string.IsNullOrEmpty(e.ClassId))
+                            .Select(e => new ClassLevel { ClassId = e.ClassId, Level = e.Level })
+                            .ToList(),
+                    };
+                    foreach (var (classId, spellIds) in _selectedSpells)
+                        foreach (var spellId in spellIds)
+                        {
+                            var spellDef = _spells.FirstOrDefault(s => s.Id == spellId);
+                            spellTemp.Spells.Add(new CharacterSpell
+                            {
+                                SpellId = spellId,
+                                ClassId = classId,
+                                Prepared = spellDef?.Level > 0,
+                            });
+                        }
+
+                    if (spellTemp.Spells.Count > 0)
+                    {
+                        var spellResult = new SpellValidator(_spells, _classes).Validate(spellTemp);
+                        result.Errors.AddRange(spellResult.Errors);
+                        result.Warnings.AddRange(spellResult.Warnings);
+                    }
+                }
+                break;
+
+            case 6:
+                // Equipment step: validate using EquipmentValidator
+                {
+                    var equipTemp = new Character();
+                    foreach (var itemId in _selectedEquipmentIds)
+                        equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+                    if (equipTemp.Equipment.Count > 0)
+                    {
+                        var equipResult = new EquipmentValidator(_equipment).Validate(equipTemp);
+                        result.Errors.AddRange(equipResult.Errors);
+                        result.Warnings.AddRange(equipResult.Warnings);
+                    }
+                }
+                break;
+
+            case 7:
                 // Review step is always passable
                 break;
         }
@@ -1096,7 +1432,7 @@ else
             _stepErrors = [];
 
             if (_activeStep == 4) SyncClassSkillOptions();
-            if (_activeStep == 5) RunReviewValidation();
+            if (_activeStep == 7) RunReviewValidation();
         }
     }
 
@@ -1107,7 +1443,7 @@ else
             _activeStep = idx;
             State.ActiveStep = _activeStep;
             _stepErrors = [];
-            if (_activeStep == 5) RunReviewValidation();
+            if (_activeStep == 7) RunReviewValidation();
         }
     }
 
@@ -1115,7 +1451,7 @@ else
     {
         _reviewValidation = null;
         CommitAllToCharacter();
-        _reviewValidation = new CharacterValidator(_races, _classes, _backgrounds)
+        _reviewValidation = new CharacterValidator(_races, _classes, _backgrounds, _spells, _equipment)
             .Validate(State.Character);
     }
 
