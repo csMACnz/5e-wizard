@@ -2,6 +2,48 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+/* Skip navigation link — visible only on focus for keyboard users */
+.skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 9999;
+    background: #6B0000;
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    transition: top 0.15s;
+}
+
+.skip-nav:focus {
+    top: 0;
+    outline: 3px solid #FFD700;
+    outline-offset: 2px;
+}
+
+/* App footer */
+.app-footer {
+    background-color: #3A1A10;
+    padding: 0.6rem 1rem;
+    text-align: center;
+}
+
+.app-footer .footer-text {
+    color: #D4B896;
+}
+
+.app-footer a {
+    color: #D4B896;
+    text-decoration: underline;
+}
+
+.app-footer a:hover {
+    color: #FFD700;
+}
+
 /* Print styles */
 @media print {
     .no-print {
