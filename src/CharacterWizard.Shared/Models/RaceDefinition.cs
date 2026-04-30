@@ -28,6 +28,9 @@ public class RaceDefinition
     [JsonPropertyName("abilityBonuses")]
     public Dictionary<string, int> AbilityBonuses { get; set; } = [];
 
+    [JsonPropertyName("speed")]
+    public int Speed { get; set; } = 30;
+
     [JsonPropertyName("traitIds")]
     public List<string> TraitIds { get; set; } = [];
 
