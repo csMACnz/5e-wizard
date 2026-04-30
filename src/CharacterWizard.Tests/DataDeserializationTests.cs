@@ -106,4 +106,86 @@ public class DataDeserializationTests
         Assert.Contains("skill:athletics", soldier!.SkillProficiencies);
         Assert.Contains("skill:intimidation", soldier.SkillProficiencies);
     }
+
+    [Fact]
+    public void Spells_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<SpellsData>("spells.json");
+
+        Assert.NotEmpty(data.Spells);
+
+        foreach (var spell in data.Spells)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(spell.Id), $"Spell missing Id: {spell.DisplayName}");
+            Assert.False(string.IsNullOrWhiteSpace(spell.DisplayName), $"Spell missing DisplayName: {spell.Id}");
+            Assert.True(spell.Level >= 0, $"Spell '{spell.Id}' has negative level");
+            Assert.NotEmpty(spell.ClassIds);
+        }
+
+        // Fireball should be level 3 sorcerer/wizard spell
+        var fireball = data.Spells.FirstOrDefault(s => s.Id == "spell:fireball");
+        Assert.NotNull(fireball);
+        Assert.Equal(3, fireball!.Level);
+        Assert.Contains("class:wizard", fireball.ClassIds);
+        Assert.Contains("class:sorcerer", fireball.ClassIds);
+    }
+
+    [Fact]
+    public void Spells_Json_CantripHasLevelZero()
+    {
+        var data = DeserializeFile<SpellsData>("spells.json");
+        var acidSplash = data.Spells.FirstOrDefault(s => s.Id == "spell:acid-splash");
+        Assert.NotNull(acidSplash);
+        Assert.Equal(0, acidSplash!.Level);
+    }
+
+    [Fact]
+    public void Equipment_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<EquipmentData>("equipment.json");
+
+        Assert.NotEmpty(data.Equipment);
+
+        foreach (var item in data.Equipment)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(item.Id), $"Item missing Id: {item.DisplayName}");
+            Assert.False(string.IsNullOrWhiteSpace(item.DisplayName), $"Item missing DisplayName: {item.Id}");
+            Assert.False(string.IsNullOrWhiteSpace(item.Category), $"Item '{item.Id}' missing Category");
+        }
+
+        // Longsword should be a martial-melee weapon
+        var longsword = data.Equipment.FirstOrDefault(e => e.Id == "item:longsword");
+        Assert.NotNull(longsword);
+        Assert.Equal("weapon", longsword!.Category);
+        Assert.Equal("martial-melee", longsword.Subcategory);
+    }
+
+    [Fact]
+    public void Classes_Json_SpellcastingInfoDeserializes()
+    {
+        var data = DeserializeFile<ClassesData>("classes.json");
+
+        var wizard = data.Classes.FirstOrDefault(c => c.Id == "class:wizard");
+        Assert.NotNull(wizard);
+        Assert.NotNull(wizard!.Spellcasting);
+        Assert.Equal("full", wizard.Spellcasting!.CastingType);
+        Assert.Equal("INT", wizard.Spellcasting.SpellcastingAbility);
+        Assert.True(wizard.Spellcasting.PrepareSpells);
+        Assert.Equal(20, wizard.Spellcasting.CantripsKnownByLevel.Count);
+
+        var fighter = data.Classes.FirstOrDefault(c => c.Id == "class:fighter");
+        Assert.NotNull(fighter);
+        Assert.Null(fighter!.Spellcasting);
+    }
+
+    [Fact]
+    public void Backgrounds_Json_StartingEquipmentDeserializes()
+    {
+        var data = DeserializeFile<BackgroundsData>("backgrounds.json");
+
+        var acolyte = data.Backgrounds.FirstOrDefault(b => b.Id == "background:acolyte");
+        Assert.NotNull(acolyte);
+        Assert.NotEmpty(acolyte!.StartingEquipmentIds);
+        Assert.Contains("item:holy-symbol", acolyte.StartingEquipmentIds);
+    }
 }

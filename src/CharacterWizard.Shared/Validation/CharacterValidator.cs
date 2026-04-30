@@ -10,15 +10,21 @@ public class CharacterValidator
     private readonly IReadOnlyList<RaceDefinition> _races;
     private readonly IReadOnlyList<ClassDefinition> _classes;
     private readonly IReadOnlyList<BackgroundDefinition> _backgrounds;
+    private readonly IReadOnlyList<SpellDefinition> _spells;
+    private readonly IReadOnlyList<EquipmentItemDefinition> _equipment;
 
     public CharacterValidator(
         IReadOnlyList<RaceDefinition> races,
         IReadOnlyList<ClassDefinition> classes,
-        IReadOnlyList<BackgroundDefinition> backgrounds)
+        IReadOnlyList<BackgroundDefinition> backgrounds,
+        IReadOnlyList<SpellDefinition>? spells = null,
+        IReadOnlyList<EquipmentItemDefinition>? equipment = null)
     {
         _races = races;
         _classes = classes;
         _backgrounds = backgrounds;
+        _spells = spells ?? [];
+        _equipment = equipment ?? [];
     }
 
     /// <summary>
@@ -65,6 +71,22 @@ public class CharacterValidator
         var profResult = new ProficiencyValidator(_classes, _backgrounds).Validate(character);
         result.Errors.AddRange(profResult.Errors);
         result.Warnings.AddRange(profResult.Warnings);
+
+        // Spell validation
+        if (_spells.Count > 0 && character.Spells.Count > 0)
+        {
+            var spellResult = new SpellValidator(_spells, _classes).Validate(character);
+            result.Errors.AddRange(spellResult.Errors);
+            result.Warnings.AddRange(spellResult.Warnings);
+        }
+
+        // Equipment validation
+        if (_equipment.Count > 0 && character.Equipment.Count > 0)
+        {
+            var equipResult = new EquipmentValidator(_equipment).Validate(character);
+            result.Errors.AddRange(equipResult.Errors);
+            result.Warnings.AddRange(equipResult.Warnings);
+        }
 
         return result;
     }

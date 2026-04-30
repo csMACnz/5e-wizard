@@ -1,0 +1,248 @@
+@page "/print"
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject CharacterWizardState State
+@inject IDataService DataService
+
+<PageTitle>Character Sheet — @(State.Character.Name is { Length: > 0 } n ? n : "Unnamed")</PageTitle>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+}
+else
+{
+    var c = State.Character;
+    var race = _races.FirstOrDefault(r => r.Id == c.RaceId);
+    var bg = _backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
+
+    <div class="print-sheet">
+        <MudStack Row="true" Spacing="2" Class="mb-3 no-print" Justify="Justify.FlexEnd">
+            <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       Href="/wizard">
+                Back to Wizard
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Print"
+                       OnClick="@(() => { })">
+                Print
+            </MudButton>
+        </MudStack>
+
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-1">D&amp;D 5e Character Sheet</MudText>
+        <MudDivider Class="mb-4" />
+
+        <!-- Header: Identity -->
+        <MudGrid Class="mb-4">
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                    <MudText Typo="Typo.caption">Character Name</MudText>
+                    <MudText Typo="Typo.h6">@(c.Name is { Length: > 0 } ? c.Name : "—")</MudText>
+                </MudPaper>
+            </MudItem>
+            @if (!string.IsNullOrEmpty(c.PlayerName))
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                        <MudText Typo="Typo.caption">Player Name</MudText>
+                        <MudText Typo="Typo.body1">@c.PlayerName</MudText>
+                    </MudPaper>
+                </MudItem>
+            }
+            @if (!string.IsNullOrEmpty(c.Campaign))
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                        <MudText Typo="Typo.caption">Campaign</MudText>
+                        <MudText Typo="Typo.body1">@c.Campaign</MudText>
+                    </MudPaper>
+                </MudItem>
+            }
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                    <MudText Typo="Typo.caption">Race</MudText>
+                    <MudText Typo="Typo.body1">
+                        @(race?.DisplayName ?? c.RaceId)
+                        @if (!string.IsNullOrEmpty(c.SubraceId))
+                        {
+                            var sub = race?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
+                            <span> (@(sub?.DisplayName ?? c.SubraceId))</span>
+                        }
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                    <MudText Typo="Typo.caption">Class(es)</MudText>
+                    <MudText Typo="Typo.body1">
+                        @string.Join(", ", c.Levels.Select(l =>
+                        {
+                            var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
+                            return $"{cls?.DisplayName ?? l.ClassId} {l.Level}";
+                        }))
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                    <MudText Typo="Typo.caption">Background</MudText>
+                    <MudText Typo="Typo.body1">@(bg?.DisplayName ?? c.BackgroundId)</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
+                    <MudText Typo="Typo.caption">Total Level</MudText>
+                    <MudText Typo="Typo.h6">@c.TotalLevel</MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Ability Scores -->
+        <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>Ability Scores</strong></MudText>
+        <MudGrid Class="mb-4">
+            @foreach (var ab in _abilities)
+            {
+                var block = GetBlock(c, ab);
+                <MudItem xs="4" sm="2">
+                    <MudPaper Elevation="1" Class="pa-2 text-center">
+                        <MudText Typo="Typo.caption">@ab</MudText>
+                        <MudText Typo="Typo.h5">@block.Final</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            mod @Modifier(block.Final)
+                        </MudText>
+                        @if (block.RacialBonus != 0)
+                        {
+                            <MudText Typo="Typo.caption">(+@block.RacialBonus racial)</MudText>
+                        }
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+
+        <!-- Skills -->
+        @if (c.Skills.Count > 0)
+        {
+            <MudText Typo="Typo.subtitle1" Class="mb-1"><strong>Skill Proficiencies</strong></MudText>
+            <MudChipSet T="string" Class="mb-4">
+                @foreach (var (skill, source) in c.Skills)
+                {
+                    <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                        @SkillLabel(skill) (@source)
+                    </MudChip>
+                }
+            </MudChipSet>
+        }
+
+        <!-- Spells -->
+        @if (c.Spells.Count > 0)
+        {
+            <MudText Typo="Typo.subtitle1" Class="mb-1"><strong>Spells</strong></MudText>
+            @foreach (var grp in c.Spells.GroupBy(s => s.ClassId))
+            {
+                var cls = _classes.FirstOrDefault(cl => cl.Id == grp.Key);
+                <MudText Typo="Typo.subtitle2" Class="mt-2">@(cls?.DisplayName ?? grp.Key)</MudText>
+                <MudGrid Class="mb-2">
+                    @foreach (var cs in grp.OrderBy(s => _spells.FirstOrDefault(sp => sp.Id == s.SpellId)?.Level ?? 0))
+                    {
+                        var spellDef = _spells.FirstOrDefault(s => s.Id == cs.SpellId);
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudPaper Elevation="0" Class="pa-1" Style="border:1px solid #eee;">
+                                <MudText Typo="Typo.body2">
+                                    <strong>@(spellDef?.DisplayName ?? cs.SpellId)</strong>
+                                    @if (spellDef != null)
+                                    {
+                                        <span> — @(spellDef.Level == 0 ? "Cantrip" : $"Level {spellDef.Level}")</span>
+                                        <span> (@spellDef.School)</span>
+                                    }
+                                </MudText>
+                                @if (spellDef != null)
+                                {
+                                    <MudText Typo="Typo.caption">
+                                        @spellDef.CastingTime | @spellDef.Range | @spellDef.Duration
+                                        @if (spellDef.Concentration) { <span> | Concentration</span> }
+                                        @if (spellDef.Ritual) { <span> | Ritual</span> }
+                                    </MudText>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        }
+
+        <!-- Equipment -->
+        @if (c.Equipment.Count > 0)
+        {
+            <MudText Typo="Typo.subtitle1" Class="mt-3 mb-1"><strong>Equipment</strong></MudText>
+            <MudChipSet T="string" Class="mb-4">
+                @foreach (var eq in c.Equipment)
+                {
+                    var itemDef = _equipment.FirstOrDefault(e => e.Id == eq.ItemId);
+                    <MudChip T="string" Color="Color.Default" Size="Size.Small">
+                        @(itemDef?.DisplayName ?? eq.ItemId) ×@eq.Quantity
+                    </MudChip>
+                }
+            </MudChipSet>
+        }
+    </div>
+}
+
+@code {
+    private static readonly string[] _abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+
+    private static readonly Dictionary<string, string> _skillNames = new()
+    {
+        ["skill:acrobatics"] = "Acrobatics",
+        ["skill:animal-handling"] = "Animal Handling",
+        ["skill:arcana"] = "Arcana",
+        ["skill:athletics"] = "Athletics",
+        ["skill:deception"] = "Deception",
+        ["skill:history"] = "History",
+        ["skill:insight"] = "Insight",
+        ["skill:intimidation"] = "Intimidation",
+        ["skill:investigation"] = "Investigation",
+        ["skill:medicine"] = "Medicine",
+        ["skill:nature"] = "Nature",
+        ["skill:perception"] = "Perception",
+        ["skill:performance"] = "Performance",
+        ["skill:persuasion"] = "Persuasion",
+        ["skill:religion"] = "Religion",
+        ["skill:sleight-of-hand"] = "Sleight of Hand",
+        ["skill:stealth"] = "Stealth",
+        ["skill:survival"] = "Survival",
+    };
+
+    private bool _loading = true;
+    private IReadOnlyList<RaceDefinition> _races = [];
+    private IReadOnlyList<ClassDefinition> _classes = [];
+    private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
+    private IReadOnlyList<SpellDefinition> _spells = [];
+    private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _races = await DataService.GetRacesAsync();
+        _classes = await DataService.GetClassesAsync();
+        _backgrounds = await DataService.GetBackgroundsAsync();
+        _spells = await DataService.GetSpellsAsync();
+        _equipment = await DataService.GetEquipmentAsync();
+        _loading = false;
+    }
+
+    private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+
+    private static string SkillLabel(string id) =>
+        _skillNames.TryGetValue(id, out string? name) ? name : id;
+
+    private static AbilityBlock GetBlock(Character c, string ab) => ab switch
+    {
+        "STR" => c.AbilityScores.STR,
+        "DEX" => c.AbilityScores.DEX,
+        "CON" => c.AbilityScores.CON,
+        "INT" => c.AbilityScores.INT,
+        "WIS" => c.AbilityScores.WIS,
+        "CHA" => c.AbilityScores.CHA,
+        _ => new AbilityBlock(),
+    };
+}

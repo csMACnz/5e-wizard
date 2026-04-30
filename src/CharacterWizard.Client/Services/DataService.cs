@@ -9,6 +9,8 @@ public sealed class DataService : IDataService
     private List<RaceDefinition>? _races;
     private List<ClassDefinition>? _classes;
     private List<BackgroundDefinition>? _backgrounds;
+    private List<SpellDefinition>? _spells;
+    private List<EquipmentItemDefinition>? _equipment;
 
     public DataService(HttpClient http)
     {
@@ -46,5 +48,27 @@ public sealed class DataService : IDataService
         }
 
         return _backgrounds;
+    }
+
+    public async Task<IReadOnlyList<SpellDefinition>> GetSpellsAsync()
+    {
+        if (_spells is null)
+        {
+            var data = await _http.GetFromJsonAsync<SpellsData>("data/spells.json");
+            _spells = data?.Spells ?? [];
+        }
+
+        return _spells;
+    }
+
+    public async Task<IReadOnlyList<EquipmentItemDefinition>> GetEquipmentAsync()
+    {
+        if (_equipment is null)
+        {
+            var data = await _http.GetFromJsonAsync<EquipmentData>("data/equipment.json");
+            _equipment = data?.Equipment ?? [];
+        }
+
+        return _equipment;
     }
 }
