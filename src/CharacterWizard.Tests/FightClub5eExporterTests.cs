@@ -454,7 +454,7 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var spell = c.Elements("spell").First();
+        var spell = c.Elements("spell").First(s => s.Element("name")!.Value == "Fire Bolt");
         Assert.Equal("Wizard", spell.Element("classes")!.Value);
     }
 
