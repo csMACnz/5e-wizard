@@ -13,5 +13,6 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<CharacterWizardState>();
 builder.Services.AddScoped<BuildInfoService>();
+builder.Services.AddScoped<RandomCharacterService>();
 
 await builder.Build().RunAsync();

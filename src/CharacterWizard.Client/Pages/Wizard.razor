@@ -1029,6 +1029,7 @@ else
         _equipment = await DataService.GetEquipmentAsync();
         _loading = false;
         RestoreFromState();
+        if (_activeStep == 7) RunReviewValidation();
     }
 
     private void RestoreFromState()
