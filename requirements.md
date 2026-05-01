@@ -110,9 +110,10 @@ FR7 — Session Management and Local Storage
   - FR7.1.4: If a `session` query parameter is present but no matching session exists in local storage, the wizard shall start a fresh character creation session under that session ID (graceful fallback).
 - FR7.2: Automatic persistence to browser local storage.
   - FR7.2.1: The wizard shall automatically save the current character state and active step to browser local storage whenever the user advances, goes back, or commits changes in any step.
-  - FR7.2.2: Each session shall be stored as a JSON object under the key `5ew_session_<sessionId>` in localStorage, containing the session ID, character name (for display in the list), creation timestamp, last-modified timestamp, active step, and the full `Character` object.
+  - FR7.2.2: Each session shall be stored as a JSON object under the key `5ew_session_<sessionId>` in localStorage, containing a `schemaVersion` integer, the session ID, character name (for display in the list), creation timestamp, last-modified timestamp, active step, and the full `Character` object.
   - FR7.2.3: A session index (an ordered list of session IDs) shall be maintained in localStorage under the key `5ew_sessions` to allow enumeration without scanning all localStorage keys.
   - FR7.2.4: Local storage operations shall be non-blocking and shall not affect wizard step performance (NFR2 still applies).
+  - FR7.2.5: The `schemaVersion` field shall start at `1` and shall be incremented whenever the persisted session format changes in a backward-incompatible way. When loading a session, the application shall reject (return null / skip) any session whose `schemaVersion` does not match the current supported version, ensuring stale or future-format data is never silently mis-read.
 - FR7.3: Character session list screen.
   - FR7.3.1: A dedicated "My Characters" page shall be accessible at `/characters`, linked from the landing page.
   - FR7.3.2: The page shall list all character sessions stored in local storage, displaying: character name (or "Unnamed Character" if blank), creation date, last-modified date, and current wizard step reached.

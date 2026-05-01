@@ -13,6 +13,13 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
     private const string IndexKey = "5ew_sessions";
     private const string SessionKeyPrefix = "5ew_session_";
 
+    /// <summary>
+    /// The storage format version this build can read and write.
+    /// Sessions persisted with a different version are treated as unreadable
+    /// and returned as <see langword="null"/> so the caller can skip them gracefully.
+    /// </summary>
+    public const int SupportedSchemaVersion = 1;
+
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
         WriteIndented = false,
@@ -20,6 +27,7 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
 
     public async Task SaveSessionAsync(CharacterSession session)
     {
+        session.SchemaVersion = SupportedSchemaVersion;
         session.LastModifiedAt = DateTime.UtcNow;
 
         var json = JsonSerializer.Serialize(session, SerializerOptions);
@@ -35,7 +43,11 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
 
         try
         {
-            return JsonSerializer.Deserialize<CharacterSession>(json, SerializerOptions);
+            var session = JsonSerializer.Deserialize<CharacterSession>(json, SerializerOptions);
+            if (session is null || session.SchemaVersion != SupportedSchemaVersion)
+                return null;
+
+            return session;
         }
         catch
         {
