@@ -23,7 +23,7 @@ public class StartingEquipmentChoiceValidatorTests
         {
             ClassId = "class:test",
             StartingWealthRoll = "5d4*10",
-            FixedItemIds = [],
+            FixedItems = [],
             ChoiceGroups =
             [
                 new EquipmentChoiceGroup
@@ -332,7 +332,7 @@ public class StartingEquipmentChoiceValidatorTests
         {
             ClassId = "class:test",
             StartingWealthRoll = "2d4*10",
-            FixedItemIds = [],
+            FixedItems = [],
             ChoiceGroups =
             [
                 new EquipmentChoiceGroup
@@ -368,7 +368,7 @@ public class StartingEquipmentChoiceValidatorTests
         {
             ClassId = "class:test",
             StartingWealthRoll = "2d4*10",
-            FixedItemIds = [],
+            FixedItems = [],
             ChoiceGroups = [],
         };
         var character = BuildCharacterWith(["item:longsword"]);

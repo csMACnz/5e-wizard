@@ -707,7 +707,7 @@ else
                 {
                     @* Choice groups path *@
                     @* Fixed items *@
-                    @if (classConfig.FixedItemIds.Count > 0)
+                    @if (classConfig.FixedItems.Count > 0)
                     {
                         <MudCard Class="mb-3" Elevation="1">
                             <MudCardHeader>
@@ -717,11 +717,11 @@ else
                             </MudCardHeader>
                             <MudCardContent>
                                 <MudChipSet T="string">
-                                    @foreach (var fixedId in classConfig.FixedItemIds)
+                                    @foreach (var fixedItem in classConfig.FixedItems)
                                     {
-                                        var itemDef = _equipment.FirstOrDefault(e => e.Id == fixedId);
+                                        var itemDef = _equipment.FirstOrDefault(e => e.Id == fixedItem.ItemId);
                                         <MudChip T="string" Color="Color.Primary" Size="Size.Small">
-                                            @(itemDef?.DisplayName ?? fixedId)
+                                            @(itemDef?.DisplayName ?? fixedItem.ItemId)@(fixedItem.Quantity > 1 ? $" ×{fixedItem.Quantity}" : "")
                                         </MudChip>
                                     }
                                 </MudChipSet>
@@ -1664,10 +1664,10 @@ else
             if (classConfig != null)
             {
                 // Fixed items
-                foreach (var fixedId in classConfig.FixedItemIds)
+                foreach (var fixedItem in classConfig.FixedItems)
                 {
-                    if (!c.Equipment.Any(e => e.ItemId == fixedId))
-                        c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedId, Quantity = 1 });
+                    if (!c.Equipment.Any(e => e.ItemId == fixedItem.ItemId))
+                        c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedItem.ItemId, Quantity = fixedItem.Quantity });
                 }
 
                 // Choice group items

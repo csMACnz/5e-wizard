@@ -113,8 +113,8 @@ public sealed class RandomCharacterService(IDataService dataService)
         if (classEquipConfig != null)
         {
             // Fixed items
-            foreach (var fixedId in classEquipConfig.FixedItemIds)
-                c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedId, Quantity = 1 });
+            foreach (var fixedItem in classEquipConfig.FixedItems)
+                c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedItem.ItemId, Quantity = fixedItem.Quantity });
 
             // Random choices for each required group
             foreach (var group in classEquipConfig.ChoiceGroups.Where(g => g.Required))

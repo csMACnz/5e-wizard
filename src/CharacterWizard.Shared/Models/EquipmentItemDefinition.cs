@@ -5,7 +5,7 @@ namespace CharacterWizard.Shared.Models;
 public class ItemCost
 {
     [JsonPropertyName("amount")]
-    public int Amount { get; set; }
+    public double Amount { get; set; }
 
     [JsonPropertyName("unit")]
     public string Unit { get; set; } = string.Empty;
