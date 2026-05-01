@@ -95,7 +95,8 @@ public class FightClub5eExporter
         string bgDisplay = bg?.DisplayName ?? string.Empty;
         int speed = race?.Speed ?? 30;
 
-        // Ability scores as comma-separated string: STR,DEX,CON,INT,WIS,CHA,
+        // Ability scores as comma-separated string with trailing comma: STR,DEX,CON,INT,WIS,CHA,
+        // The trailing comma matches the format used by the real FC5e app (e.g. "8,15,12,13,14,10,").
         string abilities = $"{c.AbilityScores.STR.Final},{c.AbilityScores.DEX.Final}," +
                            $"{c.AbilityScores.CON.Final},{c.AbilityScores.INT.Final}," +
                            $"{c.AbilityScores.WIS.Final},{c.AbilityScores.CHA.Final},";
@@ -162,7 +163,8 @@ public class FightClub5eExporter
                 new XElement("text", spellDef.Description)));
         }
 
-        // Features as <feat> elements (FC5e naming)
+        // Features as <feat> elements (FC5e naming). SourceId is stored in <text> because
+        // that is the child element the FC5e format uses for feature description content.
         foreach (var feature in c.Features)
         {
             elements.Add(new XElement("feat",
@@ -191,10 +193,12 @@ public class FightClub5eExporter
         {
             new XElement("name", cls?.DisplayName ?? string.Empty),
             new XElement("level", level),
+            // hd stores the hit die size (e.g. 10 for d10). Default is d8 when class is unknown.
             new XElement("hd", cls?.HitDie ?? 8),
         };
 
-        // Armor, weapon, and tool proficiency text on the first class only
+        // Armor, weapon, and tool proficiency text go on the first class only, as these
+        // are character-wide proficiencies in the FC5e format.
         if (isFirstClass)
         {
             classElements.Add(new XElement("armor", string.Join(", ", proficiencies.Armor)));
