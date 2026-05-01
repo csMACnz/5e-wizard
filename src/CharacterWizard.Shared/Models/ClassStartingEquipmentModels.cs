@@ -72,10 +72,10 @@ public class ClassStartingEquipmentEntry
     public string StartingWealthRoll { get; set; } = string.Empty;
 
     /// <summary>
-    /// Item IDs that every character of this class receives automatically (no choice needed).
+    /// Items (with quantity) that every character of this class receives automatically (no choice needed).
     /// </summary>
-    [JsonPropertyName("fixedItemIds")]
-    public List<string> FixedItemIds { get; set; } = [];
+    [JsonPropertyName("fixedItems")]
+    public List<EquipmentGrantItem> FixedItems { get; set; } = [];
 
     /// <summary>
     /// Mutually exclusive choice groups. For each required group, the player must pick one option.

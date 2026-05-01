@@ -158,7 +158,7 @@ public class StartingEquipmentChoiceValidator
         if (_config == null)
             return [];
 
-        var ids = new HashSet<string>(_config.FixedItemIds);
+        var ids = new HashSet<string>(_config.FixedItems.Select(f => f.ItemId));
         foreach (var group in _config.ChoiceGroups)
             foreach (var option in group.Options)
                 foreach (var grant in option.GrantItems)

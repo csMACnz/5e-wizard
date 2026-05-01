@@ -313,8 +313,8 @@ public class DataDeserializationTests
         var startEquipData = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
         foreach (var entry in startEquipData.Entries)
         {
-            foreach (var fixedId in entry.FixedItemIds)
-                Assert.Contains(fixedId, validItemIds);
+            foreach (var fixedItem in entry.FixedItems)
+                Assert.Contains(fixedItem.ItemId, validItemIds);
 
             foreach (var group in entry.ChoiceGroups)
                 foreach (var option in group.Options)
