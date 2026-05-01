@@ -322,5 +322,62 @@ public class DataDeserializationTests
                         Assert.Contains(grant.ItemId, validItemIds);
         }
     }
+
+    [Fact]
+    public void Feats_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<FeatsData>("feats.json");
+
+        Assert.NotEmpty(data.Feats);
+
+        foreach (var feat in data.Feats)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(feat.Id), $"Feat missing Id: {feat.DisplayName}");
+            Assert.False(string.IsNullOrWhiteSpace(feat.DisplayName), $"Feat missing DisplayName: {feat.Id}");
+            Assert.False(string.IsNullOrWhiteSpace(feat.Source), $"Feat '{feat.Id}' missing Source");
+        }
+    }
+
+    [Fact]
+    public void Feats_Json_AllIdsHaveFeatPrefix()
+    {
+        var data = DeserializeFile<FeatsData>("feats.json");
+
+        foreach (var feat in data.Feats)
+            Assert.True(feat.Id.StartsWith("feat:"), $"Feat Id '{feat.Id}' does not start with 'feat:'");
+    }
+
+    [Fact]
+    public void Feats_Json_AllIdsAreUnique()
+    {
+        var data = DeserializeFile<FeatsData>("feats.json");
+
+        var ids = data.Feats.Select(f => f.Id).ToList();
+        var distinctIds = ids.Distinct().ToList();
+        Assert.True(distinctIds.Count == ids.Count,
+            $"Found {ids.Count - distinctIds.Count} duplicate feat ID(s)");
+    }
+
+    [Fact]
+    public void Feats_Json_KnownFeatsPresent()
+    {
+        var data = DeserializeFile<FeatsData>("feats.json");
+        var featIds = data.Feats.Select(f => f.Id).ToHashSet();
+
+        // Class features
+        Assert.Contains("feat:rage", featIds);
+        Assert.Contains("feat:asi", featIds);
+        Assert.Contains("feat:second-wind", featIds);
+        Assert.Contains("feat:sneak-attack-1d6", featIds);
+
+        // Background features
+        Assert.Contains("feat:shelter-of-the-faithful", featIds);
+        Assert.Contains("feat:military-rank", featIds);
+
+        // General SRD feats
+        Assert.Contains("feat:lucky", featIds);
+        Assert.Contains("feat:alert", featIds);
+        Assert.Contains("feat:tough", featIds);
+    }
 }
 

@@ -72,6 +72,18 @@ public class SchemaValidationTests
     }
 
     [Fact]
+    public async Task FeatsJson_ValidatesAgainstFeatSchema()
+    {
+        var schema = await LoadSchemaAsync("feat.schema.json");
+        var data = LoadDataFile("feats.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"feats.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
     public void DataFiles_HaveRequiredFields()
     {
         var required = new[]

@@ -90,4 +90,40 @@ public class DataIntegrityTests
                 $"class-starting-equipment.json entry has unknown classId '{entry.ClassId}'");
         }
     }
+
+    [Fact]
+    public void Backgrounds_Json_FeatureIdReferencesKnownFeat()
+    {
+        var featData = DeserializeFile<FeatsData>("feats.json");
+        var validFeatIds = featData.Feats.Select(f => f.Id).ToHashSet();
+
+        var bgData = DeserializeFile<BackgroundsData>("backgrounds.json");
+
+        foreach (var bg in bgData.Backgrounds)
+        {
+            Assert.True(validFeatIds.Contains(bg.FeatureId),
+                $"Background '{bg.Id}' featureId '{bg.FeatureId}' is not in feats.json");
+        }
+    }
+
+    [Fact]
+    public void Classes_Json_FeaturesByLevelFeatIdsReferenceKnownFeats()
+    {
+        var featData = DeserializeFile<FeatsData>("feats.json");
+        var validFeatIds = featData.Feats.Select(f => f.Id).ToHashSet();
+
+        var classData = DeserializeFile<ClassesData>("classes.json");
+
+        foreach (var cls in classData.Classes)
+        {
+            foreach (var (level, featIds) in cls.FeaturesByLevel)
+            {
+                foreach (var featId in featIds)
+                {
+                    Assert.True(validFeatIds.Contains(featId),
+                        $"Class '{cls.Id}' level {level} references unknown feat '{featId}'");
+                }
+            }
+        }
+    }
 }
