@@ -83,11 +83,11 @@ FR3 — Data & Customization
 - FR3.4: Seed repository with SRD canonical mechanics (mechanics & minimal flavor).
 
 FR4 — Export / Import / Share
-- FR4.1: Export validated character JSON (schema-backed).
+- FR4.1: Export validated character JSON (schema-backed). The downloaded filename must include the character name and total level (e.g. `thorin-level5.json`).
 - FR4.2: Import to resume or validate existing characters.
 - FR4.3: Printable view (HTML print stylesheet and optional PDF generation client-side).
 - FR4.4: Optional URL state encoding for shareable links (client-side: base64 or compressed state in URL query).
-- FR4.5: On the Review step of the wizard, provide an "Export for FightClub 5e" button that generates and downloads a `.xml` file in the FightClub 5e character XML format. The export is offered regardless of validation state (warnings/errors are shown but do not block download). Only a best-effort mapping of available SRD data is produced; fields without a mapping (e.g. alignment, personality traits) are emitted as empty or default values.
+- FR4.5: On the Review step of the wizard, provide an "Export for FightClub 5e" button that generates and downloads a `.xml` file in the FightClub 5e character XML format. The export is offered regardless of validation state (warnings/errors are shown but do not block download). Only a best-effort mapping of available SRD data is produced; fields without a mapping (e.g. alignment, personality traits) are emitted as empty or default values. The downloaded filename must include the character name and total level (e.g. `thorin-level5.xml`).
 
 FR5 — Hosting & CI/CD
 - FR5.1: Deploy static site to GitHub Pages (repo subpath /5e-wizard).
