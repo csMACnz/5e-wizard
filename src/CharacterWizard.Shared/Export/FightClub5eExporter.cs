@@ -71,7 +71,7 @@ public class FightClub5eExporter
     public string Export(Character character)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
         using (var writer = XmlWriter.Create(sb, settings))
         {

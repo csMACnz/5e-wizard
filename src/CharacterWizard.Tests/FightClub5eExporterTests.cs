@@ -172,7 +172,7 @@ public class FightClub5eExporterTests
     {
         var character = new Character { Name = "Test", TotalLevel = 1, Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }] };
         var xml = CreateExporter().Export(character);
-        Assert.StartsWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>", xml);
+        Assert.StartsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", xml);
     }
 
     [Fact]
