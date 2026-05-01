@@ -67,6 +67,15 @@
         State.SessionId = Guid.NewGuid().ToString("N");
         State.Character = character;
         State.ActiveStep = 7;
+        await SessionService.SaveSessionAsync(new CharacterWizard.Shared.Models.CharacterSession
+        {
+            SessionId = State.SessionId,
+            CharacterName = string.IsNullOrWhiteSpace(character.Name) ? string.Empty : character.Name,
+            CreatedAt = DateTime.UtcNow,
+            LastModifiedAt = DateTime.UtcNow,
+            ActiveStep = State.ActiveStep,
+            Character = State.Character,
+        });
         Navigation.NavigateTo($"wizard?session={State.SessionId}");
     }
 }
