@@ -7,6 +7,7 @@ namespace CharacterWizard.Client.Services;
 /// </summary>
 public sealed class CharacterWizardState
 {
+    public string SessionId { get; set; } = string.Empty;
     public Character Character { get; set; } = new();
     public int ActiveStep { get; set; } = 0;
 

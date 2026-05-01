@@ -2,6 +2,7 @@
 @using CharacterWizard.Client.Services
 @inject CharacterWizardState State
 @inject RandomCharacterService RandomCharacter
+@inject CharacterSessionService SessionService
 @inject NavigationManager Navigation
 
 <PageTitle>5e Character Wizard</PageTitle>
@@ -14,7 +15,8 @@
 
 <MudStack Row="true" Spacing="3" Wrap="Wrap.Wrap">
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-               Href="wizard" StartIcon="@Icons.Material.Filled.AutoStories">
+               StartIcon="@Icons.Material.Filled.AutoStories"
+               OnClick="@StartNewCharacter">
         Start New Character
     </MudButton>
     <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large"
@@ -31,18 +33,42 @@
             <span>Roll Random Character</span>
         }
     </MudButton>
+    @if (_hasSessions)
+    {
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large"
+                   StartIcon="@Icons.Material.Filled.People"
+                   Href="characters">
+            My Characters
+        </MudButton>
+    }
 </MudStack>
 
 @code {
     private bool _rolling;
+    private bool _hasSessions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hasSessions = await SessionService.HasSessionsAsync();
+    }
+
+    private void StartNewCharacter()
+    {
+        State.SessionId = Guid.NewGuid().ToString("N");
+        State.Character = new();
+        State.ActiveStep = 0;
+        Navigation.NavigateTo($"wizard?session={State.SessionId}");
+    }
 
     private async Task RollRandomCharacter()
     {
         _rolling = true;
         var character = await RandomCharacter.GenerateAsync();
+        State.SessionId = Guid.NewGuid().ToString("N");
         State.Character = character;
         State.ActiveStep = 7;
-        Navigation.NavigateTo("wizard");
+        Navigation.NavigateTo($"wizard?session={State.SessionId}");
     }
 }
+
 

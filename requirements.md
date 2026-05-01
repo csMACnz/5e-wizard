@@ -102,6 +102,28 @@ FR6 — UX and Accessibility
 - FR6.3: Theme: D&D-appropriate look (parchment/dark-red/gold), cross-platform friendly.
 - FR6.4: Internationalization-ready (strings in resource files).
 
+FR7 — Session Management and Local Storage
+- FR7.1: Session identifier per character creation.
+  - FR7.1.1: Each new character creation session shall be assigned a unique session identifier (UUID v4) at the moment the wizard is started.
+  - FR7.1.2: The active session identifier shall be reflected in the browser URL as a query parameter (`?session=<id>`), allowing the URL to be bookmarked or shared to resume that session later.
+  - FR7.1.3: Navigating to `/wizard?session=<id>` shall load the saved session from local storage and restore the character state and active step exactly as it was last saved.
+  - FR7.1.4: If a `session` query parameter is present but no matching session exists in local storage, the wizard shall start a fresh character creation session under that session ID (graceful fallback).
+- FR7.2: Automatic persistence to browser local storage.
+  - FR7.2.1: The wizard shall automatically save the current character state and active step to browser local storage whenever the user advances, goes back, or commits changes in any step.
+  - FR7.2.2: Each session shall be stored as a JSON object under the key `5ew_session_<sessionId>` in localStorage, containing the session ID, character name (for display in the list), creation timestamp, last-modified timestamp, active step, and the full `Character` object.
+  - FR7.2.3: A session index (an ordered list of session IDs) shall be maintained in localStorage under the key `5ew_sessions` to allow enumeration without scanning all localStorage keys.
+  - FR7.2.4: Local storage operations shall be non-blocking and shall not affect wizard step performance (NFR2 still applies).
+- FR7.3: Character session list screen.
+  - FR7.3.1: A dedicated "My Characters" page shall be accessible at `/characters`, linked from the landing page.
+  - FR7.3.2: The page shall list all character sessions stored in local storage, displaying: character name (or "Unnamed Character" if blank), creation date, last-modified date, and current wizard step reached.
+  - FR7.3.3: Each session entry shall provide a "Resume" button/link that navigates to `/wizard?session=<id>` to continue that session.
+  - FR7.3.4: Each session entry shall provide a "Delete" button to remove the session from local storage, with a confirmation prompt before deletion.
+  - FR7.3.5: The list shall be ordered by last-modified date, most recent first.
+  - FR7.3.6: When no sessions exist, the page shall display a friendly empty-state message with a "Start New Character" button.
+- FR7.4: Landing page integration.
+  - FR7.4.1: The landing page shall display a "My Characters" button/link when one or more saved sessions exist in local storage, navigating to `/characters`.
+  - FR7.4.2: The "Start New Character" button on the landing page shall always create a new session (a fresh UUID), ensuring an existing in-progress session is not overwritten.
+
 Non-functional Requirements (NFR)
 - NFR1: Client-only operation (works offline after initial page load).
 - NFR2: Fast: typical step response < 300 ms on common desktops.

@@ -1,0 +1,149 @@
+@page "/characters"
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject CharacterSessionService SessionService
+@inject CharacterWizardState State
+@inject NavigationManager Nav
+
+<PageTitle>My Characters — 5e Character Wizard</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">My Characters</MudText>
+<MudText Class="mb-4">Your saved character sessions are stored locally in this browser.</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+}
+else if (_sessions.Count == 0)
+{
+    <MudPaper Elevation="1" Class="pa-6 text-center">
+        <MudIcon Icon="@Icons.Material.Filled.PersonOff" Size="Size.Large" Class="mb-2" Color="Color.Default" />
+        <MudText Typo="Typo.h6" Class="mb-2">No saved characters yet.</MudText>
+        <MudText Class="mb-4">Start the wizard to create your first character!</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AutoStories"
+                   OnClick="@StartNew">
+            Start New Character
+        </MudButton>
+    </MudPaper>
+}
+else
+{
+    <MudStack Spacing="3">
+        @foreach (var session in _sessions)
+        {
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudGrid>
+                    <MudItem xs="12" sm="7">
+                        <MudText Typo="Typo.h6">
+                            @(string.IsNullOrWhiteSpace(session.CharacterName) ? "Unnamed Character" : session.CharacterName)
+                        </MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            Session: @session.SessionId
+                        </MudText>
+                        <MudStack Row="true" Spacing="3" Class="mt-1">
+                            <MudText Typo="Typo.body2">
+                                <strong>Created:</strong> @session.CreatedAt.ToLocalTime().ToString("g")
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                <strong>Last saved:</strong> @session.LastModifiedAt.ToLocalTime().ToString("g")
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                <strong>Step:</strong> @(session.ActiveStep + 1) / 8
+                            </MudText>
+                        </MudStack>
+                    </MudItem>
+                    <MudItem xs="12" sm="5">
+                        <MudStack Row="true" Spacing="2" Justify="Justify.FlexEnd">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.PlayArrow"
+                                       OnClick="@(() => ResumeSession(session.SessionId))">
+                                Resume
+                            </MudButton>
+                            <MudButton Variant="Variant.Outlined" Color="Color.Error"
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       OnClick="@(() => ConfirmDelete(session))">
+                                Delete
+                            </MudButton>
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        }
+    </MudStack>
+
+    <MudStack Row="true" Spacing="3" Class="mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AutoStories"
+                   OnClick="@StartNew">
+            Start New Character
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Href="/">
+            Back to Home
+        </MudButton>
+    </MudStack>
+}
+
+<MudDialog @bind-Visible="_deleteDialogVisible" Options="@(new DialogOptions { CloseOnEscapeKey = true })">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Delete Character Session?</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>
+            Are you sure you want to delete
+            <strong>@(string.IsNullOrWhiteSpace(_sessionToDelete?.CharacterName) ? "Unnamed Character" : _sessionToDelete?.CharacterName)</strong>?
+            This cannot be undone.
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@CancelDelete">Cancel</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@DeleteConfirmed">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private bool _loading = true;
+    private List<CharacterSession> _sessions = [];
+    private bool _deleteDialogVisible = false;
+    private CharacterSession? _sessionToDelete;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _sessions = await SessionService.LoadAllSessionsAsync();
+        _loading = false;
+    }
+
+    private void StartNew()
+    {
+        State.SessionId = Guid.NewGuid().ToString("N");
+        State.Character = new();
+        State.ActiveStep = 0;
+        Nav.NavigateTo($"wizard?session={State.SessionId}");
+    }
+
+    private void ResumeSession(string sessionId)
+    {
+        Nav.NavigateTo($"wizard?session={sessionId}");
+    }
+
+    private void ConfirmDelete(CharacterSession session)
+    {
+        _sessionToDelete = session;
+        _deleteDialogVisible = true;
+    }
+
+    private void CancelDelete()
+    {
+        _deleteDialogVisible = false;
+        _sessionToDelete = null;
+    }
+
+    private async Task DeleteConfirmed()
+    {
+        if (_sessionToDelete is not null)
+        {
+            await SessionService.DeleteSessionAsync(_sessionToDelete.SessionId);
+            _sessions.Remove(_sessionToDelete);
+        }
+        _deleteDialogVisible = false;
+        _sessionToDelete = null;
+    }
+}

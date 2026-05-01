@@ -8,6 +8,7 @@
 @inject CharacterWizardState State
 @inject IJSRuntime JS
 @inject NavigationManager Nav
+@inject CharacterSessionService SessionService
 
 <PageTitle>Character Wizard</PageTitle>
 
@@ -33,7 +34,7 @@ else
                         Icon="@(isDone ? Icons.Material.Filled.CheckCircle : isActive ? Icons.Material.Filled.RadioButtonChecked : Icons.Material.Outlined.RadioButtonUnchecked)"
                         Color="@(isActive ? Color.Primary : isDone ? Color.Success : Color.Default)"
                         Size="Size.Medium"
-                        OnClick="@(() => TryGoToStep(idx))"
+                        OnClick="@(async () => await TryGoToStep(idx))"
                         aria-label="@($"Step {idx + 1}: {_steps[idx]}")" />
                     <MudText Typo="Typo.caption"
                              Color="@(isActive ? Color.Primary : isDone ? Color.Success : Color.Default)"
@@ -1006,6 +1007,10 @@ else
     private ValidationResult? _reviewValidation;
     private List<string> _stepErrors = [];
 
+    // ── Session ───────────────────────────────────────────────────────────
+    [SupplyParameterFromQuery(Name = "session")]
+    public string? SessionQueryParam { get; set; }
+
     // ── Step 1 state ─────────────────────────────────────────────────────
     private string _characterName = string.Empty;
     private string _playerName = string.Empty;
@@ -1065,8 +1070,56 @@ else
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
         _loading = false;
+
+        await InitialiseSessionAsync();
         RestoreFromState();
         if (_activeStep == 7) RunReviewValidation();
+    }
+
+    private async Task InitialiseSessionAsync()
+    {
+        if (!string.IsNullOrEmpty(SessionQueryParam))
+        {
+            // Try to resume an existing session from localStorage
+            var saved = await SessionService.LoadSessionAsync(SessionQueryParam);
+            if (saved is not null)
+            {
+                State.SessionId = saved.SessionId;
+                State.Character = saved.Character;
+                State.ActiveStep = saved.ActiveStep;
+                return;
+            }
+            // Session ID provided but not found — start fresh under that ID
+            State.SessionId = SessionQueryParam;
+        }
+        else if (string.IsNullOrEmpty(State.SessionId))
+        {
+            // No session param and no existing session — assign a new ID and update URL
+            State.SessionId = Guid.NewGuid().ToString("N");
+        }
+
+        // Reflect the session ID in the URL so it can be bookmarked
+        Nav.NavigateTo($"wizard?session={State.SessionId}", replace: true);
+    }
+
+    private async Task SaveSessionAsync()
+    {
+        var session = new CharacterSession
+        {
+            SessionId = State.SessionId,
+            CharacterName = string.IsNullOrWhiteSpace(State.Character.Name) ? string.Empty : State.Character.Name,
+            CreatedAt = DateTime.UtcNow,
+            LastModifiedAt = DateTime.UtcNow,
+            ActiveStep = State.ActiveStep,
+            Character = State.Character,
+        };
+
+        // Preserve original CreatedAt if session already exists
+        var existing = await SessionService.LoadSessionAsync(State.SessionId);
+        if (existing is not null)
+            session.CreatedAt = existing.CreatedAt;
+
+        await SessionService.SaveSessionAsync(session);
     }
 
     private void RestoreFromState()
@@ -1755,17 +1808,18 @@ else
     }
 
     // ── Navigation ────────────────────────────────────────────────────────
-    private void GoBack()
+    private async Task GoBack()
     {
         if (_activeStep > 0)
         {
             _activeStep--;
             State.ActiveStep = _activeStep;
             _stepErrors = ValidateStep(_activeStep).Errors;
+            await SaveSessionAsync();
         }
     }
 
-    private void GoNext()
+    private async Task GoNext()
     {
         var valid = ValidateStep(_activeStep);
         _stepErrors = valid.Errors;
@@ -1781,10 +1835,12 @@ else
 
             if (_activeStep == 4) SyncClassSkillOptions();
             if (_activeStep == 7) RunReviewValidation();
+
+            await SaveSessionAsync();
         }
     }
 
-    private void TryGoToStep(int idx)
+    private async Task TryGoToStep(int idx)
     {
         if (idx <= _activeStep)
         {
@@ -1792,6 +1848,7 @@ else
             State.ActiveStep = _activeStep;
             _stepErrors = [];
             if (_activeStep == 7) RunReviewValidation();
+            await SaveSessionAsync();
         }
     }
 
