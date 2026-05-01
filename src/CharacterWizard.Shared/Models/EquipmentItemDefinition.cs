@@ -30,6 +30,15 @@ public class EquipmentItemDefinition
 
     [JsonPropertyName("weight")]
     public double Weight { get; set; }
+
+    [JsonPropertyName("damage")]
+    public string? Damage { get; set; }
+
+    [JsonPropertyName("damageType")]
+    public string? DamageType { get; set; }
+
+    [JsonPropertyName("properties")]
+    public List<string> Properties { get; set; } = [];
 }
 
 public class EquipmentData

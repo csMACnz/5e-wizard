@@ -57,8 +57,501 @@ html, body {
     }
 
     .print-sheet {
-        padding: 0.5rem;
-        font-size: 11pt;
+        padding: 0;
+        font-size: 9pt;
+    }
+
+    @page {
+        size: letter portrait;
+        margin: 1cm;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+}
+
+/* ============================================================
+   Print Sheet Layout
+   ============================================================ */
+
+/* Sheet container */
+.print-sheet {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    color: #111;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.sheet-page {
+    padding: 0.5rem;
+    border: 1px solid #aaa;
+    margin-bottom: 1rem;
+}
+
+.sheet-title {
+    font-size: 14pt;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.2rem;
+}
+
+/* ── Section 1: Identity Header ─────────────────────────── */
+.identity-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.id-box {
+    border: 1px solid #999;
+    padding: 0.2rem 0.4rem;
+    min-width: 100px;
+    flex: 1 1 120px;
+}
+
+.id-label {
+    font-size: 7pt;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.id-value {
+    font-size: 10pt;
+    font-weight: 600;
+}
+
+.id-value--lg {
+    font-size: 12pt;
+}
+
+/* ── Section 2: Three-Column Band ────────────────────────── */
+.three-col-band {
+    display: grid;
+    grid-template-columns: 160px 130px 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    align-items: start;
+}
+
+.col-heading {
+    font-size: 8pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #999;
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.1rem;
+}
+
+.mt-1 { margin-top: 0.4rem; }
+.mt-2 { margin-top: 0.6rem; }
+
+/* Column A – Ability Scores */
+.ability-col {
+    border: 1px solid #ccc;
+    padding: 0.3rem;
+}
+
+.ability-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.25rem;
+}
+
+.ability-score-box {
+    border: 1px solid #999;
+    text-align: center;
+    width: 52px;
+    padding: 0.15rem;
+    flex-shrink: 0;
+}
+
+.ability-name {
+    font-size: 7pt;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.ability-score {
+    font-size: 15pt;
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.ability-mod {
+    font-size: 9pt;
+    color: #333;
+}
+
+.save-box {
+    font-size: 9pt;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.save-label {
+    color: #555;
+}
+
+.save-bonus {
+    font-weight: bold;
+}
+
+.prof-dot {
+    font-size: 9pt;
+    flex-shrink: 0;
+}
+
+/* Column B – Combat Stats */
+.combat-col {
+    border: 1px solid #ccc;
+    padding: 0.3rem;
+}
+
+.stat-box {
+    border: 1px solid #bbb;
+    padding: 0.2rem 0.3rem;
+    margin-bottom: 0.2rem;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 7pt;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 14pt;
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.stat-value--sm {
+    font-size: 10pt;
+}
+
+.stat-note {
+    font-size: 7pt;
+    color: #888;
+    font-style: italic;
+}
+
+.stat-box--hp .stat-value {
+    color: #800000;
+}
+
+.death-saves {
+    font-size: 9pt;
+    text-align: left;
+}
+
+.ds-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9pt;
+}
+
+.ds-label {
+    color: #555;
+    font-size: 8pt;
+}
+
+.ds-boxes {
+    letter-spacing: 0.1em;
+}
+
+/* Column C – Skills */
+.skill-col {
+    border: 1px solid #ccc;
+    padding: 0.3rem;
+}
+
+.skill-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 9pt;
+    line-height: 1.5;
+}
+
+.skill-bonus {
+    font-weight: bold;
+    min-width: 2.2em;
+    text-align: right;
+}
+
+.skill-name {
+    flex: 1;
+}
+
+.skill-ab {
+    color: #666;
+    font-size: 8pt;
+}
+
+/* ── Section 3: Bottom Band ──────────────────────────────── */
+.bottom-band {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.prof-lang-col,
+.equip-col {
+    border: 1px solid #ccc;
+    padding: 0.3rem;
+}
+
+.prof-group {
+    margin-bottom: 0.2rem;
+}
+
+.prof-group-label {
+    font-size: 7pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #555;
+}
+
+.prof-group-value {
+    font-size: 9pt;
+}
+
+/* Weapon table */
+.weapon-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-bottom: 0.3rem;
+}
+
+.weapon-table th {
+    border-bottom: 1px solid #999;
+    font-size: 7pt;
+    text-transform: uppercase;
+    color: #555;
+    padding: 0.1rem 0.2rem;
+    text-align: left;
+}
+
+.weapon-table td {
+    padding: 0.1rem 0.2rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* Equipment list */
+.equip-list {
+    font-size: 9pt;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+}
+
+.equip-item {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 0.05rem 0.3rem;
+    white-space: nowrap;
+}
+
+/* ── Section 4: Features ─────────────────────────────────── */
+.features-section {
+    border: 1px solid #ccc;
+    padding: 0.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.features-list {
+    font-size: 9pt;
+    line-height: 1.5;
+}
+
+.feature-item {
+    font-weight: 600;
+}
+
+.feature-source {
+    color: #666;
+    font-size: 8pt;
+}
+
+.feature-sep {
+    color: #aaa;
+}
+
+/* ── Page 2: Spellcasting ────────────────────────────────── */
+.spell-class-block {
+    margin-bottom: 0.8rem;
+}
+
+.spell-class-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.spell-class-name {
+    font-size: 13pt;
+    font-weight: bold;
+    flex: 0 0 auto;
+}
+
+.spell-stats {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.spell-stat-box {
+    border: 1px solid #999;
+    padding: 0.2rem 0.4rem;
+    text-align: center;
+    min-width: 90px;
+}
+
+.spell-stat-label {
+    font-size: 7pt;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.spell-stat-value {
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+/* Spell Slots */
+.spell-slots-section {
+    margin-bottom: 0.4rem;
+}
+
+.spell-slots-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.slot-level-box {
+    border: 1px solid #999;
+    padding: 0.2rem 0.4rem;
+    text-align: center;
+    min-width: 55px;
+}
+
+.slot-level-num {
+    font-size: 8pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #555;
+}
+
+.slot-checkboxes {
+    font-size: 10pt;
+    letter-spacing: 0.1em;
+}
+
+.slot-box {
+    margin-right: 1px;
+}
+
+/* Cantrips */
+.cantrip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.3rem;
+    margin-bottom: 0.4rem;
+}
+
+/* Leveled spells */
+.spell-level-heading {
+    font-size: 10pt;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    margin: 0.4rem 0 0.2rem;
+}
+
+.spell-level-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+}
+
+.spell-card {
+    border: 1px solid #ddd;
+    padding: 0.2rem 0.3rem;
+    font-size: 8.5pt;
+}
+
+.spell-card--prepared {
+    border-color: #4a7c59;
+    background: #f0fff4;
+}
+
+.cantrip-card {
+    background: #f8f8f8;
+}
+
+.spell-card-name {
+    font-weight: bold;
+    line-height: 1.3;
+}
+
+.spell-tag {
+    font-size: 7.5pt;
+    background: #ddd;
+    border-radius: 2px;
+    padding: 0 2px;
+    margin-left: 2px;
+}
+
+.spell-tag--prep {
+    background: #4a7c59;
+    color: white;
+}
+
+.spell-card-meta {
+    color: #555;
+    font-size: 7.5pt;
+}
+
+.spell-card-line {
+    font-size: 7.5pt;
+    color: #333;
+}
+
+.no-spells-note {
+    font-size: 9pt;
+    color: #888;
+    font-style: italic;
+}
+
+/* ── Screen preview adjustments ──────────────────────────── */
+@media screen {
+    .print-sheet {
+        padding: 1rem;
+    }
+
+    .sheet-page {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .page-break {
+        margin-top: 2rem;
+        border-top: 3px dashed #aaa;
+        padding-top: 0.5rem;
     }
 }
 

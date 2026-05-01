@@ -16,8 +16,12 @@ else
     var c = State.Character;
     var race = _races.FirstOrDefault(r => r.Id == c.RaceId);
     var bg = _backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
+    int profBonus = ProficiencyBonus(c.TotalLevel);
+    var saveProfSet = GetSaveProficiencies(c);
+    bool isSpellcaster = IsSpellcaster(c);
 
     <div class="print-sheet">
+        <!-- Screen-only toolbar -->
         <MudStack Row="true" Spacing="2" Class="mb-3 no-print" Justify="Justify.FlexEnd">
             <MudButton Variant="Variant.Outlined" Color="Color.Default"
                        StartIcon="@Icons.Material.Filled.ArrowBack"
@@ -31,162 +35,426 @@ else
             </MudButton>
         </MudStack>
 
-        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-1">D&amp;D 5e Character Sheet</MudText>
-        <MudDivider Class="mb-4" />
+        <!-- ============================================================ -->
+        <!-- PAGE 1 — Core Character Sheet                                -->
+        <!-- ============================================================ -->
 
-        <!-- Header: Identity -->
-        <MudGrid Class="mb-4">
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                    <MudText Typo="Typo.caption">Character Name</MudText>
-                    <MudText Typo="Typo.h6">@(c.Name is { Length: > 0 } ? c.Name : "—")</MudText>
-                </MudPaper>
-            </MudItem>
-            @if (!string.IsNullOrEmpty(c.PlayerName))
-            {
-                <MudItem xs="12" sm="6" md="4">
-                    <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                        <MudText Typo="Typo.caption">Player Name</MudText>
-                        <MudText Typo="Typo.body1">@c.PlayerName</MudText>
-                    </MudPaper>
-                </MudItem>
-            }
-            @if (!string.IsNullOrEmpty(c.Campaign))
-            {
-                <MudItem xs="12" sm="6" md="4">
-                    <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                        <MudText Typo="Typo.caption">Campaign</MudText>
-                        <MudText Typo="Typo.body1">@c.Campaign</MudText>
-                    </MudPaper>
-                </MudItem>
-            }
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                    <MudText Typo="Typo.caption">Race</MudText>
-                    <MudText Typo="Typo.body1">
+        <div class="sheet-page">
+            <div class="sheet-title">D&amp;D 5e Character Sheet</div>
+
+            <!-- SECTION 1: Identity Header -->
+            <div class="identity-header">
+                <div class="id-box">
+                    <div class="id-label">Character Name</div>
+                    <div class="id-value id-value--lg">@(c.Name is { Length: > 0 } ? c.Name : "—")</div>
+                </div>
+                <div class="id-box">
+                    <div class="id-label">Class &amp; Level</div>
+                    <div class="id-value">
+                        @string.Join(", ", c.Levels.Select(l =>
+                        {
+                            var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
+                            return $"{cls?.DisplayName ?? l.ClassId} {l.Level}";
+                        }))
+                    </div>
+                </div>
+                <div class="id-box">
+                    <div class="id-label">Race</div>
+                    <div class="id-value">
                         @(race?.DisplayName ?? c.RaceId)
                         @if (!string.IsNullOrEmpty(c.SubraceId))
                         {
                             var sub = race?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
                             <span> (@(sub?.DisplayName ?? c.SubraceId))</span>
                         }
-                    </MudText>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                    <MudText Typo="Typo.caption">Class(es)</MudText>
-                    <MudText Typo="Typo.body1">
-                        @string.Join(", ", c.Levels.Select(l =>
-                        {
-                            var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
-                            return $"{cls?.DisplayName ?? l.ClassId} {l.Level}";
-                        }))
-                    </MudText>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                    <MudText Typo="Typo.caption">Background</MudText>
-                    <MudText Typo="Typo.body1">@(bg?.DisplayName ?? c.BackgroundId)</MudText>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="0" Class="pa-2" Style="border:1px solid #ccc;">
-                    <MudText Typo="Typo.caption">Total Level</MudText>
-                    <MudText Typo="Typo.h6">@c.TotalLevel</MudText>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
-
-        <!-- Ability Scores -->
-        <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>Ability Scores</strong></MudText>
-        <MudGrid Class="mb-4">
-            @foreach (var ab in _abilities)
-            {
-                var block = GetBlock(c, ab);
-                <MudItem xs="4" sm="2">
-                    <MudPaper Elevation="1" Class="pa-2 text-center">
-                        <MudText Typo="Typo.caption">@ab</MudText>
-                        <MudText Typo="Typo.h5">@block.Final</MudText>
-                        <MudText Typo="Typo.caption" Color="Color.Secondary">
-                            mod @Modifier(block.Final)
-                        </MudText>
-                        @if (block.RacialBonus != 0)
-                        {
-                            <MudText Typo="Typo.caption">(+@block.RacialBonus racial)</MudText>
-                        }
-                    </MudPaper>
-                </MudItem>
-            }
-        </MudGrid>
-
-        <!-- Skills -->
-        @if (c.Skills.Count > 0)
-        {
-            <MudText Typo="Typo.subtitle1" Class="mb-1"><strong>Skill Proficiencies</strong></MudText>
-            <MudChipSet T="string" Class="mb-4">
-                @foreach (var (skill, source) in c.Skills)
+                    </div>
+                </div>
+                <div class="id-box">
+                    <div class="id-label">Background</div>
+                    <div class="id-value">@(bg?.DisplayName ?? c.BackgroundId)</div>
+                </div>
+                @if (!string.IsNullOrEmpty(c.PlayerName))
                 {
-                    <MudChip T="string" Color="Color.Primary" Size="Size.Small">
-                        @SkillLabel(skill) (@source)
-                    </MudChip>
+                    <div class="id-box">
+                        <div class="id-label">Player Name</div>
+                        <div class="id-value">@c.PlayerName</div>
+                    </div>
                 }
-            </MudChipSet>
-        }
+                @if (!string.IsNullOrEmpty(c.Campaign))
+                {
+                    <div class="id-box">
+                        <div class="id-label">Campaign</div>
+                        <div class="id-value">@c.Campaign</div>
+                    </div>
+                }
+                <div class="id-box">
+                    <div class="id-label">Experience</div>
+                    <div class="id-value">—</div>
+                </div>
+                <div class="id-box">
+                    <div class="id-label">Alignment</div>
+                    <div class="id-value">—</div>
+                </div>
+            </div>
 
-        <!-- Spells -->
-        @if (c.Spells.Count > 0)
-        {
-            <MudText Typo="Typo.subtitle1" Class="mb-1"><strong>Spells</strong></MudText>
-            @foreach (var grp in c.Spells.GroupBy(s => s.ClassId))
-            {
-                var cls = _classes.FirstOrDefault(cl => cl.Id == grp.Key);
-                <MudText Typo="Typo.subtitle2" Class="mt-2">@(cls?.DisplayName ?? grp.Key)</MudText>
-                <MudGrid Class="mb-2">
-                    @foreach (var cs in grp.OrderBy(s => _spells.FirstOrDefault(sp => sp.Id == s.SpellId)?.Level ?? 0))
+            <!-- SECTION 2: Three-Column Band -->
+            <div class="three-col-band">
+
+                <!-- Column A: Ability Scores & Saving Throws -->
+                <div class="ability-col">
+                    <div class="col-heading">Abilities &amp; Saves</div>
+                    @foreach (var ab in _abilities)
                     {
-                        var spellDef = _spells.FirstOrDefault(s => s.Id == cs.SpellId);
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudPaper Elevation="0" Class="pa-1" Style="border:1px solid #eee;">
-                                <MudText Typo="Typo.body2">
-                                    <strong>@(spellDef?.DisplayName ?? cs.SpellId)</strong>
-                                    @if (spellDef != null)
-                                    {
-                                        <span> — @(spellDef.Level == 0 ? "Cantrip" : $"Level {spellDef.Level}")</span>
-                                        <span> (@spellDef.School)</span>
-                                    }
-                                </MudText>
-                                @if (spellDef != null)
-                                {
-                                    <MudText Typo="Typo.caption">
-                                        @spellDef.CastingTime | @spellDef.Range | @spellDef.Duration
-                                        @if (spellDef.Concentration) { <span> | Concentration</span> }
-                                        @if (spellDef.Ritual) { <span> | Ritual</span> }
-                                    </MudText>
-                                }
-                            </MudPaper>
-                        </MudItem>
+                        var block = GetBlock(c, ab);
+                        int mod = Modifier(block.Final);
+                        bool saveProficient = saveProfSet.Contains(ab);
+                        int saveBonus = mod + (saveProficient ? profBonus : 0);
+                        <div class="ability-row">
+                            <div class="ability-score-box">
+                                <div class="ability-name">@ab</div>
+                                <div class="ability-score">@block.Final</div>
+                                <div class="ability-mod">@FormatBonus(mod)</div>
+                            </div>
+                            <div class="save-box">
+                                <span class="prof-dot">@(saveProficient ? "●" : "○")</span>
+                                <span class="save-label">Save</span>
+                                <span class="save-bonus">@FormatBonus(saveBonus)</span>
+                            </div>
+                        </div>
                     }
-                </MudGrid>
+                </div>
+
+                <!-- Column B: Combat Stats -->
+                <div class="combat-col">
+                    <div class="col-heading">Combat &amp; Stats</div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Proficiency Bonus</div>
+                        <div class="stat-value">@FormatBonus(profBonus)</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Initiative</div>
+                        <div class="stat-value">@FormatBonus(Modifier(c.AbilityScores.DEX.Final))</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Speed</div>
+                        <div class="stat-value">@(race?.Speed ?? 30) ft.</div>
+                    </div>
+
+                    <div class="stat-box stat-box--hp">
+                        <div class="stat-label">Max HP</div>
+                        <div class="stat-value">@CalculateMaxHp(c)</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Hit Dice</div>
+                        <div class="stat-value stat-value--sm">
+                            @string.Join(" + ", c.Levels.Select(l =>
+                            {
+                                var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
+                                int hd = cls?.HitDie ?? 8;
+                                return $"{l.Level}d{hd}";
+                            }))
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Armor Class</div>
+                        <div class="stat-value">@(10 + Modifier(c.AbilityScores.DEX.Final))</div>
+                        <div class="stat-note">unarmored</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Passive Perception</div>
+                        <div class="stat-value">@PassivePerception(c, profBonus)</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label">Death Saves</div>
+                        <div class="death-saves">
+                            <div class="ds-row">
+                                <span class="ds-label">Successes</span>
+                                <span class="ds-boxes">☐ ☐ ☐</span>
+                            </div>
+                            <div class="ds-row">
+                                <span class="ds-label">Failures</span>
+                                <span class="ds-boxes">☐ ☐ ☐</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column C: Skills -->
+                <div class="skill-col">
+                    <div class="col-heading">Skills</div>
+                    @foreach (var (skillId, skillAb) in _skillAbilityMap)
+                    {
+                        bool proficient = c.Skills.ContainsKey(skillId);
+                        int abilityMod = Modifier(GetAbilityScore(c, skillAb));
+                        int bonus = abilityMod + (proficient ? profBonus : 0);
+                        <div class="skill-row">
+                            <span class="prof-dot">@(proficient ? "●" : "○")</span>
+                            <span class="skill-bonus">@FormatBonus(bonus)</span>
+                            <span class="skill-name">@SkillLabel(skillId)</span>
+                            <span class="skill-ab">(@skillAb)</span>
+                        </div>
+                    }
+                </div>
+
+            </div><!-- end three-col-band -->
+
+            <!-- SECTION 3: Bottom Band -->
+            <div class="bottom-band">
+
+                <!-- Left: Proficiencies & Languages -->
+                <div class="prof-lang-col">
+                    <div class="col-heading">Proficiencies &amp; Languages</div>
+
+                    @if (c.Proficiencies.Armor.Count > 0)
+                    {
+                        <div class="prof-group">
+                            <div class="prof-group-label">Armor</div>
+                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Armor)</div>
+                        </div>
+                    }
+                    @if (c.Proficiencies.Weapons.Count > 0)
+                    {
+                        <div class="prof-group">
+                            <div class="prof-group-label">Weapons</div>
+                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Weapons)</div>
+                        </div>
+                    }
+                    @if (c.Proficiencies.Tools.Count > 0)
+                    {
+                        <div class="prof-group">
+                            <div class="prof-group-label">Tools</div>
+                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Tools)</div>
+                        </div>
+                    }
+                    @if (c.Proficiencies.Languages.Count > 0)
+                    {
+                        <div class="prof-group">
+                            <div class="prof-group-label">Languages</div>
+                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Languages)</div>
+                        </div>
+                    }
+                    @if (c.Proficiencies.Armor.Count == 0 && c.Proficiencies.Weapons.Count == 0 &&
+                         c.Proficiencies.Tools.Count == 0 && c.Proficiencies.Languages.Count == 0)
+                    {
+                        <div class="prof-group-value">—</div>
+                    }
+                </div>
+
+                <!-- Right: Weapons & Equipment -->
+                <div class="equip-col">
+                    @{
+                        var weapons = c.Equipment
+                            .Select(eq => (eq, def: _equipment.FirstOrDefault(e => e.Id == eq.ItemId)))
+                            .Where(x => x.def?.Category == "weapon")
+                            .ToList();
+                    }
+                    @if (weapons.Count > 0)
+                    {
+                        <div class="col-heading">Weapons</div>
+                        <table class="weapon-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Atk Bonus</th>
+                                    <th>Damage / Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var (eq, def) in weapons)
+                                {
+                                    bool finesse = def?.Properties.Contains("finesse") ?? false;
+                                    bool ranged = def?.Subcategory.Contains("ranged") ?? false;
+                                    int strMod = Modifier(c.AbilityScores.STR.Final);
+                                    int dexMod = Modifier(c.AbilityScores.DEX.Final);
+                                    int atkMod = (finesse || ranged) ? Math.Max(strMod, dexMod) : strMod;
+                                    int atkBonus = atkMod + profBonus;
+                                    <tr>
+                                        <td>@(def?.DisplayName ?? eq.ItemId)</td>
+                                        <td>@FormatBonus(atkBonus)</td>
+                                        <td>@(def?.Damage ?? "—") @(def?.DamageType is { Length: > 0 } dt ? $"({dt})" : "")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    @if (c.Equipment.Count > 0)
+                    {
+                        <div class="col-heading @(weapons.Count > 0 ? "mt-2" : "")">Equipment</div>
+                        <div class="equip-list">
+                            @foreach (var eq in c.Equipment)
+                            {
+                                var itemDef = _equipment.FirstOrDefault(e => e.Id == eq.ItemId);
+                                <span class="equip-item">@(itemDef?.DisplayName ?? eq.ItemId) ×@eq.Quantity</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+            </div><!-- end bottom-band -->
+
+            <!-- SECTION 4: Features -->
+            @if (c.Features.Count > 0)
+            {
+                <div class="features-section">
+                    <div class="col-heading">Features &amp; Traits</div>
+                    <div class="features-list">
+                        @foreach (var feat in c.Features)
+                        {
+                            <span class="feature-item">@(feat.DisplayOverride ?? feat.FeatureId)</span>
+                            <span class="feature-source"> (@feat.SourceId)</span>
+                            @if (feat != c.Features[^1])
+                            {
+                                <span class="feature-sep"> · </span>
+                            }
+                        }
+                    </div>
+                </div>
             }
+
+        </div><!-- end sheet-page (page 1) -->
+
+        <!-- ============================================================ -->
+        <!-- PAGE 2 — Spellcasting Sheet (Spellcasters only)             -->
+        <!-- ============================================================ -->
+
+        @if (isSpellcaster)
+        {
+            <div class="sheet-page page-break">
+                <div class="sheet-title">Spellcasting</div>
+
+                @foreach (var classLevel in c.Levels)
+                {
+                    var spellCls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+                    if (spellCls?.Spellcasting == null) continue;
+
+                    var sc = spellCls.Spellcasting;
+                    int scAbMod = SpellcastingAbilityMod(sc, c);
+                    int spellSaveDC = 8 + profBonus + scAbMod;
+                    int spellAtkBonus = profBonus + scAbMod;
+
+                    var classSpells = c.Spells.Where(s => s.ClassId == classLevel.ClassId).ToList();
+                    var cantrips = classSpells
+                        .Select(cs => _spells.FirstOrDefault(s => s.Id == cs.SpellId))
+                        .Where(s => s?.Level == 0)
+                        .OrderBy(s => s!.DisplayName)
+                        .ToList();
+                    var leveled = classSpells
+                        .Select(cs => (cs, def: _spells.FirstOrDefault(s => s.Id == cs.SpellId)))
+                        .Where(x => x.def?.Level > 0)
+                        .OrderBy(x => x.def!.Level)
+                        .ThenBy(x => x.def!.DisplayName)
+                        .ToList();
+
+                    <div class="spell-class-block">
+
+                        <!-- Spellcasting header -->
+                        <div class="spell-class-header">
+                            <div class="spell-class-name">@spellCls.DisplayName</div>
+                            <div class="spell-stats">
+                                <div class="spell-stat-box">
+                                    <div class="spell-stat-label">Spellcasting Ability</div>
+                                    <div class="spell-stat-value">@sc.SpellcastingAbility</div>
+                                </div>
+                                <div class="spell-stat-box">
+                                    <div class="spell-stat-label">Spell Save DC</div>
+                                    <div class="spell-stat-value">@spellSaveDC</div>
+                                </div>
+                                <div class="spell-stat-box">
+                                    <div class="spell-stat-label">Spell Attack Bonus</div>
+                                    <div class="spell-stat-value">@FormatBonus(spellAtkBonus)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spell Slots -->
+                        <div class="spell-slots-section">
+                            <div class="col-heading">Spell Slots</div>
+                            <div class="spell-slots-grid">
+                                @for (int lvl = 1; lvl <= 9; lvl++)
+                                {
+                                    int maxSlots = GetMaxSlots(c.TotalLevel, lvl, sc.CastingType);
+                                    if (maxSlots > 0)
+                                    {
+                                        int slotLvl = lvl;
+                                        <div class="slot-level-box">
+                                            <div class="slot-level-num">@LevelOrdinal(slotLvl)</div>
+                                            <div class="slot-checkboxes">
+                                                @for (int i = 0; i < maxSlots; i++)
+                                                {
+                                                    <span class="slot-box">☐</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Cantrips -->
+                        @if (cantrips.Count > 0)
+                        {
+                            <div class="col-heading mt-1">Cantrips (Level 0)</div>
+                            <div class="cantrip-grid">
+                                @foreach (var s in cantrips)
+                                {
+                                    <div class="spell-card cantrip-card">
+                                        <div class="spell-card-name">@s!.DisplayName</div>
+                                        <div class="spell-card-meta">
+                                            @s.School · @ComponentsShort(s.Components)
+                                            @if (s.Ritual) { <span> [R]</span> }
+                                        </div>
+                                        <div class="spell-card-line">@s.CastingTime · @s.Range · @s.Duration</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Leveled Spells -->
+                        @if (leveled.Count > 0)
+                        {
+                            @foreach (var spellGroup in leveled.GroupBy(x => x.def!.Level))
+                            {
+                                <div class="spell-level-heading">@LevelOrdinal(spellGroup.Key) Level</div>
+                                <div class="spell-level-grid">
+                                    @foreach (var (cs, def) in spellGroup)
+                                    {
+                                        <div class="spell-card @(cs.Prepared ? "spell-card--prepared" : "")">
+                                            <div class="spell-card-name">
+                                                @def!.DisplayName
+                                                @if (def.Concentration) { <span class="spell-tag">[C]</span> }
+                                                @if (def.Ritual) { <span class="spell-tag">[R]</span> }
+                                                @if (cs.Prepared && sc.PrepareSpells) { <span class="spell-tag spell-tag--prep">✓</span> }
+                                            </div>
+                                            <div class="spell-card-meta">
+                                                @def.School · @ComponentsShort(def.Components)
+                                            </div>
+                                            <div class="spell-card-line">@def.CastingTime · @def.Range · @def.Duration</div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (classSpells.Count == 0)
+                        {
+                            <div class="no-spells-note">No spells selected.</div>
+                        }
+
+                    </div><!-- end spell-class-block -->
+                }
+
+            </div><!-- end sheet-page (page 2) -->
         }
 
-        <!-- Equipment -->
-        @if (c.Equipment.Count > 0)
-        {
-            <MudText Typo="Typo.subtitle1" Class="mt-3 mb-1"><strong>Equipment</strong></MudText>
-            <MudChipSet T="string" Class="mb-4">
-                @foreach (var eq in c.Equipment)
-                {
-                    var itemDef = _equipment.FirstOrDefault(e => e.Id == eq.ItemId);
-                    <MudChip T="string" Color="Color.Default" Size="Size.Small">
-                        @(itemDef?.DisplayName ?? eq.ItemId) ×@eq.Quantity
-                    </MudChip>
-                }
-            </MudChipSet>
-        }
-    </div>
+    </div><!-- end print-sheet -->
 }
 
 @code {
@@ -214,6 +482,80 @@ else
         ["skill:survival"] = "Survival",
     };
 
+    // Maps skill id → governing ability abbreviation (D&D 5e SRD)
+    private static readonly IReadOnlyList<(string SkillId, string Ability)> _skillAbilityMap =
+    [
+        ("skill:acrobatics",     "DEX"),
+        ("skill:animal-handling","WIS"),
+        ("skill:arcana",         "INT"),
+        ("skill:athletics",      "STR"),
+        ("skill:deception",      "CHA"),
+        ("skill:history",        "INT"),
+        ("skill:insight",        "WIS"),
+        ("skill:intimidation",   "CHA"),
+        ("skill:investigation",  "INT"),
+        ("skill:medicine",       "WIS"),
+        ("skill:nature",         "INT"),
+        ("skill:perception",     "WIS"),
+        ("skill:performance",    "CHA"),
+        ("skill:persuasion",     "CHA"),
+        ("skill:religion",       "INT"),
+        ("skill:sleight-of-hand","DEX"),
+        ("skill:stealth",        "DEX"),
+        ("skill:survival",       "WIS"),
+    ];
+
+    // Spell slots by total character level and slot level (full caster table, PHB p.114).
+    // Indexed: [characterLevel-1][slotLevel-1]. Half-casters use half the table.
+    private static readonly int[,] _fullCasterSlots = {
+        // lv1  2  3  4  5  6  7  8  9
+        {  2,  0,  0,  0,  0,  0,  0,  0,  0 }, // char level 1
+        {  3,  0,  0,  0,  0,  0,  0,  0,  0 }, // 2
+        {  4,  2,  0,  0,  0,  0,  0,  0,  0 }, // 3
+        {  4,  3,  0,  0,  0,  0,  0,  0,  0 }, // 4
+        {  4,  3,  2,  0,  0,  0,  0,  0,  0 }, // 5
+        {  4,  3,  3,  0,  0,  0,  0,  0,  0 }, // 6
+        {  4,  3,  3,  1,  0,  0,  0,  0,  0 }, // 7
+        {  4,  3,  3,  2,  0,  0,  0,  0,  0 }, // 8
+        {  4,  3,  3,  3,  1,  0,  0,  0,  0 }, // 9
+        {  4,  3,  3,  3,  2,  0,  0,  0,  0 }, // 10
+        {  4,  3,  3,  3,  2,  1,  0,  0,  0 }, // 11
+        {  4,  3,  3,  3,  2,  1,  0,  0,  0 }, // 12
+        {  4,  3,  3,  3,  2,  1,  1,  0,  0 }, // 13
+        {  4,  3,  3,  3,  2,  1,  1,  0,  0 }, // 14
+        {  4,  3,  3,  3,  2,  1,  1,  1,  0 }, // 15
+        {  4,  3,  3,  3,  2,  1,  1,  1,  0 }, // 16
+        {  4,  3,  3,  3,  2,  1,  1,  1,  1 }, // 17
+        {  4,  3,  3,  3,  3,  1,  1,  1,  1 }, // 18
+        {  4,  3,  3,  3,  3,  2,  1,  1,  1 }, // 19
+        {  4,  3,  3,  3,  3,  2,  2,  1,  1 }, // 20
+    };
+
+    // Half-caster slots (Paladin, Ranger), indexed the same way but off half caster level.
+    private static readonly int[,] _halfCasterSlots = {
+        // lv1  2  3  4  5  6  7  8  9
+        {  0,  0,  0,  0,  0,  0,  0,  0,  0 }, // 1
+        {  2,  0,  0,  0,  0,  0,  0,  0,  0 }, // 2
+        {  3,  0,  0,  0,  0,  0,  0,  0,  0 }, // 3
+        {  3,  0,  0,  0,  0,  0,  0,  0,  0 }, // 4
+        {  4,  2,  0,  0,  0,  0,  0,  0,  0 }, // 5
+        {  4,  2,  0,  0,  0,  0,  0,  0,  0 }, // 6
+        {  4,  3,  0,  0,  0,  0,  0,  0,  0 }, // 7
+        {  4,  3,  0,  0,  0,  0,  0,  0,  0 }, // 8
+        {  4,  3,  2,  0,  0,  0,  0,  0,  0 }, // 9
+        {  4,  3,  2,  0,  0,  0,  0,  0,  0 }, // 10
+        {  4,  3,  3,  0,  0,  0,  0,  0,  0 }, // 11
+        {  4,  3,  3,  0,  0,  0,  0,  0,  0 }, // 12
+        {  4,  3,  3,  1,  0,  0,  0,  0,  0 }, // 13
+        {  4,  3,  3,  1,  0,  0,  0,  0,  0 }, // 14
+        {  4,  3,  3,  2,  0,  0,  0,  0,  0 }, // 15
+        {  4,  3,  3,  2,  0,  0,  0,  0,  0 }, // 16
+        {  4,  3,  3,  3,  1,  0,  0,  0,  0 }, // 17
+        {  4,  3,  3,  3,  1,  0,  0,  0,  0 }, // 18
+        {  4,  3,  3,  3,  2,  0,  0,  0,  0 }, // 19
+        {  4,  3,  3,  3,  2,  0,  0,  0,  0 }, // 20
+    };
+
     private bool _loading = true;
     private IReadOnlyList<RaceDefinition> _races = [];
     private IReadOnlyList<ClassDefinition> _classes = [];
@@ -233,10 +575,10 @@ else
 
     private async Task PrintPage() => await JS.InvokeVoidAsync("window.print");
 
-    private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+    // ── Ability helpers ──────────────────────────────────────────────────────
 
-    private static string SkillLabel(string id) =>
-        _skillNames.TryGetValue(id, out string? name) ? name : id;
+    private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+    private static string FormatBonus(int value) => value >= 0 ? $"+{value}" : $"{value}";
 
     private static AbilityBlock GetBlock(Character c, string ab) => ab switch
     {
@@ -248,4 +590,101 @@ else
         "CHA" => c.AbilityScores.CHA,
         _ => new AbilityBlock(),
     };
+
+    private static int GetAbilityScore(Character c, string ab) => GetBlock(c, ab).Final;
+
+    // ── Proficiency & calculated values ─────────────────────────────────────
+
+    private static int ProficiencyBonus(int totalLevel) =>
+        (int)Math.Floor((totalLevel - 1) / 4.0) + 2;
+
+    private static string SkillLabel(string id) =>
+        _skillNames.TryGetValue(id, out string? name) ? name : id;
+
+    private HashSet<string> GetSaveProficiencies(Character c)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var classLevel in c.Levels)
+        {
+            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            if (cls != null)
+                foreach (var save in cls.SavingThrows)
+                    result.Add(save);
+        }
+        return result;
+    }
+
+    private int CalculateMaxHp(Character c)
+    {
+        int conMod = Modifier(c.AbilityScores.CON.Final);
+        int total = 0;
+        foreach (var classLevel in c.Levels)
+        {
+            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            int hd = cls?.HitDie ?? 8;
+            total += classLevel.Level * Math.Max(1, hd + conMod);
+        }
+        return total;
+    }
+
+    private int PassivePerception(Character c, int profBonus)
+    {
+        bool perceptionProficient = c.Skills.ContainsKey("skill:perception");
+        return 10 + Modifier(c.AbilityScores.WIS.Final) + (perceptionProficient ? profBonus : 0);
+    }
+
+    // ── Spellcasting helpers ─────────────────────────────────────────────────
+
+    private bool IsSpellcaster(Character c)
+    {
+        foreach (var classLevel in c.Levels)
+        {
+            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            if (cls?.Spellcasting != null) return true;
+        }
+        return false;
+    }
+
+    private int SpellcastingAbilityMod(SpellcastingInfo sc, Character c)
+    {
+        string ab = sc.SpellcastingAbility.ToUpperInvariant() switch
+        {
+            "INTELLIGENCE" or "INT" => "INT",
+            "WISDOM" or "WIS" => "WIS",
+            "CHARISMA" or "CHA" => "CHA",
+            _ => sc.SpellcastingAbility.Length >= 3
+                ? sc.SpellcastingAbility[..3].ToUpperInvariant()
+                : "INT",
+        };
+        return Modifier(GetAbilityScore(c, ab));
+    }
+
+    private int GetMaxSlots(int totalLevel, int slotLevel, string castingType)
+    {
+        if (slotLevel < 1 || slotLevel > 9) return 0;
+        int charIdx = Math.Clamp(totalLevel, 1, 20) - 1;
+        int slotIdx = slotLevel - 1;
+        return castingType.ToLowerInvariant() switch
+        {
+            "half" => _halfCasterSlots[charIdx, slotIdx],
+            _ => _fullCasterSlots[charIdx, slotIdx],
+        };
+    }
+
+    private static string LevelOrdinal(int n) => n switch
+    {
+        1 => "1st",
+        2 => "2nd",
+        3 => "3rd",
+        _ => $"{n}th",
+    };
+
+    private static string ComponentsShort(SpellComponents c)
+    {
+        var parts = new List<string>();
+        if (c.Verbal) parts.Add("V");
+        if (c.Somatic) parts.Add("S");
+        if (c.Material != null) parts.Add("M");
+        return string.Join("", parts);
+    }
 }
