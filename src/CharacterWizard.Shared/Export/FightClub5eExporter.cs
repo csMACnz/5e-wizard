@@ -15,6 +15,19 @@ namespace CharacterWizard.Shared.Export;
 /// </remarks>
 public class FightClub5eExporter
 {
+    // School abbreviations used by FightClub 5e.
+    private static readonly Dictionary<string, string> SchoolAbbreviations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["abjuration"] = "A",
+        ["conjuration"] = "C",
+        ["divination"] = "D",
+        ["enchantment"] = "EN",
+        ["evocation"] = "EV",
+        ["illusion"] = "I",
+        ["necromancy"] = "N",
+        ["transmutation"] = "T",
+    };
+
     // Saving throw proficiency numbers used by FightClub 5e (0–5 = STR–CHA).
     private static readonly Dictionary<string, int> SaveProficiencyNumbers = new()
     {
@@ -152,14 +165,22 @@ public class FightClub5eExporter
             var spellDef = _spells.FirstOrDefault(s => s.Id == cs.SpellId);
             if (spellDef == null) continue;
             string components = BuildComponentsString(spellDef.Components);
+            string schoolCode = SchoolAbbreviations.TryGetValue(spellDef.School, out var abbr) ? abbr : spellDef.School;
+            string duration = spellDef.Concentration
+                ? $"Concentration, up to {spellDef.Duration}"
+                : spellDef.Duration;
+            var spellClass = _classes.FirstOrDefault(cl => cl.Id == cs.ClassId);
+            string classesValue = spellClass?.DisplayName ?? string.Empty;
             elements.Add(new XElement("spell",
                 new XElement("name", spellDef.DisplayName),
                 new XElement("level", spellDef.Level),
-                new XElement("school", spellDef.School),
+                new XElement("school", schoolCode),
+                new XElement("ritual", spellDef.Ritual ? "YES" : "NO"),
                 new XElement("time", spellDef.CastingTime),
                 new XElement("range", spellDef.Range),
-                new XElement("duration", spellDef.Duration),
                 new XElement("components", components),
+                new XElement("duration", duration),
+                new XElement("classes", classesValue),
                 new XElement("text", spellDef.Description)));
         }
 
