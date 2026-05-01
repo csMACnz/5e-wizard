@@ -15,36 +15,38 @@ namespace CharacterWizard.Shared.Export;
 /// </remarks>
 public class FightClub5eExporter
 {
-    private static readonly Dictionary<string, string> AbilityFullNames = new()
+    // Saving throw proficiency numbers used by FightClub 5e (0–5 = STR–CHA).
+    private static readonly Dictionary<string, int> SaveProficiencyNumbers = new()
     {
-        ["STR"] = "Strength",
-        ["DEX"] = "Dexterity",
-        ["CON"] = "Constitution",
-        ["INT"] = "Intelligence",
-        ["WIS"] = "Wisdom",
-        ["CHA"] = "Charisma",
+        ["STR"] = 0,
+        ["DEX"] = 1,
+        ["CON"] = 2,
+        ["INT"] = 3,
+        ["WIS"] = 4,
+        ["CHA"] = 5,
     };
 
-    private static readonly Dictionary<string, string> SkillDisplayNames = new()
+    // Skill proficiency numbers used by FightClub 5e (100–117).
+    private static readonly Dictionary<string, int> SkillProficiencyNumbers = new()
     {
-        ["skill:acrobatics"] = "Acrobatics",
-        ["skill:animal-handling"] = "Animal Handling",
-        ["skill:arcana"] = "Arcana",
-        ["skill:athletics"] = "Athletics",
-        ["skill:deception"] = "Deception",
-        ["skill:history"] = "History",
-        ["skill:insight"] = "Insight",
-        ["skill:intimidation"] = "Intimidation",
-        ["skill:investigation"] = "Investigation",
-        ["skill:medicine"] = "Medicine",
-        ["skill:nature"] = "Nature",
-        ["skill:perception"] = "Perception",
-        ["skill:performance"] = "Performance",
-        ["skill:persuasion"] = "Persuasion",
-        ["skill:religion"] = "Religion",
-        ["skill:sleight-of-hand"] = "Sleight of Hand",
-        ["skill:stealth"] = "Stealth",
-        ["skill:survival"] = "Survival",
+        ["skill:acrobatics"] = 100,
+        ["skill:animal-handling"] = 101,
+        ["skill:arcana"] = 102,
+        ["skill:athletics"] = 103,
+        ["skill:deception"] = 104,
+        ["skill:history"] = 105,
+        ["skill:insight"] = 106,
+        ["skill:intimidation"] = 107,
+        ["skill:investigation"] = 108,
+        ["skill:medicine"] = 109,
+        ["skill:nature"] = 110,
+        ["skill:perception"] = 111,
+        ["skill:performance"] = 112,
+        ["skill:persuasion"] = 113,
+        ["skill:religion"] = 114,
+        ["skill:sleight-of-hand"] = 115,
+        ["skill:stealth"] = 116,
+        ["skill:survival"] = 117,
     };
 
     private readonly IReadOnlyList<RaceDefinition> _races;
@@ -75,22 +77,15 @@ public class FightClub5eExporter
         var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
         using (var writer = XmlWriter.Create(sb, settings))
         {
-            new XElement("document", BuildCharacterElement(character)).Save(writer);
+            new XElement("pc", new XAttribute("version", "5"), BuildCharacterElement(character)).Save(writer);
         }
         return sb.ToString();
     }
 
     private XElement BuildCharacterElement(Character c)
     {
-        int totalLevel = c.TotalLevel > 0 ? c.TotalLevel : c.Levels.Sum(l => l.Level);
         int conMod = Modifier(c.AbilityScores.CON.Final);
-        int dexMod = Modifier(c.AbilityScores.DEX.Final);
-        int wisMod = Modifier(c.AbilityScores.WIS.Final);
-        int profBonus = ProficiencyBonus(totalLevel);
         int maxHp = CalculateMaxHp(c, conMod);
-
-        bool hasPerception = c.Skills.ContainsKey("skill:perception");
-        int passivePerception = 10 + wisMod + (hasPerception ? profBonus : 0);
 
         var race = _races.FirstOrDefault(r => r.Id == c.RaceId);
         var subrace = race?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
@@ -100,68 +95,45 @@ public class FightClub5eExporter
         string bgDisplay = bg?.DisplayName ?? string.Empty;
         int speed = race?.Speed ?? 30;
 
-        string classDisplay = c.Levels.Count > 0
-            ? string.Join("/", c.Levels.Select(l =>
-            {
-                var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
-                return $"{cls?.DisplayName ?? string.Empty} {l.Level}".Trim();
-            }))
-            : string.Empty;
+        // Ability scores as comma-separated string: STR,DEX,CON,INT,WIS,CHA,
+        string abilities = $"{c.AbilityScores.STR.Final},{c.AbilityScores.DEX.Final}," +
+                           $"{c.AbilityScores.CON.Final},{c.AbilityScores.INT.Final}," +
+                           $"{c.AbilityScores.WIS.Final},{c.AbilityScores.CHA.Final},";
 
-        // Collect unique saving throw proficiencies across all class entries
-        var saveProficiencies = c.Levels
-            .SelectMany(l =>
-            {
-                var cls = _classes.FirstOrDefault(cl => cl.Id == l.ClassId);
-                return cls?.SavingThrows ?? [];
-            })
-            .Distinct()
-            .Select(ab => AbilityFullNames.TryGetValue(ab, out var name) ? name : ab)
+        // Split skill proficiencies by source
+        var classSkillIds = c.Skills
+            .Where(kvp => kvp.Value == "class")
+            .Select(kvp => kvp.Key)
+            .ToList();
+        var bgSkillIds = c.Skills
+            .Where(kvp => kvp.Value == "background")
+            .Select(kvp => kvp.Key)
             .ToList();
 
         var elements = new List<object>
         {
             new XElement("name", c.Name),
             new XElement("player", c.PlayerName ?? string.Empty),
-            new XElement("alignment", string.Empty),
-            new XElement("background", bgDisplay),
-            new XElement("race", raceDisplay),
-            new XElement("class", classDisplay),
-            new XElement("level", totalLevel),
-            new XElement("exp", 0),
-            new XElement("str", c.AbilityScores.STR.Final),
-            new XElement("dex", c.AbilityScores.DEX.Final),
-            new XElement("con", c.AbilityScores.CON.Final),
-            new XElement("int", c.AbilityScores.INT.Final),
-            new XElement("wis", c.AbilityScores.WIS.Final),
-            new XElement("cha", c.AbilityScores.CHA.Final),
-            new XElement("hp",
-                new XAttribute("max", maxHp),
-                new XAttribute("current", maxHp),
-                new XAttribute("temp", 0)),
-            new XElement("speed", speed),
-            new XElement("initiative", dexMod),
-            new XElement("proficiencybonus", profBonus),
-            new XElement("passiveperception", passivePerception),
-            new XElement("inspiration", 0),
-            new XElement("ac", 10 + dexMod),
+            BuildRaceElement(raceDisplay, speed),
         };
 
-        // Saving throws
-        elements.AddRange(saveProficiencies.Select(s => (object)new XElement("save", s)));
-
-        // Skill proficiencies
-        foreach (var (skillId, _) in c.Skills)
+        // One <class> element per class entry
+        bool isFirstClass = true;
+        foreach (var classLevel in c.Levels)
         {
-            string skillName = SkillDisplayNames.TryGetValue(skillId, out var sn) ? sn : skillId;
-            elements.Add(new XElement("skillprof", new XAttribute("name", skillName)));
+            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            elements.Add(BuildClassElement(cls, classLevel.Level, isFirstClass ? classSkillIds : [], isFirstClass, c.Proficiencies));
+            isFirstClass = false;
         }
 
-        // Armor, weapon, tool, and language proficiencies
-        foreach (var p in c.Proficiencies.Armor) elements.Add(new XElement("proficiency", p));
-        foreach (var p in c.Proficiencies.Weapons) elements.Add(new XElement("proficiency", p));
-        foreach (var p in c.Proficiencies.Tools) elements.Add(new XElement("proficiency", p));
-        foreach (var p in c.Proficiencies.Languages) elements.Add(new XElement("proficiency", p));
+        // Background
+        elements.Add(BuildBackgroundElement(bgDisplay, bgSkillIds));
+
+        // Abilities, HP, XP
+        elements.Add(new XElement("abilities", abilities));
+        elements.Add(new XElement("hpMax", maxHp));
+        elements.Add(new XElement("hpCurrent", maxHp));
+        elements.Add(new XElement("xp", 0));
 
         // Equipment
         foreach (var item in c.Equipment)
@@ -190,15 +162,82 @@ public class FightClub5eExporter
                 new XElement("text", spellDef.Description)));
         }
 
-        // Features (best-effort: populated from Character.Features when present)
+        // Features as <feat> elements (FC5e naming)
         foreach (var feature in c.Features)
         {
-            elements.Add(new XElement("feature",
+            elements.Add(new XElement("feat",
                 new XElement("name", feature.DisplayOverride ?? feature.FeatureId),
-                new XElement("source", feature.SourceId)));
+                new XElement("text", feature.SourceId)));
         }
 
         return new XElement("character", elements);
+    }
+
+    private static XElement BuildRaceElement(string raceName, int speed)
+    {
+        return new XElement("race",
+            new XElement("name", raceName),
+            new XElement("speed", speed));
+    }
+
+    private XElement BuildClassElement(
+        ClassDefinition? cls,
+        int level,
+        IList<string> classSkillIds,
+        bool isFirstClass,
+        CharacterProficiencies proficiencies)
+    {
+        var classElements = new List<object>
+        {
+            new XElement("name", cls?.DisplayName ?? string.Empty),
+            new XElement("level", level),
+            new XElement("hd", cls?.HitDie ?? 8),
+        };
+
+        // Armor, weapon, and tool proficiency text on the first class only
+        if (isFirstClass)
+        {
+            classElements.Add(new XElement("armor", string.Join(", ", proficiencies.Armor)));
+            classElements.Add(new XElement("weapons", string.Join(", ", proficiencies.Weapons)));
+            classElements.Add(new XElement("tools", string.Join(", ", proficiencies.Tools)));
+        }
+
+        // Saving throw proficiencies as numeric IDs (0–5)
+        if (cls != null)
+        {
+            foreach (var save in cls.SavingThrows)
+            {
+                if (SaveProficiencyNumbers.TryGetValue(save, out var num))
+                    classElements.Add(new XElement("proficiency", num));
+            }
+        }
+
+        // Class skill proficiencies as numeric IDs (100–117), first class only
+        foreach (var skillId in classSkillIds)
+        {
+            if (SkillProficiencyNumbers.TryGetValue(skillId, out var num))
+                classElements.Add(new XElement("proficiency", num));
+        }
+
+        return new XElement("class", classElements);
+    }
+
+    private static XElement BuildBackgroundElement(string bgName, IList<string> bgSkillIds)
+    {
+        var bgElements = new List<object>
+        {
+            new XElement("name", bgName),
+            new XElement("align", string.Empty),
+        };
+
+        // Background skill proficiencies as numeric IDs (100–117)
+        foreach (var skillId in bgSkillIds)
+        {
+            if (SkillProficiencyNumbers.TryGetValue(skillId, out var num))
+                bgElements.Add(new XElement("proficiency", num));
+        }
+
+        return new XElement("background", bgElements);
     }
 
     /// <summary>
@@ -219,8 +258,6 @@ public class FightClub5eExporter
     }
 
     private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
-
-    private static int ProficiencyBonus(int totalLevel) => Math.Max(0, totalLevel - 1) / 4 + 2;
 
     private static string BuildComponentsString(SpellComponents components)
     {

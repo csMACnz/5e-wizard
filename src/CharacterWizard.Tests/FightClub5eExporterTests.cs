@@ -155,16 +155,18 @@ public class FightClub5eExporterTests
 
         Assert.Equal("Aric", c.Element("name")!.Value);
         Assert.Equal("Dave", c.Element("player")!.Value);
-        Assert.Equal("Human", c.Element("race")!.Value);
-        Assert.Equal("Soldier", c.Element("background")!.Value);
-        Assert.Equal("Fighter 1", c.Element("class")!.Value);
-        Assert.Equal("1", c.Element("level")!.Value);
-        Assert.Equal("16", c.Element("str")!.Value);
-        Assert.Equal("15", c.Element("dex")!.Value);
-        Assert.Equal("14", c.Element("con")!.Value);
-        Assert.Equal("13", c.Element("int")!.Value);
-        Assert.Equal("11", c.Element("wis")!.Value);
-        Assert.Equal("9", c.Element("cha")!.Value);
+        Assert.Equal("Human", c.Element("race")!.Element("name")!.Value);
+        Assert.Equal("Soldier", c.Element("background")!.Element("name")!.Value);
+        Assert.Equal("Fighter", c.Element("class")!.Element("name")!.Value);
+        Assert.Equal("1", c.Element("class")!.Element("level")!.Value);
+
+        var abilities = c.Element("abilities")!.Value.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        Assert.Equal("16", abilities[0]); // STR
+        Assert.Equal("15", abilities[1]); // DEX
+        Assert.Equal("14", abilities[2]); // CON
+        Assert.Equal("13", abilities[3]); // INT
+        Assert.Equal("11", abilities[4]); // WIS
+        Assert.Equal("9", abilities[5]);  // CHA
     }
 
     [Fact]
@@ -176,19 +178,20 @@ public class FightClub5eExporterTests
     }
 
     [Fact]
-    public void Export_HasDocumentRoot()
+    public void Export_HasPcRoot()
     {
         var character = new Character { Name = "Test", TotalLevel = 1, Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }] };
         var xml = CreateExporter().Export(character);
         var doc = XDocument.Parse(xml);
-        Assert.Equal("document", doc.Root!.Name.LocalName);
+        Assert.Equal("pc", doc.Root!.Name.LocalName);
+        Assert.Equal("5", doc.Root!.Attribute("version")!.Value);
         Assert.NotNull(doc.Root.Element("character"));
     }
 
     // ── Multiclass ────────────────────────────────────────────────────────
 
     [Fact]
-    public void Export_Multiclass_ClassStringContainsBothClasses()
+    public void Export_Multiclass_HasSeparateClassElementsForEachClass()
     {
         var character = new Character
         {
@@ -210,8 +213,12 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("Fighter 3/Wizard 2", c.Element("class")!.Value);
-        Assert.Equal("5", c.Element("level")!.Value);
+        var classes = c.Elements("class").ToList();
+        Assert.Equal(2, classes.Count);
+        Assert.Equal("Fighter", classes[0].Element("name")!.Value);
+        Assert.Equal("3", classes[0].Element("level")!.Value);
+        Assert.Equal("Wizard", classes[1].Element("name")!.Value);
+        Assert.Equal("2", classes[1].Element("level")!.Value);
     }
 
     // ── Saving throws ─────────────────────────────────────────────────────
@@ -235,14 +242,15 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var saves = c.Elements("save").Select(e => e.Value).ToList();
-        Assert.Contains("Strength", saves);
-        Assert.Contains("Constitution", saves);
-        Assert.Equal(2, saves.Count);
+        // Fighter saves: STR (0) and CON (2) stored as numeric <proficiency> inside <class>
+        var classProfs = c.Element("class")!.Elements("proficiency").Select(e => e.Value).ToList();
+        Assert.Contains("0", classProfs); // STR
+        Assert.Contains("2", classProfs); // CON
+        Assert.Equal(2, classProfs.Count(p => int.Parse(p) < 6)); // only the two save proficiencies
     }
 
     [Fact]
-    public void Export_MulticlassSavingThrows_AreDeduplicated()
+    public void Export_MulticlassSavingThrows_AreStoredPerClass()
     {
         var character = new Character
         {
@@ -264,13 +272,17 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var saves = c.Elements("save").Select(e => e.Value).ToList();
-        // Fighter: STR, CON; Wizard: INT, WIS — 4 unique saves, no duplicates
-        Assert.Equal(4, saves.Count);
-        Assert.Contains("Strength", saves);
-        Assert.Contains("Constitution", saves);
-        Assert.Contains("Intelligence", saves);
-        Assert.Contains("Wisdom", saves);
+        var classes = c.Elements("class").ToList();
+
+        // Fighter class: STR (0) and CON (2)
+        var fighterProfs = classes[0].Elements("proficiency").Select(e => e.Value).ToList();
+        Assert.Contains("0", fighterProfs);
+        Assert.Contains("2", fighterProfs);
+
+        // Wizard class: INT (3) and WIS (4)
+        var wizardProfs = classes[1].Elements("proficiency").Select(e => e.Value).ToList();
+        Assert.Contains("3", wizardProfs);
+        Assert.Contains("4", wizardProfs);
     }
 
     // ── Skill proficiencies ───────────────────────────────────────────────
@@ -299,10 +311,13 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var skillProfs = c.Elements("skillprof").Select(e => e.Attribute("name")!.Value).ToList();
-        Assert.Contains("Athletics", skillProfs);
-        Assert.Contains("Intimidation", skillProfs);
-        Assert.Equal(2, skillProfs.Count);
+        // Athletics (103) from class → inside <class>
+        var classProfs = c.Element("class")!.Elements("proficiency").Select(e => e.Value).ToList();
+        Assert.Contains("103", classProfs); // Athletics
+
+        // Intimidation (107) from background → inside <background>
+        var bgProfs = c.Element("background")!.Elements("proficiency").Select(e => e.Value).ToList();
+        Assert.Contains("107", bgProfs); // Intimidation
     }
 
     // ── Spells ────────────────────────────────────────────────────────────
@@ -409,7 +424,7 @@ public class FightClub5eExporterTests
     // ── Empty / optional fields ───────────────────────────────────────────
 
     [Fact]
-    public void Export_AlignmentIsAlwaysPresent_AndEmpty()
+    public void Export_AlignmentIsInsideBackground_AndEmpty()
     {
         var character = new Character
         {
@@ -427,9 +442,9 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var alignment = c.Element("alignment");
-        Assert.NotNull(alignment);
-        Assert.Equal(string.Empty, alignment.Value);
+        var align = c.Element("background")!.Element("align");
+        Assert.NotNull(align);
+        Assert.Equal(string.Empty, align.Value);
     }
 
     [Fact]
@@ -457,51 +472,7 @@ public class FightClub5eExporterTests
         Assert.Equal(string.Empty, player.Value);
     }
 
-    // ── Derived stats ─────────────────────────────────────────────────────
-
-    [Fact]
-    public void Export_ProficiencyBonus_IsCorrectForLevel1()
-    {
-        var character = new Character
-        {
-            Name = "Aric",
-            TotalLevel = 1,
-            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
-            AbilityScores = new AbilityScores
-            {
-                CON = new AbilityBlock { Base = 14 },
-                DEX = new AbilityBlock { Base = 12 },
-                WIS = new AbilityBlock { Base = 10 },
-            },
-        };
-
-        var xml = CreateExporter().Export(character);
-        var c = ParseCharacter(xml);
-
-        Assert.Equal("2", c.Element("proficiencybonus")!.Value);
-    }
-
-    [Fact]
-    public void Export_ProficiencyBonus_IsCorrectForLevel5()
-    {
-        var character = new Character
-        {
-            Name = "Myra",
-            TotalLevel = 5,
-            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 5 }],
-            AbilityScores = new AbilityScores
-            {
-                CON = new AbilityBlock { Base = 14 },
-                DEX = new AbilityBlock { Base = 12 },
-                WIS = new AbilityBlock { Base = 10 },
-            },
-        };
-
-        var xml = CreateExporter().Export(character);
-        var c = ParseCharacter(xml);
-
-        Assert.Equal("3", c.Element("proficiencybonus")!.Value);
-    }
+    // ── HP ────────────────────────────────────────────────────────────────
 
     [Fact]
     public void Export_MaxHp_CalculatedUsingMaxDiePerLevel()
@@ -523,10 +494,8 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        var hp = c.Element("hp")!;
-        Assert.Equal("12", hp.Attribute("max")!.Value);
-        Assert.Equal("12", hp.Attribute("current")!.Value);
-        Assert.Equal("0", hp.Attribute("temp")!.Value);
+        Assert.Equal("12", c.Element("hpMax")!.Value);
+        Assert.Equal("12", c.Element("hpCurrent")!.Value);
     }
 
     [Fact]
@@ -554,7 +523,7 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("57", c.Element("hp")!.Attribute("max")!.Value);
+        Assert.Equal("57", c.Element("hpMax")!.Value);
     }
 
     [Fact]
@@ -578,7 +547,7 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("25", c.Element("speed")!.Value);
+        Assert.Equal("25", c.Element("race")!.Element("speed")!.Value);
     }
 
     [Fact]
@@ -602,56 +571,6 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("Hill Dwarf", c.Element("race")!.Value);
-    }
-
-    [Fact]
-    public void Export_PassivePerception_IncludesProficiencyBonusWhenProficient()
-    {
-        // WIS 14 (mod +2), perception proficient, level 1 (prof bonus +2)
-        // passive perception = 10 + 2 + 2 = 14
-        var character = new Character
-        {
-            Name = "Aric",
-            TotalLevel = 1,
-            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
-            AbilityScores = new AbilityScores
-            {
-                CON = new AbilityBlock { Base = 14 },
-                DEX = new AbilityBlock { Base = 12 },
-                WIS = new AbilityBlock { Base = 14 },
-            },
-            Skills = new Dictionary<string, string> { ["skill:perception"] = "class" },
-        };
-
-        var xml = CreateExporter().Export(character);
-        var c = ParseCharacter(xml);
-
-        Assert.Equal("14", c.Element("passiveperception")!.Value);
-    }
-
-    [Fact]
-    public void Export_PassivePerception_WithoutProficiency_OmitsProficiencyBonus()
-    {
-        // WIS 14 (mod +2), no perception proficiency
-        // passive perception = 10 + 2 = 12
-        var character = new Character
-        {
-            Name = "Aric",
-            TotalLevel = 1,
-            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
-            AbilityScores = new AbilityScores
-            {
-                CON = new AbilityBlock { Base = 14 },
-                DEX = new AbilityBlock { Base = 12 },
-                WIS = new AbilityBlock { Base = 14 },
-            },
-            Skills = new Dictionary<string, string>(),
-        };
-
-        var xml = CreateExporter().Export(character);
-        var c = ParseCharacter(xml);
-
-        Assert.Equal("12", c.Element("passiveperception")!.Value);
+        Assert.Equal("Hill Dwarf", c.Element("race")!.Element("name")!.Value);
     }
 }
