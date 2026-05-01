@@ -67,11 +67,7 @@ else
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="_playerName" Label="Player Name"
-                                  Variant="Variant.Outlined"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.Filled.Casino"
-                                  OnAdornmentClick="RandomizePlayerName"
-                                  AdornmentAriaLabel="Random player name" />
+                                  Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField @bind-Value="_campaignName" Label="Campaign Name"
@@ -1970,12 +1966,6 @@ else
         "Rowan Whitepeak", "Vex Shadowmere", "Cleo Starhelm", "Drake Thornfield",
     ];
 
-    private static readonly string[] _playerNameOptions =
-    [
-        "Alex", "Sam", "Jordan", "Morgan", "Taylor", "Casey", "Quinn", "Riley",
-        "Blake", "Sage", "Avery", "Skyler", "Rowan", "Phoenix", "Dana", "Harley",
-    ];
-
     private static readonly string[] _campaignNameOptions =
     [
         "Curse of Strahd", "Descent into Avernus", "Icewind Dale", "Waterdeep Adventures",
@@ -1989,11 +1979,6 @@ else
         var namePool = _fullNames.Count > 0 ? _fullNames : _characterNameOptions;
         _characterName = namePool[Random.Shared.Next(namePool.Count)];
         ValidateAndShowStepErrors();
-    }
-
-    private void RandomizePlayerName()
-    {
-        _playerName = _playerNameOptions[Random.Shared.Next(_playerNameOptions.Length)];
     }
 
     private void RandomizeCampaignName()
