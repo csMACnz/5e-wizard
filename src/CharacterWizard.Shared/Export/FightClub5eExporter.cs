@@ -16,6 +16,7 @@ namespace CharacterWizard.Shared.Export;
 public class FightClub5eExporter
 {
     // School abbreviations used by FightClub 5e.
+    // Schema reference: https://raw.githubusercontent.com/kinkofer/FightClub5eXML/master/Utilities/compendium.xsd
     private static readonly Dictionary<string, string> SchoolAbbreviations = new(StringComparer.OrdinalIgnoreCase)
     {
         ["abjuration"] = "A",
@@ -181,6 +182,7 @@ public class FightClub5eExporter
                 new XElement("components", components),
                 new XElement("duration", duration),
                 new XElement("classes", classesValue),
+                new XElement("prepared", cs.Prepared ? "YES" : "NO"),
                 new XElement("text", spellDef.Description)));
         }
 

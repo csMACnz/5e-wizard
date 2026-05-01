@@ -386,9 +386,11 @@ public class FightClub5eExporterTests
         Assert.Equal("V, S", fireBolt.Element("components")!.Value);
         Assert.Equal("Instantaneous", fireBolt.Element("duration")!.Value);
         Assert.Equal("Wizard", fireBolt.Element("classes")!.Value);
+        Assert.Equal("NO", fireBolt.Element("prepared")!.Value);
 
         var magicMissile = spells.First(s => s.Element("name")!.Value == "Magic Missile");
         Assert.Equal("1", magicMissile.Element("level")!.Value);
+        Assert.Equal("YES", magicMissile.Element("prepared")!.Value);
     }
 
     [Fact]
