@@ -1,0 +1,712 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "entries": [
+    {
+      "classId": "class:barbarian",
+      "startingWealthRoll": "2d4*10",
+      "fixedItemIds": ["item:explorers-pack"],
+      "choiceGroups": [
+        {
+          "id": "barbarian-weapon",
+          "description": "Choose a melee weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "greataxe",
+              "description": "A greataxe",
+              "grantItems": [{ "itemId": "item:greataxe", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "martial-melee",
+              "description": "Any martial melee weapon",
+              "grantItems": [
+                { "itemId": "item:longsword", "quantity": 1 },
+                { "itemId": "item:shortsword", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:greataxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "barbarian-secondary",
+          "description": "Choose a secondary weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "two-handaxes",
+              "description": "Two handaxes",
+              "grantItems": [{ "itemId": "item:handaxe", "quantity": 2 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:light-crossbow", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:bard",
+      "startingWealthRoll": "5d4*10",
+      "fixedItemIds": ["item:leather-armor", "item:dagger"],
+      "choiceGroups": [
+        {
+          "id": "bard-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "longsword",
+              "description": "A longsword",
+              "grantItems": [{ "itemId": "item:longsword", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:light-crossbow", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "bard-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:cleric",
+      "startingWealthRoll": "5d4*10",
+      "fixedItemIds": ["item:shield", "item:holy-symbol"],
+      "choiceGroups": [
+        {
+          "id": "cleric-armor",
+          "description": "Choose armor",
+          "required": true,
+          "options": [
+            {
+              "id": "chain-mail",
+              "description": "Chain mail",
+              "grantItems": [{ "itemId": "item:chain-mail", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "leather-armor",
+              "description": "Leather armor",
+              "grantItems": [{ "itemId": "item:leather-armor", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "cleric-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "light-crossbow",
+              "description": "A light crossbow",
+              "grantItems": [{ "itemId": "item:light-crossbow", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "cleric-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:druid",
+      "startingWealthRoll": "2d4*10",
+      "fixedItemIds": ["item:leather-armor", "item:explorers-pack"],
+      "choiceGroups": [
+        {
+          "id": "druid-shield-or-weapon",
+          "description": "Choose a shield or a simple weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "shield",
+              "description": "A wooden shield",
+              "grantItems": [{ "itemId": "item:shield", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:light-crossbow", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "druid-melee",
+          "description": "Choose a simple melee weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "dagger",
+              "description": "A dagger",
+              "grantItems": [{ "itemId": "item:dagger", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "handaxe",
+              "description": "A handaxe",
+              "grantItems": [{ "itemId": "item:handaxe", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:fighter",
+      "startingWealthRoll": "5d4*10",
+      "fixedItemIds": [],
+      "choiceGroups": [
+        {
+          "id": "fighter-armor",
+          "description": "Choose armor",
+          "required": true,
+          "options": [
+            {
+              "id": "chain-mail",
+              "description": "Chain mail",
+              "grantItems": [{ "itemId": "item:chain-mail", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "leather-armor",
+              "description": "Leather armor",
+              "grantItems": [{ "itemId": "item:leather-armor", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "fighter-weapon",
+          "description": "Choose a weapon or weapon-and-shield combination",
+          "required": true,
+          "options": [
+            {
+              "id": "longsword-shield",
+              "description": "A longsword and a shield",
+              "grantItems": [
+                { "itemId": "item:longsword", "quantity": 1 },
+                { "itemId": "item:shield", "quantity": 1 }
+              ],
+              "pickOne": false
+            },
+            {
+              "id": "martial-melee",
+              "description": "A martial melee weapon",
+              "grantItems": [
+                { "itemId": "item:longsword", "quantity": 1 },
+                { "itemId": "item:shortsword", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:greataxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "fighter-ranged",
+          "description": "Choose a ranged weapon or backup melee weapons",
+          "required": true,
+          "options": [
+            {
+              "id": "light-crossbow",
+              "description": "A light crossbow",
+              "grantItems": [{ "itemId": "item:light-crossbow", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "two-handaxes",
+              "description": "Two handaxes",
+              "grantItems": [{ "itemId": "item:handaxe", "quantity": 2 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "fighter-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:monk",
+      "startingWealthRoll": "5d4",
+      "fixedItemIds": ["item:dagger"],
+      "choiceGroups": [
+        {
+          "id": "monk-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "shortsword",
+              "description": "A shortsword",
+              "grantItems": [{ "itemId": "item:shortsword", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:light-crossbow", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "monk-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:paladin",
+      "startingWealthRoll": "5d4*10",
+      "fixedItemIds": ["item:chain-mail", "item:holy-symbol"],
+      "choiceGroups": [
+        {
+          "id": "paladin-weapon",
+          "description": "Choose a weapon or weapon-and-shield combination",
+          "required": true,
+          "options": [
+            {
+              "id": "longsword-shield",
+              "description": "A martial weapon and a shield",
+              "grantItems": [
+                { "itemId": "item:longsword", "quantity": 1 },
+                { "itemId": "item:shield", "quantity": 1 }
+              ],
+              "pickOne": false
+            },
+            {
+              "id": "two-martial",
+              "description": "Two martial weapons",
+              "grantItems": [
+                { "itemId": "item:longsword", "quantity": 1 },
+                { "itemId": "item:shortsword", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 },
+                { "itemId": "item:greataxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "paladin-secondary",
+          "description": "Choose a secondary weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "dagger",
+              "description": "A dagger",
+              "grantItems": [{ "itemId": "item:dagger", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-melee",
+              "description": "A simple melee weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "paladin-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:ranger",
+      "startingWealthRoll": "5d4*10",
+      "fixedItemIds": ["item:light-crossbow"],
+      "choiceGroups": [
+        {
+          "id": "ranger-armor",
+          "description": "Choose armor",
+          "required": true,
+          "options": [
+            {
+              "id": "chain-mail",
+              "description": "Chain mail",
+              "grantItems": [{ "itemId": "item:chain-mail", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "leather-armor",
+              "description": "Leather armor",
+              "grantItems": [{ "itemId": "item:leather-armor", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "ranger-melee",
+          "description": "Choose melee weapons",
+          "required": true,
+          "options": [
+            {
+              "id": "two-shortswords",
+              "description": "Two shortswords",
+              "grantItems": [{ "itemId": "item:shortsword", "quantity": 2 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-melee",
+              "description": "A simple melee weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "ranger-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:rogue",
+      "startingWealthRoll": "4d4*10",
+      "fixedItemIds": ["item:leather-armor", "item:dagger"],
+      "choiceGroups": [
+        {
+          "id": "rogue-primary",
+          "description": "Choose a primary weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "shortsword",
+              "description": "A shortsword",
+              "grantItems": [{ "itemId": "item:shortsword", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "longsword",
+              "description": "A longsword",
+              "grantItems": [{ "itemId": "item:longsword", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "rogue-secondary",
+          "description": "Choose a secondary weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "light-crossbow",
+              "description": "A light crossbow",
+              "grantItems": [{ "itemId": "item:light-crossbow", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "shortsword",
+              "description": "A shortsword",
+              "grantItems": [{ "itemId": "item:shortsword", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "rogue-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:sorcerer",
+      "startingWealthRoll": "3d4*10",
+      "fixedItemIds": ["item:arcane-focus", "item:dagger"],
+      "choiceGroups": [
+        {
+          "id": "sorcerer-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "light-crossbow",
+              "description": "A light crossbow",
+              "grantItems": [{ "itemId": "item:light-crossbow", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "sorcerer-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:warlock",
+      "startingWealthRoll": "4d4*10",
+      "fixedItemIds": ["item:leather-armor", "item:arcane-focus", "item:dagger"],
+      "choiceGroups": [
+        {
+          "id": "warlock-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "light-crossbow",
+              "description": "A light crossbow",
+              "grantItems": [{ "itemId": "item:light-crossbow", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "simple-weapon",
+              "description": "Any simple weapon",
+              "grantItems": [
+                { "itemId": "item:dagger", "quantity": 1 },
+                { "itemId": "item:handaxe", "quantity": 1 }
+              ],
+              "pickOne": true
+            }
+          ]
+        },
+        {
+          "id": "warlock-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "classId": "class:wizard",
+      "startingWealthRoll": "4d4*10",
+      "fixedItemIds": ["item:arcane-focus"],
+      "choiceGroups": [
+        {
+          "id": "wizard-weapon",
+          "description": "Choose a weapon",
+          "required": true,
+          "options": [
+            {
+              "id": "dagger",
+              "description": "A dagger",
+              "grantItems": [{ "itemId": "item:dagger", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "shortsword",
+              "description": "A shortsword",
+              "grantItems": [{ "itemId": "item:shortsword", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        },
+        {
+          "id": "wizard-pack",
+          "description": "Choose a starting pack",
+          "required": true,
+          "options": [
+            {
+              "id": "dungeoneers-pack",
+              "description": "A dungeoneer's pack",
+              "grantItems": [{ "itemId": "item:dungeoneer-pack", "quantity": 1 }],
+              "pickOne": false
+            },
+            {
+              "id": "explorers-pack",
+              "description": "An explorer's pack",
+              "grantItems": [{ "itemId": "item:explorers-pack", "quantity": 1 }],
+              "pickOne": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

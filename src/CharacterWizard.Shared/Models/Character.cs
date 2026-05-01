@@ -87,5 +87,23 @@ public class Character
     public List<CharacterFeature> Features { get; set; } = [];
     public List<CharacterSpell> Spells { get; set; } = [];
     public List<CharacterEquipmentItem> Equipment { get; set; } = [];
+
+    /// <summary>
+    /// If true, the player chose to take class starting wealth (rolled gold) instead of class
+    /// starting equipment choices. Background starting equipment is separate.
+    /// </summary>
+    public bool ClassStartingWealthChosen { get; set; } = false;
+
+    /// <summary>
+    /// The rolled/assigned starting gold from the class starting wealth alternative.
+    /// Only relevant when ClassStartingWealthChosen is true.
+    /// </summary>
+    public int? ClassStartingGold { get; set; }
+
+    /// <summary>
+    /// Records the player's selections for each class equipment choice group.
+    /// </summary>
+    public List<EquipmentGroupChoice> StartingEquipmentChoices { get; set; } = [];
+
     public List<ValidationEntry> ValidationReport { get; set; } = [];
 }

@@ -29,6 +29,7 @@ public sealed class RandomCharacterService(IDataService dataService)
         var backgrounds = await dataService.GetBackgroundsAsync();
         var spells = await dataService.GetSpellsAsync();
         var equipment = await dataService.GetEquipmentAsync();
+        var classStartingEquipment = await dataService.GetClassStartingEquipmentAsync();
         var fullNames = await dataService.GetFullNamesAsync();
 
         var namePool = fullNames.Count > 0 ? fullNames : _characterNameOptions;
@@ -107,9 +108,49 @@ public sealed class RandomCharacterService(IDataService dataService)
                 c.Spells.Add(new CharacterSpell { SpellId = spell.Id, ClassId = cls.Id, Prepared = true });
         }
 
-        // Step 7 — Equipment (class starting equipment)
-        foreach (var itemId in cls.StartingEquipmentIds)
-            c.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+        // Step 7 — Equipment (class starting equipment via choice groups)
+        var classEquipConfig = classStartingEquipment.FirstOrDefault(e => e.ClassId == cls.Id);
+        if (classEquipConfig != null)
+        {
+            // Fixed items
+            foreach (var fixedId in classEquipConfig.FixedItemIds)
+                c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedId, Quantity = 1 });
+
+            // Random choices for each required group
+            foreach (var group in classEquipConfig.ChoiceGroups.Where(g => g.Required))
+            {
+                if (group.Options.Count == 0) continue;
+                var chosenOption = group.Options[rng.Next(group.Options.Count)];
+
+                if (chosenOption.PickOne && chosenOption.GrantItems.Count > 0)
+                {
+                    var picked = chosenOption.GrantItems[rng.Next(chosenOption.GrantItems.Count)];
+                    c.StartingEquipmentChoices.Add(new EquipmentGroupChoice
+                    {
+                        GroupId = group.Id,
+                        ChosenOptionId = chosenOption.Id,
+                        PickedItemId = picked.ItemId,
+                    });
+                    c.Equipment.Add(new CharacterEquipmentItem { ItemId = picked.ItemId, Quantity = picked.Quantity });
+                }
+                else
+                {
+                    c.StartingEquipmentChoices.Add(new EquipmentGroupChoice
+                    {
+                        GroupId = group.Id,
+                        ChosenOptionId = chosenOption.Id,
+                    });
+                    foreach (var grant in chosenOption.GrantItems)
+                        c.Equipment.Add(new CharacterEquipmentItem { ItemId = grant.ItemId, Quantity = grant.Quantity });
+                }
+            }
+        }
+        else
+        {
+            // Fallback: use legacy flat equipment list
+            foreach (var itemId in cls.StartingEquipmentIds)
+                c.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+        }
 
         return c;
     }

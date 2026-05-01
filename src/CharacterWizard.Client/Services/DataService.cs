@@ -11,6 +11,7 @@ public sealed class DataService : IDataService
     private List<BackgroundDefinition>? _backgrounds;
     private List<SpellDefinition>? _spells;
     private List<EquipmentItemDefinition>? _equipment;
+    private List<ClassStartingEquipmentEntry>? _classStartingEquipment;
     private NamesData? _names;
 
     public DataService(HttpClient http)
@@ -71,6 +72,17 @@ public sealed class DataService : IDataService
         }
 
         return _equipment;
+    }
+
+    public async Task<IReadOnlyList<ClassStartingEquipmentEntry>> GetClassStartingEquipmentAsync()
+    {
+        if (_classStartingEquipment is null)
+        {
+            var data = await _http.GetFromJsonAsync<ClassStartingEquipmentData>("data/class-starting-equipment.json");
+            _classStartingEquipment = data?.Entries ?? [];
+        }
+
+        return _classStartingEquipment;
     }
 
     public async Task<IReadOnlyList<string>> GetFullNamesAsync()
