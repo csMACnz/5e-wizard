@@ -70,7 +70,7 @@
       <_PublishedIndexHtmlUnix>$(PublishDir)wwwroot/index.html</_PublishedIndexHtmlUnix>
     </PropertyGroup>
     <ItemGroup>
-      <_BlazorRoutes Include="wizard;import;print;not-found" />
+      <_BlazorRoutes Include="wizard;import;print;not-found;characters" />
     </ItemGroup>
     <!-- 404.html catches any URL not matched by a static file and lets Blazor handle routing -->
     <Copy

@@ -14,5 +14,7 @@ builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<CharacterWizardState>();
 builder.Services.AddScoped<BuildInfoService>();
 builder.Services.AddScoped<RandomCharacterService>();
+builder.Services.AddScoped<LocalStorageService>();
+builder.Services.AddScoped<CharacterSessionService>();
 
 await builder.Build().RunAsync();
