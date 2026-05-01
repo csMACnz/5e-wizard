@@ -109,6 +109,34 @@ public class FightClub5eExporterTests
             Components = new SpellComponents { Verbal = true, Somatic = true },
             ClassIds = ["class:wizard"],
         },
+        new SpellDefinition
+        {
+            Id = "spell:identify",
+            DisplayName = "Identify",
+            Description = "Identify a magic item.",
+            Level = 1,
+            School = "Divination",
+            CastingTime = "1 minute",
+            Range = "Touch",
+            Duration = "Instantaneous",
+            Components = new SpellComponents { Verbal = true, Somatic = true, Material = "a pearl worth at least 100 gp" },
+            Ritual = true,
+            ClassIds = ["class:wizard"],
+        },
+        new SpellDefinition
+        {
+            Id = "spell:detect-magic",
+            DisplayName = "Detect Magic",
+            Description = "Sense the presence of magic.",
+            Level = 1,
+            School = "Divination",
+            CastingTime = "1 action",
+            Range = "Self",
+            Duration = "10 minutes",
+            Components = new SpellComponents { Verbal = true, Somatic = true },
+            Concentration = true,
+            ClassIds = ["class:wizard"],
+        },
     ];
 
     private static readonly List<EquipmentItemDefinition> TestEquipment =
@@ -351,13 +379,85 @@ public class FightClub5eExporterTests
 
         var fireBolt = spells.First(s => s.Element("name")!.Value == "Fire Bolt");
         Assert.Equal("0", fireBolt.Element("level")!.Value);
-        Assert.Equal("Evocation", fireBolt.Element("school")!.Value);
+        Assert.Equal("EV", fireBolt.Element("school")!.Value);
+        Assert.Equal("NO", fireBolt.Element("ritual")!.Value);
         Assert.Equal("1 action", fireBolt.Element("time")!.Value);
         Assert.Equal("120 feet", fireBolt.Element("range")!.Value);
         Assert.Equal("V, S", fireBolt.Element("components")!.Value);
+        Assert.Equal("Instantaneous", fireBolt.Element("duration")!.Value);
+        Assert.Equal("Wizard", fireBolt.Element("classes")!.Value);
+        Assert.Equal("NO", fireBolt.Element("prepared")!.Value);
 
         var magicMissile = spells.First(s => s.Element("name")!.Value == "Magic Missile");
         Assert.Equal("1", magicMissile.Element("level")!.Value);
+        Assert.Equal("YES", magicMissile.Element("prepared")!.Value);
+    }
+
+    [Fact]
+    public void Export_Spells_RitualSpell_EmitsYesForRitual()
+    {
+        var character = new Character
+        {
+            Name = "Myra",
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 1 }],
+            AbilityScores = new AbilityScores { CON = new AbilityBlock { Base = 12 } },
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:identify", ClassId = "class:wizard", Prepared = true },
+            ],
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        var identify = c.Elements("spell").First(s => s.Element("name")!.Value == "Identify");
+        Assert.Equal("YES", identify.Element("ritual")!.Value);
+        Assert.Equal("D", identify.Element("school")!.Value);
+    }
+
+    [Fact]
+    public void Export_Spells_ConcentrationSpell_PrefixesDuration()
+    {
+        var character = new Character
+        {
+            Name = "Myra",
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 1 }],
+            AbilityScores = new AbilityScores { CON = new AbilityBlock { Base = 12 } },
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:detect-magic", ClassId = "class:wizard", Prepared = true },
+            ],
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        var detectMagic = c.Elements("spell").First(s => s.Element("name")!.Value == "Detect Magic");
+        Assert.Equal("Concentration, up to 10 minutes", detectMagic.Element("duration")!.Value);
+    }
+
+    [Fact]
+    public void Export_Spells_ClassesElementUsesClassDisplayName()
+    {
+        var character = new Character
+        {
+            Name = "Myra",
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 1 }],
+            AbilityScores = new AbilityScores { CON = new AbilityBlock { Base = 12 } },
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:fire-bolt", ClassId = "class:wizard", Prepared = false },
+            ],
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        var spell = c.Elements("spell").First(s => s.Element("name")!.Value == "Fire Bolt");
+        Assert.Equal("Wizard", spell.Element("classes")!.Value);
     }
 
     // ── Equipment ─────────────────────────────────────────────────────────
