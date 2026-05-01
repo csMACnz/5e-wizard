@@ -35,6 +35,9 @@ High-level goals / success criteria
 
 Functional Requirements (FR)
 FR1 — Wizard flows
+- FR1.0: Home / Landing Page.
+  - FR1.0.1: The landing page shall provide a "Start New Character" button that navigates to the first step of the guided wizard flow.
+  - FR1.0.2: The landing page shall provide a "Roll Random Character" button that generates a fully-random SRD-legal character — selecting a random race (and subrace where applicable), class, background, ability scores via 4d6-drop-lowest, starting equipment, and spells where applicable — and navigates the user directly to the Review step (Step 8) of the wizard.
 - FR1.1: Start: meta (name, player, campaign), choose ability generation method (Standard Array, Point Buy [PHB rules], Roll with configurable reroll policy).
   - FR1.1.1: All character data entry fields (name, player name, campaign name) shall have randomizer dice buttons to generate a suggested value.
 - FR1.2: Ability score assignment and modifiers (apply racial bonuses after assignment; allow custom name/flavor but preserve mechanic IDs).
@@ -136,7 +139,7 @@ Validation engine design
   - Unit tests verifying each validator against positive and negative examples.
 
 User flows & UI components
-- Landing page (start wizard, import)
+- Landing page (start wizard, roll random character, import)
 - Wizard container with progress steps:
   1. Character meta & generation method
   2. Ability scores UI (Standard Array, Point Buy, Roll)
