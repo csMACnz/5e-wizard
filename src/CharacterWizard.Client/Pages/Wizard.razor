@@ -1008,6 +1008,7 @@ else
     private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
     private IReadOnlyList<SpellDefinition> _spells = [];
     private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
+    private IReadOnlyList<string> _fullNames = [];
     private ValidationResult? _reviewValidation;
     private List<string> _stepErrors = [];
 
@@ -1073,6 +1074,7 @@ else
         _backgrounds = await DataService.GetBackgroundsAsync();
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
+        _fullNames = await DataService.GetFullNamesAsync();
         _loading = false;
 
         await InitialiseSessionAsync();
@@ -1652,7 +1654,8 @@ else
 
     private void RandomizeCharacterName()
     {
-        _characterName = _characterNameOptions[Random.Shared.Next(_characterNameOptions.Length)];
+        var namePool = _fullNames.Count > 0 ? _fullNames : _characterNameOptions;
+        _characterName = namePool[Random.Shared.Next(namePool.Count)];
         ValidateAndShowStepErrors();
     }
 

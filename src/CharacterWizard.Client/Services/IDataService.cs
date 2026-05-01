@@ -9,4 +9,7 @@ public interface IDataService
     Task<IReadOnlyList<BackgroundDefinition>> GetBackgroundsAsync();
     Task<IReadOnlyList<SpellDefinition>> GetSpellsAsync();
     Task<IReadOnlyList<EquipmentItemDefinition>> GetEquipmentAsync();
+    Task<IReadOnlyList<string>> GetFullNamesAsync();
+    Task<IReadOnlyList<string>> GetGivenNamesAsync();
+    Task<IReadOnlyList<string>> GetSurnamesAsync();
 }
