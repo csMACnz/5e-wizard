@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using CharacterWizard.Client.Services
+@inject CharacterWizardState State
+@inject RandomCharacterService RandomCharacter
+@inject NavigationManager Navigation
 
 <PageTitle>5e Character Wizard</PageTitle>
 
@@ -8,7 +12,37 @@
     Walk through character meta, ability scores, race, class, background, and review.
 </MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
-           Href="wizard" StartIcon="@Icons.Material.Filled.AutoStories">
-    Start New Character
-</MudButton>
+<MudStack Row="true" Spacing="3" Wrap="Wrap.Wrap">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+               Href="wizard" StartIcon="@Icons.Material.Filled.AutoStories">
+        Start New Character
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large"
+               StartIcon="@Icons.Material.Filled.Casino"
+               Disabled="@_rolling"
+               OnClick="@RollRandomCharacter">
+        @if (_rolling)
+        {
+            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+            <span>Rolling…</span>
+        }
+        else
+        {
+            <span>Roll Random Character</span>
+        }
+    </MudButton>
+</MudStack>
+
+@code {
+    private bool _rolling;
+
+    private async Task RollRandomCharacter()
+    {
+        _rolling = true;
+        var character = await RandomCharacter.GenerateAsync();
+        State.Character = character;
+        State.ActiveStep = 7;
+        Navigation.NavigateTo("wizard");
+    }
+}
+
