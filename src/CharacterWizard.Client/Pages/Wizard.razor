@@ -1104,20 +1104,17 @@ else
 
     private async Task SaveSessionAsync()
     {
+        var existing = await SessionService.LoadSessionAsync(State.SessionId);
+
         var session = new CharacterSession
         {
             SessionId = State.SessionId,
             CharacterName = string.IsNullOrWhiteSpace(State.Character.Name) ? string.Empty : State.Character.Name,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = existing?.CreatedAt ?? DateTime.UtcNow,
             LastModifiedAt = DateTime.UtcNow,
             ActiveStep = State.ActiveStep,
             Character = State.Character,
         };
-
-        // Preserve original CreatedAt if session already exists
-        var existing = await SessionService.LoadSessionAsync(State.SessionId);
-        if (existing is not null)
-            session.CreatedAt = existing.CreatedAt;
 
         await SessionService.SaveSessionAsync(session);
     }
