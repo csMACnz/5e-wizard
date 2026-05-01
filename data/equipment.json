@@ -186,7 +186,7 @@
     },
     {
       "id": "item:dungeoneer-pack",
-      "displayName": "Dungeoneers Pack",
+      "displayName": "Dungeoneer's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
       "cost": {
@@ -741,7 +741,7 @@
       "category": "weapon",
       "subcategory": "simple-ranged",
       "cost": {
-        "amount": 0.01,
+        "amount": 0.1,
         "unit": "gp"
       },
       "weight": 0,
@@ -1045,6 +1045,1780 @@
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:greatsword",
+      "displayName": "Greatsword",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "damage": "2d6",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:blowgun",
+      "displayName": "Blowgun",
+      "category": "weapon",
+      "subcategory": "martial-ranged",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "damage": "1",
+      "damageType": "piercing",
+      "properties": [
+        "ammunition",
+        "loading"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:hand-crossbow",
+      "displayName": "Hand Crossbow",
+      "category": "weapon",
+      "subcategory": "martial-ranged",
+      "cost": {
+        "amount": 75,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": [
+        "ammunition",
+        "light",
+        "loading"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:heavy-crossbow",
+      "displayName": "Heavy Crossbow",
+      "category": "weapon",
+      "subcategory": "martial-ranged",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 18,
+      "damage": "1d10",
+      "damageType": "piercing",
+      "properties": [
+        "ammunition",
+        "heavy",
+        "loading",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:net",
+      "displayName": "Net",
+      "category": "weapon",
+      "subcategory": "martial-ranged",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "damage": null,
+      "damageType": null,
+      "properties": [
+        "special",
+        "thrown"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:padded-armor",
+      "displayName": "Padded Armor",
+      "category": "armor",
+      "subcategory": "light",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "armorClass": 11,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:studded-leather",
+      "displayName": "Studded Leather",
+      "category": "armor",
+      "subcategory": "light",
+      "cost": {
+        "amount": 45,
+        "unit": "gp"
+      },
+      "weight": 13,
+      "armorClass": 12,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:hide-armor",
+      "displayName": "Hide Armor",
+      "category": "armor",
+      "subcategory": "medium",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 12,
+      "armorClass": 12,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:chain-shirt",
+      "displayName": "Chain Shirt",
+      "category": "armor",
+      "subcategory": "medium",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 20,
+      "armorClass": 13,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:breastplate",
+      "displayName": "Breastplate",
+      "category": "armor",
+      "subcategory": "medium",
+      "cost": {
+        "amount": 400,
+        "unit": "gp"
+      },
+      "weight": 20,
+      "armorClass": 14,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:half-plate",
+      "displayName": "Half Plate",
+      "category": "armor",
+      "subcategory": "medium",
+      "cost": {
+        "amount": 750,
+        "unit": "gp"
+      },
+      "weight": 40,
+      "armorClass": 15,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:ring-mail",
+      "displayName": "Ring Mail",
+      "category": "armor",
+      "subcategory": "heavy",
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
+      "weight": 40,
+      "armorClass": 14,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:splint-armor",
+      "displayName": "Splint Armor",
+      "category": "armor",
+      "subcategory": "heavy",
+      "cost": {
+        "amount": 200,
+        "unit": "gp"
+      },
+      "weight": 60,
+      "armorClass": 17,
+      "strengthRequirement": 15,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:plate-armor",
+      "displayName": "Plate Armor",
+      "category": "armor",
+      "subcategory": "heavy",
+      "cost": {
+        "amount": 1500,
+        "unit": "gp"
+      },
+      "weight": 65,
+      "armorClass": 18,
+      "strengthRequirement": 15,
+      "stealthDisadvantage": true,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.63"
+    },
+    {
+      "id": "item:priest-pack",
+      "displayName": "Priest's Pack",
+      "category": "adventuring-gear",
+      "subcategory": "pack",
+      "cost": {
+        "amount": 19,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "contents": [
+        "item:backpack",
+        "item:blanket",
+        "item:candle",
+        "item:tinderbox",
+        "item:rations",
+        "item:waterskin",
+        "item:vestments"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.69"
+    },
+    {
+      "id": "item:abacus",
+      "displayName": "Abacus",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:acid",
+      "displayName": "Acid",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:alchemists-fire",
+      "displayName": "Alchemist's Fire",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:antitoxin",
+      "displayName": "Antitoxin",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:backpack",
+      "displayName": "Backpack",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:ball-bearings",
+      "displayName": "Ball Bearings (bag of 1,000)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:barrel",
+      "displayName": "Barrel",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 70,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:basket",
+      "displayName": "Basket",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.4,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bedroll",
+      "displayName": "Bedroll",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 7,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bell",
+      "displayName": "Bell",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:blanket",
+      "displayName": "Blanket",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:block-and-tackle",
+      "displayName": "Block and Tackle",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:book",
+      "displayName": "Book",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:glass-bottle",
+      "displayName": "Glass Bottle",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bucket",
+      "displayName": "Bucket",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:caltrops",
+      "displayName": "Caltrops (bag of 20)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:candle",
+      "displayName": "Candle",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:crossbow-bolt-case",
+      "displayName": "Crossbow Bolt Case",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:map-scroll-case",
+      "displayName": "Map or Scroll Case",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:chain",
+      "displayName": "Chain (10 feet)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:chalk",
+      "displayName": "Chalk",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:chest",
+      "displayName": "Chest",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 25,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:climbers-kit",
+      "displayName": "Climber's Kit",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 12,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:common-clothes",
+      "displayName": "Common Clothes",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:costume-clothes",
+      "displayName": "Costume Clothes",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:fine-clothes",
+      "displayName": "Fine Clothes",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:travelers-clothes",
+      "displayName": "Traveler's Clothes",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:crowbar",
+      "displayName": "Crowbar",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:fishing-tackle",
+      "displayName": "Fishing Tackle",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:flask-or-tankard",
+      "displayName": "Flask or Tankard",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.02,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:grappling-hook",
+      "displayName": "Grappling Hook",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:hammer",
+      "displayName": "Hammer",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:sledge-hammer",
+      "displayName": "Sledge Hammer",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:healers-kit",
+      "displayName": "Healer's Kit",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:holy-water",
+      "displayName": "Holy Water",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:hourglass",
+      "displayName": "Hourglass",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:hunting-trap",
+      "displayName": "Hunting Trap",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 25,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bottle-of-ink",
+      "displayName": "Ink (1 oz bottle)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:ink-pen",
+      "displayName": "Ink Pen",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.02,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:jug-or-pitcher",
+      "displayName": "Jug or Pitcher",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.02,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:ladder",
+      "displayName": "Ladder (10-foot)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 25,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:lamp",
+      "displayName": "Lamp",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bullseye-lantern",
+      "displayName": "Bullseye Lantern",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:hooded-lantern",
+      "displayName": "Hooded Lantern",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:lock",
+      "displayName": "Lock",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:magnifying-glass",
+      "displayName": "Magnifying Glass",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 100,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:manacles",
+      "displayName": "Manacles",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:mess-kit",
+      "displayName": "Mess Kit",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.2,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:steel-mirror",
+      "displayName": "Steel Mirror",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:oil-flask",
+      "displayName": "Oil Flask",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:paper",
+      "displayName": "Paper (one sheet)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.2,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:parchment",
+      "displayName": "Parchment (one sheet)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:perfume-vial",
+      "displayName": "Perfume",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:miners-pick",
+      "displayName": "Miner's Pick",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:piton",
+      "displayName": "Piton",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
+      "weight": 0.25,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:basic-poison",
+      "displayName": "Basic Poison",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 100,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:pole",
+      "displayName": "Pole (10-foot)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
+      "weight": 7,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:iron-pot",
+      "displayName": "Iron Pot",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:potion-of-healing",
+      "displayName": "Potion of Healing",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:pouch",
+      "displayName": "Pouch",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:portable-ram",
+      "displayName": "Portable Ram",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 4,
+        "unit": "gp"
+      },
+      "weight": 35,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:rations",
+      "displayName": "Rations (1 day)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:robes",
+      "displayName": "Robes",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:hempen-rope",
+      "displayName": "Hempen Rope (50 feet)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:silk-rope",
+      "displayName": "Silk Rope (50 feet)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:sack",
+      "displayName": "Sack",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:merchants-scale",
+      "displayName": "Merchant's Scale",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:sealing-wax",
+      "displayName": "Sealing Wax",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:shovel",
+      "displayName": "Shovel",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:signal-whistle",
+      "displayName": "Signal Whistle",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:signet-ring",
+      "displayName": "Signet Ring",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:soap",
+      "displayName": "Soap",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.02,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:iron-spikes",
+      "displayName": "Iron Spikes (10)",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:spyglass",
+      "displayName": "Spyglass",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 1000,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:two-person-tent",
+      "displayName": "Two-Person Tent",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 20,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:tinderbox",
+      "displayName": "Tinderbox",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:torch",
+      "displayName": "Torch",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:vial",
+      "displayName": "Vial",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:waterskin",
+      "displayName": "Waterskin",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.2,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:whetstone",
+      "displayName": "Whetstone",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:blowgun-needle",
+      "displayName": "Blowgun Needle",
+      "category": "adventuring-gear",
+      "subcategory": "ammunition",
+      "cost": {
+        "amount": 0.02,
+        "unit": "gp"
+      },
+      "weight": 0.02,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:sling-bullet",
+      "displayName": "Sling Bullet",
+      "category": "adventuring-gear",
+      "subcategory": "ammunition",
+      "cost": {
+        "amount": 0.002,
+        "unit": "gp"
+      },
+      "weight": 0.075,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:artisans-tools",
+      "displayName": "Artisan's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:alchemists-supplies",
+      "displayName": "Alchemist's Supplies",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:brewers-supplies",
+      "displayName": "Brewer's Supplies",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 20,
+        "unit": "gp"
+      },
+      "weight": 9,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:calligraphers-supplies",
+      "displayName": "Calligrapher's Supplies",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:carpenters-tools",
+      "displayName": "Carpenter's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 8,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:cartographers-tools",
+      "displayName": "Cartographer's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:cobblers-tools",
+      "displayName": "Cobbler's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:cooks-utensils",
+      "displayName": "Cook's Utensils",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:glassblowers-tools",
+      "displayName": "Glassblower's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:jewelers-tools",
+      "displayName": "Jeweler's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:leatherworkers-tools",
+      "displayName": "Leatherworker's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:masons-tools",
+      "displayName": "Mason's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:painters-supplies",
+      "displayName": "Painter's Supplies",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:potters-tools",
+      "displayName": "Potter's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:smiths-tools",
+      "displayName": "Smith's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 20,
+        "unit": "gp"
+      },
+      "weight": 8,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:tinkers-tools",
+      "displayName": "Tinker's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:weavers-tools",
+      "displayName": "Weaver's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:woodcarvers-tools",
+      "displayName": "Woodcarver's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:disguise-kit",
+      "displayName": "Disguise Kit",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:forgery-kit",
+      "displayName": "Forgery Kit",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
+      "weight": 5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:herbalism-kit",
+      "displayName": "Herbalism Kit",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:navigators-tools",
+      "displayName": "Navigator's Tools",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:poisoners-kit",
+      "displayName": "Poisoner's Kit",
+      "category": "adventuring-gear",
+      "subcategory": "tools",
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:dice-set",
+      "displayName": "Dice Set",
+      "category": "adventuring-gear",
+      "subcategory": "gaming-set",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:playing-card-set",
+      "displayName": "Playing Card Set",
+      "category": "adventuring-gear",
+      "subcategory": "gaming-set",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:belt-pouch",
+      "displayName": "Belt Pouch",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:bone-dice-or-deck",
+      "displayName": "Bone Dice or Deck of Cards",
+      "category": "adventuring-gear",
+      "subcategory": "gaming-set",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:insignia-of-rank",
+      "displayName": "Insignia of Rank",
+      "category": "adventuring-gear",
+      "subcategory": "trinket",
+      "cost": {
+        "amount": 0,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:letter-with-unanswered-question",
+      "displayName": "Letter with Unanswered Question",
+      "category": "adventuring-gear",
+      "subcategory": "trinket",
+      "cost": {
+        "amount": 0,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:prayer-book-or-wheel",
+      "displayName": "Prayer Book or Prayer Wheel",
+      "category": "adventuring-gear",
+      "subcategory": "focus",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:purse",
+      "displayName": "Purse",
+      "category": "adventuring-gear",
+      "subcategory": "container",
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:scroll-of-pedigree",
+      "displayName": "Scroll of Pedigree",
+      "category": "adventuring-gear",
+      "subcategory": "trinket",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:small-knife",
+      "displayName": "Small Knife",
+      "category": "adventuring-gear",
+      "subcategory": "gear",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 0.5,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:trophy-from-fallen-enemy",
+      "displayName": "Trophy from Fallen Enemy",
+      "category": "adventuring-gear",
+      "subcategory": "trinket",
+      "cost": {
+        "amount": 0,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
+    },
+    {
+      "id": "item:vestments",
+      "displayName": "Vestments",
+      "category": "adventuring-gear",
+      "subcategory": "clothing",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.68"
     }
   ]
 }
