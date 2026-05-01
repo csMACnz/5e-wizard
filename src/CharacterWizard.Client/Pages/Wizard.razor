@@ -1861,7 +1861,8 @@ else
     {
         CommitAllToCharacter();
         var json = JsonSerializer.Serialize(State.Character, new JsonSerializerOptions { WriteIndented = true });
-        await JS.InvokeVoidAsync("downloadFile", "character.json", "application/json", json);
+        var filename = $"{State.Character.Name}-level{State.Character.TotalLevel}.json";
+        await JS.InvokeVoidAsync("downloadFile", filename, "application/json", json);
     }
 
     private async Task ExportFightClub5e()
@@ -1869,6 +1870,7 @@ else
         CommitAllToCharacter();
         var xml = new FightClub5eExporter(_races, _classes, _backgrounds, _spells, _equipment)
             .Export(State.Character);
-        await JS.InvokeVoidAsync("downloadFile", "character.xml", "application/xml", xml);
+        var filename = $"{State.Character.Name}-level{State.Character.TotalLevel}.xml";
+        await JS.InvokeVoidAsync("downloadFile", filename, "application/xml", xml);
     }
 }
