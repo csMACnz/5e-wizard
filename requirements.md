@@ -44,17 +44,30 @@ FR1 — Wizard flows
   - FR1.2.1: Rolled method — include a "Roll All" button to roll 4d6-drop-lowest for all abilities, and per-ability "Reroll" buttons to regenerate individual scores.
   - FR1.2.2: Standard Array method — include a "Random Assign" button to randomly shuffle the standard array values across the six abilities.
 - FR1.3: Race/Subrace selection and mechanical feature application.
+  - FR1.3.1: Add a "Random Race" dice button adjacent to the Race dropdown. Clicking it picks a uniformly random race from the available list and updates the selection.
+  - FR1.3.2: When a race with subrace options is selected (either manually or via the random button), add a "Random Subrace" dice button adjacent to the Subrace dropdown. Clicking it picks a uniformly random subrace from those available for the current race.
 - FR1.4: Class selection and subclass picker; allow multiclass entries (class + level), enforce total level ≤ 20.
   - FR1.4.1: Subclass picker is enabled/visible when the character's class level reaches the class's required subclass level; hidden or disabled otherwise.
+  - FR1.4.2: Add a "Random Class" dice button adjacent to each Class dropdown (primary and each multiclass entry). Clicking it picks a uniformly random class from the available list and updates only that entry; the current level and subclass selection are reset.
+  - FR1.4.3: When a subclass picker is visible and enabled (i.e., the character's class level has reached the required subclass level), add a "Random Subclass" dice button adjacent to the subclass dropdown. Clicking it picks a uniformly random subclass from those offered by the current class.
 - FR1.5: Background selection; grant proficiencies and feature references.
 - FR1.6: Skill and proficiency assignment: enforce class/background/tool restrictions and counts.
+  - FR1.6.1: Add a "Random Skills" dice button at the top of the class skill proficiency selection section. Clicking it randomly selects exactly the required number of skills (as defined by the class's `skillChoices.count`) from the allowed options, skipping any skills already granted by the background. Any previously checked class skill choices are replaced.
 - FR1.7: Equipment: starting choices guided by standard PHB-ruleset choices from the character's class.
   - FR1.7.1: A "Strict starting equipment" toggle (default: on) limits visible/selectable items to only the standard choices for the character's class.
   - FR1.7.2: When strict mode is enabled, any equipment selections outside the allowed list are automatically deselected and validation errors are shown.
   - FR1.7.3: The toggle can be turned off by the user to allow free selection of any valid item; in non-strict mode a warning is displayed.
 - FR1.8: Spells: enforce known/prepared rules per class and spell slot table.
+  - FR1.8.1: For each spellcasting class card, add a "Random Cantrips" dice button in the cantrips section (visible only when `maxCantrips > 0`). Clicking it randomly selects exactly `maxCantrips` cantrips from the available cantrip list for that class, replacing any current cantrip selections for that class.
+  - FR1.8.2: For each spellcasting class card, add a "Random Spells" dice button in the known/leveled spells section. For known-spell casters (non-prepare), it randomly selects exactly `maxKnown` spells from the full leveled spell list for that class. For prepare casters, it randomly selects a reasonable default count (equal to the spellcasting modifier + class level, capped to the total available spells) and marks them as prepared. Any previous leveled spell selections for that class are replaced.
 - FR1.9: Level progression: show features unlocked per class level, including ASIs and feature choices.
 - FR1.10: Review & final validation with explicit errors/warnings.
+
+General constraints applying to all randomisation buttons (FR1.1.1, FR1.2.1, FR1.2.2, FR1.3.1, FR1.3.2, FR1.4.2, FR1.4.3, FR1.6.1, FR1.8.1, FR1.8.2):
+- All random selections use a client-side PRNG seeded at click time (no server call needed; consistent with NFR1 client-only operation).
+- After any random selection, the same step-level validation that runs on manual change must be triggered immediately.
+- Randomisation buttons use the Casino dice icon and secondary colour styling to match FR1.1.1's established dice-button pattern.
+- Randomisation buttons are disabled when no valid options exist (e.g., "Random Subrace" is disabled if no race is selected, "Random Subclass" is disabled if no class or subclass-level not reached).
 
 FR2 — Validation
 - FR2.1: Step-level validation: run relevant validators for immediate feedback.

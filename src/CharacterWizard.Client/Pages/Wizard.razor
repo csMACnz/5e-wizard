@@ -209,7 +209,11 @@ else
                     <MudSelect T="string" Label="Race"
                                Value="_selectedRaceId"
                                ValueChanged="@((string v) => { _selectedRaceId = v; _selectedSubraceId = string.Empty; ValidateAndShowStepErrors(); })"
-                               Variant="Variant.Outlined" Required="true">
+                               Variant="Variant.Outlined" Required="true"
+                               Adornment="Adornment.End"
+                               AdornmentIcon="@Icons.Material.Filled.Casino"
+                               OnAdornmentClick="RandomizeRace"
+                               AdornmentAriaLabel="Random race">
                         <MudSelectItem Value="@string.Empty">— select race —</MudSelectItem>
                         @foreach (var race in _races)
                         {
@@ -223,7 +227,11 @@ else
                         <MudSelect T="string" Label="Subrace"
                                    Value="_selectedSubraceId"
                                    ValueChanged="@((string v) => { _selectedSubraceId = v; ValidateAndShowStepErrors(); })"
-                                   Variant="Variant.Outlined" Required="true">
+                                   Variant="Variant.Outlined" Required="true"
+                                   Adornment="Adornment.End"
+                                   AdornmentIcon="@Icons.Material.Filled.Casino"
+                                   OnAdornmentClick="RandomizeSubrace"
+                                   AdornmentAriaLabel="Random subrace">
                             <MudSelectItem Value="@string.Empty">— select subrace —</MudSelectItem>
                             @foreach (var sub in currentRace.Subraces)
                             {
@@ -315,7 +323,11 @@ else
                                 <MudSelect T="string" Label="Class"
                                            Value="@_classEntries[classIdx].ClassId"
                                            ValueChanged="@((string v) => { _classEntries[classIdx].ClassId = v; _classEntries[classIdx].SubclassId = string.Empty; ValidateAndShowStepErrors(); })"
-                                           Variant="Variant.Outlined" Required="true">
+                                           Variant="Variant.Outlined" Required="true"
+                                           Adornment="Adornment.End"
+                                           AdornmentIcon="@Icons.Material.Filled.Casino"
+                                           OnAdornmentClick="@(() => RandomizeClass(classIdx))"
+                                           AdornmentAriaLabel="Random class">
                                     <MudSelectItem Value="@string.Empty">— select class —</MudSelectItem>
                                     @foreach (var cls in _classes)
                                     {
@@ -340,7 +352,11 @@ else
                             <MudSelect T="string" Label="@clsDef.SubclassLabel"
                                        Value="@_classEntries[classIdx].SubclassId"
                                        ValueChanged="@((string v) => { _classEntries[classIdx].SubclassId = v; ValidateAndShowStepErrors(); })"
-                                       Variant="Variant.Outlined" Required="true" Class="mt-2">
+                                       Variant="Variant.Outlined" Required="true" Class="mt-2"
+                                       Adornment="Adornment.End"
+                                       AdornmentIcon="@Icons.Material.Filled.Casino"
+                                       OnAdornmentClick="@(() => RandomizeSubclass(classIdx))"
+                                       AdornmentAriaLabel="Random subclass">
                                 <MudSelectItem Value="@string.Empty">— select @(clsDef.SubclassLabel.ToLowerInvariant()) —</MudSelectItem>
                                 @foreach (var sub in clsDef.SubclassOptions)
                                 {
@@ -417,10 +433,17 @@ else
             @if (primaryClass != null && _classSkillOptionIds.Count > 0)
             {
                 int chosen = _classSkillSelections.Count(s => s);
-                <MudText Typo="Typo.subtitle1" Class="mt-3 mb-1">
-                    <strong>Class Skill Proficiencies</strong> — Choose @primaryClass.SkillChoices.Count
-                    from @primaryClass.DisplayName's allowed list (@chosen / @primaryClass.SkillChoices.Count selected)
-                </MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-3 mb-1">
+                    <MudText Typo="Typo.subtitle1">
+                        <strong>Class Skill Proficiencies</strong> — Choose @primaryClass.SkillChoices.Count
+                        from @primaryClass.DisplayName's allowed list (@chosen / @primaryClass.SkillChoices.Count selected)
+                    </MudText>
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                               StartIcon="@Icons.Material.Filled.Casino"
+                               OnClick="@RandomizeSkills">
+                        Random Skills
+                    </MudButton>
+                </MudStack>
                 <MudGrid>
                     @for (int si = 0; si < _classSkillOptionIds.Count; si++)
                     {
@@ -499,9 +522,16 @@ else
                         <MudCardContent>
                             @if (maxCantrips > 0)
                             {
-                                <MudText Typo="Typo.subtitle2" Class="mb-1">
-                                    Cantrips — @selectedCantrips / @maxCantrips selected
-                                </MudText>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-1">
+                                    <MudText Typo="Typo.subtitle2">
+                                        Cantrips — @selectedCantrips / @maxCantrips selected
+                                    </MudText>
+                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                                               StartIcon="@Icons.Material.Filled.Casino"
+                                               OnClick="@(() => RandomizeCantrips(entry.ClassId, maxCantrips))">
+                                        Random Cantrips
+                                    </MudButton>
+                                </MudStack>
                                 <MudGrid>
                                     @foreach (var spell in cantrips)
                                     {
@@ -523,17 +553,24 @@ else
                             @if (leveledSpells.Count > 0)
                             {
                                 bool isPrepare = sc.PrepareSpells;
-                                <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">
-                                    @(isPrepare ? "Prepared Spells" : "Known Spells")
-                                    @if (!isPrepare && maxKnown > 0)
-                                    {
-                                        <span> — @selectedLeveled / @maxKnown selected</span>
-                                    }
-                                    @if (isPrepare)
-                                    {
-                                        <span> — @selectedLeveled selected (prepare as many as you like)</span>
-                                    }
-                                </MudText>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-3 mb-1">
+                                    <MudText Typo="Typo.subtitle2">
+                                        @(isPrepare ? "Prepared Spells" : "Known Spells")
+                                        @if (!isPrepare && maxKnown > 0)
+                                        {
+                                            <span> — @selectedLeveled / @maxKnown selected</span>
+                                        }
+                                        @if (isPrepare)
+                                        {
+                                            <span> — @selectedLeveled selected (prepare as many as you like)</span>
+                                        }
+                                    </MudText>
+                                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                                               StartIcon="@Icons.Material.Filled.Casino"
+                                               OnClick="@(() => RandomizeSpells(entry.ClassId, maxKnown, isPrepare, level, sc.SpellcastingAbility))">
+                                        Random Spells
+                                    </MudButton>
+                                </MudStack>
                                 @foreach (var spellLevel in leveledSpells.Select(s => s.Level).Distinct().Order())
                                 {
                                     <MudText Typo="Typo.caption" Class="mt-2 mb-1">
@@ -1604,6 +1641,116 @@ else
         var shuffled = _standardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
         for (int i = 0; i < Abilities.Length; i++)
             _abilitySelections[Abilities[i]] = shuffled[i];
+        ValidateAndShowStepErrors();
+    }
+
+    // ── Race randomization ────────────────────────────────────────────────
+    private void RandomizeRace()
+    {
+        if (_races.Count == 0) return;
+        _selectedRaceId = _races[Random.Shared.Next(_races.Count)].Id;
+        _selectedSubraceId = string.Empty;
+        ValidateAndShowStepErrors();
+    }
+
+    private void RandomizeSubrace()
+    {
+        var race = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
+        if (race == null || race.Subraces.Count == 0) return;
+        _selectedSubraceId = race.Subraces[Random.Shared.Next(race.Subraces.Count)].Id;
+        ValidateAndShowStepErrors();
+    }
+
+    // ── Class randomization ───────────────────────────────────────────────
+    private void RandomizeClass(int classIdx)
+    {
+        if (_classes.Count == 0 || classIdx >= _classEntries.Count) return;
+        _classEntries[classIdx].ClassId = _classes[Random.Shared.Next(_classes.Count)].Id;
+        _classEntries[classIdx].SubclassId = string.Empty;
+        ValidateAndShowStepErrors();
+    }
+
+    private void RandomizeSubclass(int classIdx)
+    {
+        if (classIdx >= _classEntries.Count) return;
+        var clsDef = _classes.FirstOrDefault(c => c.Id == _classEntries[classIdx].ClassId);
+        if (clsDef == null || clsDef.SubclassOptions.Count == 0) return;
+        _classEntries[classIdx].SubclassId = clsDef.SubclassOptions[Random.Shared.Next(clsDef.SubclassOptions.Count)].Id;
+        ValidateAndShowStepErrors();
+    }
+
+    // ── Skill randomization ───────────────────────────────────────────────
+    private void RandomizeSkills()
+    {
+        var primaryId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+        var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryId);
+        if (primaryCls == null) return;
+
+        var bg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+        var bgSkills = bg?.SkillProficiencies ?? [];
+
+        for (int i = 0; i < _classSkillSelections.Count; i++)
+            _classSkillSelections[i] = false;
+
+        var available = _classSkillOptionIds
+            .Select((id, idx) => (id, idx))
+            .Where(x => !bgSkills.Contains(x.id))
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(primaryCls.SkillChoices.Count);
+
+        foreach (var (_, idx) in available)
+            _classSkillSelections[idx] = true;
+
+        ValidateAndShowStepErrors();
+    }
+
+    // ── Spell randomization ───────────────────────────────────────────────
+    private void RandomizeCantrips(string classId, int maxCantrips)
+    {
+        var cantrips = _spells.Where(s => s.ClassIds.Contains(classId) && s.Level == 0).ToList();
+
+        if (!_selectedSpells.ContainsKey(classId))
+            _selectedSpells[classId] = [];
+
+        var currentLeveled = _selectedSpells[classId]
+            .Where(id => _spells.FirstOrDefault(s => s.Id == id)?.Level > 0)
+            .ToHashSet();
+
+        _selectedSpells[classId] = currentLeveled;
+
+        foreach (var spell in cantrips.OrderBy(_ => Random.Shared.Next()).Take(maxCantrips))
+            _selectedSpells[classId].Add(spell.Id);
+
+        ValidateAndShowStepErrors();
+    }
+
+    private void RandomizeSpells(string classId, int maxKnown, bool isPrepare, int classLevel, string spellcastingAbility)
+    {
+        var leveledSpells = _spells.Where(s => s.ClassIds.Contains(classId) && s.Level > 0).ToList();
+
+        if (!_selectedSpells.ContainsKey(classId))
+            _selectedSpells[classId] = [];
+
+        var currentCantrips = _selectedSpells[classId]
+            .Where(id => _spells.FirstOrDefault(s => s.Id == id)?.Level == 0)
+            .ToHashSet();
+
+        _selectedSpells[classId] = currentCantrips;
+
+        int countToSelect;
+        if (isPrepare)
+        {
+            int modifier = Modifier(GetAbilityBlock(State.Character, spellcastingAbility).Final);
+            countToSelect = Math.Max(1, Math.Min(modifier + classLevel, leveledSpells.Count));
+        }
+        else
+        {
+            countToSelect = maxKnown;
+        }
+
+        foreach (var spell in leveledSpells.OrderBy(_ => Random.Shared.Next()).Take(countToSelect))
+            _selectedSpells[classId].Add(spell.Id);
+
         ValidateAndShowStepErrors();
     }
 
