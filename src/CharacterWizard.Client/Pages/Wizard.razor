@@ -613,32 +613,18 @@ else
             var bgForEquip = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
             var bgEquipIds = bgForEquip?.StartingEquipmentIds ?? [];
             var primaryClsForEquip = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
-            var classEquipIds = primaryClsForEquip?.StartingEquipmentIds ?? [];
-            var equipmentToShow = _strictEquipment && classEquipIds.Count > 0
-                ? _equipment.Where(e => classEquipIds.Contains(e.Id)).ToList()
-                : (IReadOnlyList<EquipmentItemDefinition>)_equipment;
+            var classConfig = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == (primaryClsForEquip?.Id ?? string.Empty));
+
             <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Equipment</MudText>
 
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
-                <MudSwitch T="bool" Value="_strictEquipment"
-                           ValueChanged="@OnStrictEquipmentChanged"
-                           Color="Color.Primary"
-                           Label="Strict mode: standard PHB starting equipment only" />
-                @if (!_strictEquipment)
-                {
-                    <MudText Typo="Typo.caption" Color="Color.Warning">
-                        All items available — selections are not validated against class starting equipment.
-                    </MudText>
-                }
-            </MudStack>
-
+            @* Background equipment (always shown, always granted) *@
             @if (bgForEquip != null && bgEquipIds.Count > 0)
             {
                 <MudCard Class="mb-4" Elevation="1">
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.subtitle1">
-                                <strong>@bgForEquip.DisplayName</strong> Starting Equipment
+                                <strong>@bgForEquip.DisplayName</strong> Starting Equipment (automatic)
                             </MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
@@ -653,39 +639,200 @@ else
                             }
                         </MudChipSet>
                         <MudText Typo="Typo.caption">
-                            Starting gold: @(bgForEquip.StartingGold) gp
+                            Background starting gold: @(bgForEquip.StartingGold) gp
                         </MudText>
                     </MudCardContent>
                 </MudCard>
             }
 
-            <MudText Typo="Typo.subtitle1" Class="mb-2">
-                <strong>Select @(primaryClsForEquip != null ? primaryClsForEquip.DisplayName + " " : string.Empty)Starting Equipment</strong>
-                @if (_strictEquipment && classEquipIds.Count > 0)
-                {
-                    <span class="mud-typography mud-typography-caption"> — showing standard PHB choices</span>
-                }
-                <span> (@_selectedEquipmentIds.Count item(s) selected)</span>
-            </MudText>
-            @foreach (var group in equipmentToShow.GroupBy(e => e.Category).OrderBy(g => g.Key))
+            @* Class starting equipment section *@
+            @if (classConfig != null)
             {
-                <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1" Style="text-transform:capitalize">
-                    @group.Key
+                <MudText Typo="Typo.subtitle1" Class="mb-3">
+                    <strong>@(primaryClsForEquip?.DisplayName ?? "Class") Starting Equipment</strong>
                 </MudText>
-                <MudGrid>
-                    @foreach (var item in group.OrderBy(e => e.DisplayName))
+
+                @* Choose: class equipment OR starting wealth *@
+                <MudCard Class="mb-4" Elevation="1">
+                    <MudCardContent>
+                        <MudRadioGroup T="string"
+                                       Value="@(_classStartingWealthChosen ? "wealth" : "equipment")"
+                                       ValueChanged="@((string v) => OnEquipmentOrWealthChanged(v))"
+                                       Class="mb-2">
+                            <MudStack Spacing="1">
+                                <MudRadio Value="@("equipment")" Color="Color.Primary">
+                                    <MudText><strong>Standard starting equipment</strong> — choose equipment options below</MudText>
+                                </MudRadio>
+                                <MudRadio Value="@("wealth")" Color="Color.Primary">
+                                    <MudText>
+                                        <strong>Starting wealth</strong> — take <em>@classConfig.StartingWealthRoll gp</em> instead of equipment choices
+                                    </MudText>
+                                </MudRadio>
+                            </MudStack>
+                        </MudRadioGroup>
+                    </MudCardContent>
+                </MudCard>
+
+                @if (_classStartingWealthChosen)
+                {
+                    @* Starting wealth path *@
+                    <MudCard Class="mb-4" Elevation="1">
+                        <MudCardContent>
+                            <MudText Typo="Typo.subtitle2" Class="mb-2">Roll or enter starting gold (@classConfig.StartingWealthRoll gp)</MudText>
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <MudNumericField T="int?"
+                                                 Value="_classStartingGold"
+                                                 ValueChanged="@((int? v) => { _classStartingGold = v; ValidateAndShowStepErrors(); })"
+                                                 Label="Starting Gold (gp)"
+                                                 Variant="Variant.Outlined"
+                                                 Min="0"
+                                                 Style="width:180px" />
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           OnClick="RollStartingWealth"
+                                           StartIcon="@Icons.Material.Filled.Casino">
+                                    Roll @classConfig.StartingWealthRoll
+                                </MudButton>
+                            </MudStack>
+                            @if (_classStartingGold.HasValue)
+                            {
+                                <MudText Typo="Typo.caption" Class="mt-1">
+                                    Starting gold: @_classStartingGold gp
+                                </MudText>
+                            }
+                        </MudCardContent>
+                    </MudCard>
+                }
+                else
+                {
+                    @* Choice groups path *@
+                    @* Fixed items *@
+                    @if (classConfig.FixedItemIds.Count > 0)
                     {
-                        string itemId = item.Id;
-                        bool isSelected = _selectedEquipmentIds.Contains(itemId);
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudCheckBox T="bool"
-                                         Value="@isSelected"
-                                         ValueChanged="@((bool v) => ToggleEquipment(itemId, v))"
-                                         Color="Color.Primary"
-                                         Label="@item.DisplayName" />
-                        </MudItem>
+                        <MudCard Class="mb-3" Elevation="1">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.subtitle2">Fixed Starting Items (automatic)</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudChipSet T="string">
+                                    @foreach (var fixedId in classConfig.FixedItemIds)
+                                    {
+                                        var itemDef = _equipment.FirstOrDefault(e => e.Id == fixedId);
+                                        <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                            @(itemDef?.DisplayName ?? fixedId)
+                                        </MudChip>
+                                    }
+                                </MudChipSet>
+                            </MudCardContent>
+                        </MudCard>
                     }
-                </MudGrid>
+
+                    @* Choice groups *@
+                    @foreach (var choiceGroup in classConfig.ChoiceGroups.Where(g => g.Required))
+                    {
+                        var groupId = choiceGroup.Id;
+                        var currentChoice = _equipmentChoices.TryGetValue(groupId, out var ch) ? ch : (null as (string, string?)?);
+
+                        <MudCard Class="mb-3" Elevation="1">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.subtitle2">@choiceGroup.Description</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <MudRadioGroup T="string"
+                                               Value="@(currentChoice?.Item1)"
+                                               ValueChanged="@((string optId) => OnEquipmentOptionChanged(groupId, optId))"
+                                               Class="mb-2">
+                                    <MudStack Spacing="1">
+                                        @foreach (var option in choiceGroup.Options)
+                                        {
+                                            <MudRadio Value="@option.Id" Color="Color.Primary">
+                                                <MudText>@option.Description</MudText>
+                                            </MudRadio>
+                                        }
+                                    </MudStack>
+                                </MudRadioGroup>
+
+                                @* If chosen option has pickOne=true, show item picker *@
+                                @if (currentChoice.HasValue)
+                                {
+                                    var chosenOption = choiceGroup.Options.FirstOrDefault(o => o.Id == currentChoice.Value.Item1);
+                                    @if (chosenOption?.PickOne == true)
+                                    {
+                                        <MudSelect T="string"
+                                                   Value="@(currentChoice.Value.Item2)"
+                                                   ValueChanged="@((string itemId) => OnEquipmentItemPicked(groupId, itemId))"
+                                                   Label="Choose an item"
+                                                   Variant="Variant.Outlined"
+                                                   Class="mt-2"
+                                                   Style="max-width:300px">
+                                            @foreach (var grant in chosenOption.GrantItems)
+                                            {
+                                                var grantDef = _equipment.FirstOrDefault(e => e.Id == grant.ItemId);
+                                                <MudSelectItem Value="@grant.ItemId">
+                                                    @(grantDef?.DisplayName ?? grant.ItemId)
+                                                </MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    }
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    }
+                }
+            }
+            else
+            {
+                @* Fallback: legacy flat checkbox list when no config is available *@
+                var classEquipIds = primaryClsForEquip?.StartingEquipmentIds ?? [];
+                var equipmentToShow = _strictEquipment && classEquipIds.Count > 0
+                    ? _equipment.Where(e => classEquipIds.Contains(e.Id)).ToList()
+                    : (IReadOnlyList<EquipmentItemDefinition>)_equipment;
+
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+                    <MudSwitch T="bool" Value="_strictEquipment"
+                               ValueChanged="@OnStrictEquipmentChanged"
+                               Color="Color.Primary"
+                               Label="Strict mode: standard PHB starting equipment only" />
+                    @if (!_strictEquipment)
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Warning">
+                            All items available — selections are not validated against class starting equipment.
+                        </MudText>
+                    }
+                </MudStack>
+
+                <MudText Typo="Typo.subtitle1" Class="mb-2">
+                    <strong>Select @(primaryClsForEquip != null ? primaryClsForEquip.DisplayName + " " : string.Empty)Starting Equipment</strong>
+                    @if (_strictEquipment && classEquipIds.Count > 0)
+                    {
+                        <span class="mud-typography mud-typography-caption"> — showing standard PHB choices</span>
+                    }
+                    <span> (@_selectedEquipmentIds.Count item(s) selected)</span>
+                </MudText>
+                @foreach (var group in equipmentToShow.GroupBy(e => e.Category).OrderBy(g => g.Key))
+                {
+                    <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1" Style="text-transform:capitalize">
+                        @group.Key
+                    </MudText>
+                    <MudGrid>
+                        @foreach (var item in group.OrderBy(e => e.DisplayName))
+                        {
+                            string itemId = item.Id;
+                            bool isSelected = _selectedEquipmentIds.Contains(itemId);
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudCheckBox T="bool"
+                                             Value="@isSelected"
+                                             ValueChanged="@((bool v) => ToggleEquipment(itemId, v))"
+                                             Color="Color.Primary"
+                                             Label="@item.DisplayName" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                }
             }
         }
 
@@ -1065,6 +1212,11 @@ else
     // ItemId → selected (quantity always 1)
     private readonly HashSet<string> _selectedEquipmentIds = [];
     private bool _strictEquipment = true;
+    // Choice group selections: groupId → (optionId, pickedItemId?)
+    private readonly Dictionary<string, (string OptionId, string? PickedItemId)> _equipmentChoices = [];
+    private bool _classStartingWealthChosen = false;
+    private int? _classStartingGold = null;
+    private IReadOnlyList<ClassStartingEquipmentEntry> _classStartingEquipmentConfigs = [];
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
     protected override async Task OnInitializedAsync()
@@ -1074,6 +1226,7 @@ else
         _backgrounds = await DataService.GetBackgroundsAsync();
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
+        _classStartingEquipmentConfigs = await DataService.GetClassStartingEquipmentAsync();
         _fullNames = await DataService.GetFullNamesAsync();
         _loading = false;
 
@@ -1181,6 +1334,13 @@ else
         foreach (var eq in c.Equipment)
             _selectedEquipmentIds.Add(eq.ItemId);
 
+        // Restore equipment choice state
+        _classStartingWealthChosen = c.ClassStartingWealthChosen;
+        _classStartingGold = c.ClassStartingGold;
+        _equipmentChoices.Clear();
+        foreach (var choice in c.StartingEquipmentChoices)
+            _equipmentChoices[choice.GroupId] = (choice.ChosenOptionId, choice.PickedItemId);
+
         _activeStep = State.ActiveStep;
     }
 
@@ -1267,12 +1427,65 @@ else
         ValidateAndShowStepErrors();
     }
 
+    private void OnEquipmentOrWealthChanged(string value)
+    {
+        _classStartingWealthChosen = value == "wealth";
+        if (!_classStartingWealthChosen)
+            _classStartingGold = null;
+        ValidateAndShowStepErrors();
+    }
+
+    private void OnEquipmentOptionChanged(string groupId, string optionId)
+    {
+        _equipmentChoices[groupId] = (optionId, null);
+        ValidateAndShowStepErrors();
+    }
+
+    private void OnEquipmentItemPicked(string groupId, string itemId)
+    {
+        if (_equipmentChoices.TryGetValue(groupId, out var current))
+            _equipmentChoices[groupId] = (current.OptionId, itemId);
+        ValidateAndShowStepErrors();
+    }
+
+    private void RollStartingWealth()
+    {
+        var primaryClassId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+        var config = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClassId);
+        if (config == null) return;
+
+        _classStartingGold = RollWealthExpression(config.StartingWealthRoll);
+        ValidateAndShowStepErrors();
+    }
+
+    private static int RollWealthExpression(string expression)
+    {
+        // Parse formats: "NdS" or "NdS*M"
+        var rng = Random.Shared;
+        int multiplier = 1;
+        var parts = expression.Split('*');
+        var dicePart = parts[0].Trim();
+        if (parts.Length == 2 && int.TryParse(parts[1].Trim(), out int m))
+            multiplier = m;
+
+        var diceParts = dicePart.Split('d');
+        if (diceParts.Length != 2) return 0;
+        if (!int.TryParse(diceParts[0], out int count) || !int.TryParse(diceParts[1], out int sides))
+            return 0;
+
+        int total = 0;
+        for (int i = 0; i < count; i++)
+            total += rng.Next(1, sides + 1);
+
+        return total * multiplier;
+    }
+
     private void OnStrictEquipmentChanged(bool strict)
     {
         _strictEquipment = strict;
         if (strict)
         {
-            // Deselect items that are outside the allowed list
+            // Deselect items that are outside the allowed list (legacy fallback mode)
             var primaryClsId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
             var allowedIds = _classes.FirstOrDefault(c => c.Id == primaryClsId)?.StartingEquipmentIds ?? [];
             if (allowedIds.Count > 0)
@@ -1427,8 +1640,76 @@ else
 
         // Step 7 — Equipment
         c.Equipment.Clear();
-        foreach (var itemId in _selectedEquipmentIds)
-            c.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+        c.StartingEquipmentChoices.Clear();
+        c.ClassStartingWealthChosen = _classStartingWealthChosen;
+        c.ClassStartingGold = _classStartingGold;
+
+        if (_classStartingWealthChosen)
+        {
+            // Background equipment still added; no class equipment
+            var bgForCommit = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+            foreach (var bgItemId in bgForCommit?.StartingEquipmentIds ?? [])
+                c.Equipment.Add(new CharacterEquipmentItem { ItemId = bgItemId, Quantity = 1 });
+        }
+        else
+        {
+            // Background equipment
+            var bgForCommit = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+            foreach (var bgItemId in bgForCommit?.StartingEquipmentIds ?? [])
+                c.Equipment.Add(new CharacterEquipmentItem { ItemId = bgItemId, Quantity = 1 });
+
+            // Class starting equipment via choices
+            var primaryClassId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+            var classConfig = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClassId);
+            if (classConfig != null)
+            {
+                // Fixed items
+                foreach (var fixedId in classConfig.FixedItemIds)
+                {
+                    if (!c.Equipment.Any(e => e.ItemId == fixedId))
+                        c.Equipment.Add(new CharacterEquipmentItem { ItemId = fixedId, Quantity = 1 });
+                }
+
+                // Choice group items
+                foreach (var (groupId, (optionId, pickedItemId)) in _equipmentChoices)
+                {
+                    var group = classConfig.ChoiceGroups.FirstOrDefault(g => g.Id == groupId);
+                    var option = group?.Options.FirstOrDefault(o => o.Id == optionId);
+                    if (option == null) continue;
+
+                    c.StartingEquipmentChoices.Add(new EquipmentGroupChoice
+                    {
+                        GroupId = groupId,
+                        ChosenOptionId = optionId,
+                        PickedItemId = pickedItemId,
+                    });
+
+                    if (option.PickOne)
+                    {
+                        if (!string.IsNullOrEmpty(pickedItemId))
+                        {
+                            var grant = option.GrantItems.FirstOrDefault(g => g.ItemId == pickedItemId);
+                            if (grant != null && !c.Equipment.Any(e => e.ItemId == grant.ItemId))
+                                c.Equipment.Add(new CharacterEquipmentItem { ItemId = grant.ItemId, Quantity = grant.Quantity });
+                        }
+                    }
+                    else
+                    {
+                        foreach (var grant in option.GrantItems)
+                        {
+                            if (!c.Equipment.Any(e => e.ItemId == grant.ItemId))
+                                c.Equipment.Add(new CharacterEquipmentItem { ItemId = grant.ItemId, Quantity = grant.Quantity });
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: use legacy flat selection (non-strict or no config available)
+                foreach (var itemId in _selectedEquipmentIds)
+                    c.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+            }
+        }
     }
 
     // ── Step validation (no side effects on character model) ──────────────
@@ -1554,22 +1835,73 @@ else
                 break;
 
             case 6:
-                // Equipment step: validate using EquipmentValidator
+                // Equipment step: validate choice groups
                 {
-                    var equipTemp = new Character();
-                    foreach (var itemId in _selectedEquipmentIds)
-                        equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
-                    if (equipTemp.Equipment.Count > 0)
+                    var primaryClsId6 = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
+                    var classConfig6 = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClsId6);
+
+                    // Build a temporary character for validation
+                    var equipTemp = new Character
                     {
+                        ClassStartingWealthChosen = _classStartingWealthChosen,
+                        ClassStartingGold = _classStartingGold,
+                    };
+
+                    foreach (var (groupId, (optionId, pickedItemId)) in _equipmentChoices)
+                    {
+                        equipTemp.StartingEquipmentChoices.Add(new EquipmentGroupChoice
+                        {
+                            GroupId = groupId,
+                            ChosenOptionId = optionId,
+                            PickedItemId = pickedItemId,
+                        });
+
+                        if (!_classStartingWealthChosen && classConfig6 != null)
+                        {
+                            var group = classConfig6.ChoiceGroups.FirstOrDefault(g => g.Id == groupId);
+                            var option = group?.Options.FirstOrDefault(o => o.Id == optionId);
+                            if (option != null)
+                            {
+                                if (option.PickOne)
+                                {
+                                    if (!string.IsNullOrEmpty(pickedItemId))
+                                        equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = pickedItemId, Quantity = 1 });
+                                }
+                                else
+                                {
+                                    foreach (var grant in option.GrantItems)
+                                        equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = grant.ItemId, Quantity = grant.Quantity });
+                                }
+                            }
+                        }
+                    }
+
+                    if (_classStartingWealthChosen)
+                    {
+                        foreach (var itemId in _selectedEquipmentIds)
+                            equipTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
+                    }
+
+                    if (classConfig6 != null)
+                    {
+                        var choiceResult = new StartingEquipmentChoiceValidator(classConfig6).Validate(equipTemp);
+                        result.Errors.AddRange(choiceResult.Errors);
+                        result.Warnings.AddRange(choiceResult.Warnings);
+                    }
+                    else if (equipTemp.Equipment.Count > 0 || _selectedEquipmentIds.Count > 0)
+                    {
+                        // Fallback to legacy validator when no config exists
+                        var legacyTemp = new Character();
+                        foreach (var itemId in _selectedEquipmentIds)
+                            legacyTemp.Equipment.Add(new CharacterEquipmentItem { ItemId = itemId, Quantity = 1 });
                         IReadOnlyList<string>? strictAllowedIds = null;
                         if (_strictEquipment)
                         {
-                            var primaryClsId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
-                            var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryClsId);
+                            var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryClsId6);
                             if (primaryCls?.StartingEquipmentIds.Count > 0)
                                 strictAllowedIds = primaryCls.StartingEquipmentIds;
                         }
-                        var equipResult = new EquipmentValidator(_equipment).Validate(equipTemp, strictAllowedIds);
+                        var equipResult = new EquipmentValidator(_equipment).Validate(legacyTemp, strictAllowedIds);
                         result.Errors.AddRange(equipResult.Errors);
                         result.Warnings.AddRange(equipResult.Warnings);
                     }
