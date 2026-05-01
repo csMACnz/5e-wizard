@@ -7,11 +7,16 @@
       "displayName": "Longsword",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 15, "unit": "gp" },
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
       "weight": 3,
       "damage": "1d8",
       "damageType": "slashing",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.66"
     },
@@ -20,11 +25,17 @@
       "displayName": "Shortsword",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 10, "unit": "gp" },
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["finesse", "light"],
+      "properties": [
+        "finesse",
+        "light"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.67"
     },
@@ -33,11 +44,18 @@
       "displayName": "Dagger",
       "category": "weapon",
       "subcategory": "simple-melee",
-      "cost": { "amount": 2, "unit": "gp" },
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
       "weight": 1,
       "damage": "1d4",
       "damageType": "piercing",
-      "properties": ["finesse", "light", "thrown"],
+      "properties": [
+        "finesse",
+        "light",
+        "thrown"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -46,11 +64,17 @@
       "displayName": "Handaxe",
       "category": "weapon",
       "subcategory": "simple-melee",
-      "cost": { "amount": 5, "unit": "gp" },
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d6",
       "damageType": "slashing",
-      "properties": ["light", "thrown"],
+      "properties": [
+        "light",
+        "thrown"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -59,11 +83,17 @@
       "displayName": "Greataxe",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 30, "unit": "gp" },
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
       "weight": 7,
       "damage": "1d12",
       "damageType": "slashing",
-      "properties": ["heavy", "two-handed"],
+      "properties": [
+        "heavy",
+        "two-handed"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.66"
     },
@@ -72,11 +102,18 @@
       "displayName": "Light Crossbow",
       "category": "weapon",
       "subcategory": "simple-ranged",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 5,
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["ammunition", "loading", "two-handed"],
+      "properties": [
+        "ammunition",
+        "loading",
+        "two-handed"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -85,7 +122,10 @@
       "displayName": "Leather Armor",
       "category": "armor",
       "subcategory": "light",
-      "cost": { "amount": 10, "unit": "gp" },
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
       "weight": 10,
       "armorClass": 11,
       "source": "SRD 5.1",
@@ -96,7 +136,10 @@
       "displayName": "Chain Mail",
       "category": "armor",
       "subcategory": "heavy",
-      "cost": { "amount": 75, "unit": "gp" },
+      "cost": {
+        "amount": 75,
+        "unit": "gp"
+      },
       "weight": 55,
       "armorClass": 16,
       "strengthRequirement": 13,
@@ -109,7 +152,10 @@
       "displayName": "Shield",
       "category": "armor",
       "subcategory": "shield",
-      "cost": { "amount": 10, "unit": "gp" },
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
       "weight": 6,
       "armorClass": 2,
       "source": "SRD 5.1",
@@ -120,9 +166,21 @@
       "displayName": "Explorer's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 10, "unit": "gp" },
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
       "weight": 59,
-      "contents": ["item:backpack", "item:bedroll", "item:mess-kit", "item:tinderbox", "item:torch-10", "item:rations-10", "item:waterskin", "item:rope-hempen-50"],
+      "contents": [
+        "item:backpack",
+        "item:bedroll",
+        "item:mess-kit",
+        "item:tinderbox",
+        "item:torch-10",
+        "item:rations-10",
+        "item:waterskin",
+        "item:rope-hempen-50"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -131,9 +189,22 @@
       "displayName": "Dungeoneers Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 12, "unit": "gp" },
+      "cost": {
+        "amount": 12,
+        "unit": "gp"
+      },
       "weight": 61,
-      "contents": ["item:backpack", "item:crowbar", "item:hammer", "item:piton-10", "item:torch-10", "item:tinderbox", "item:rations-10", "item:waterskin", "item:rope-hempen-50"],
+      "contents": [
+        "item:backpack",
+        "item:crowbar",
+        "item:hammer",
+        "item:piton-10",
+        "item:torch-10",
+        "item:tinderbox",
+        "item:rations-10",
+        "item:waterskin",
+        "item:rope-hempen-50"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -142,7 +213,10 @@
       "displayName": "Holy Symbol",
       "category": "adventuring-gear",
       "subcategory": "focus",
-      "cost": { "amount": 5, "unit": "gp" },
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -152,7 +226,10 @@
       "displayName": "Arcane Focus",
       "category": "adventuring-gear",
       "subcategory": "focus",
-      "cost": { "amount": 10, "unit": "gp" },
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -162,11 +239,16 @@
       "displayName": "Javelin",
       "category": "weapon",
       "subcategory": "simple-melee",
-      "cost": { "amount": 0.5, "unit": "gp" },
+      "cost": {
+        "amount": 0.5,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["thrown"],
+      "properties": [
+        "thrown"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -175,11 +257,17 @@
       "displayName": "Dart",
       "category": "weapon",
       "subcategory": "simple-ranged",
-      "cost": { "amount": 0.05, "unit": "gp" },
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
       "weight": 0.25,
       "damage": "1d4",
       "damageType": "piercing",
-      "properties": ["finesse", "thrown"],
+      "properties": [
+        "finesse",
+        "thrown"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -188,7 +276,10 @@
       "displayName": "Mace",
       "category": "weapon",
       "subcategory": "simple-melee",
-      "cost": { "amount": 5, "unit": "gp" },
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
       "weight": 4,
       "damage": "1d6",
       "damageType": "bludgeoning",
@@ -201,11 +292,16 @@
       "displayName": "Rapier",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["finesse"],
+      "properties": [
+        "finesse"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.66"
     },
@@ -214,11 +310,16 @@
       "displayName": "Warhammer",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 15, "unit": "gp" },
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d8",
       "damageType": "bludgeoning",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.67"
     },
@@ -227,11 +328,16 @@
       "displayName": "Quarterstaff",
       "category": "weapon",
       "subcategory": "simple-melee",
-      "cost": { "amount": 0.2, "unit": "gp" },
+      "cost": {
+        "amount": 0.2,
+        "unit": "gp"
+      },
       "weight": 4,
       "damage": "1d6",
       "damageType": "bludgeoning",
-      "properties": ["versatile"],
+      "properties": [
+        "versatile"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -240,11 +346,17 @@
       "displayName": "Scimitar",
       "category": "weapon",
       "subcategory": "martial-melee",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 3,
       "damage": "1d6",
       "damageType": "slashing",
-      "properties": ["finesse", "light"],
+      "properties": [
+        "finesse",
+        "light"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.66"
     },
@@ -253,11 +365,17 @@
       "displayName": "Shortbow",
       "category": "weapon",
       "subcategory": "simple-ranged",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d6",
       "damageType": "piercing",
-      "properties": ["ammunition", "two-handed"],
+      "properties": [
+        "ammunition",
+        "two-handed"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.65"
     },
@@ -266,11 +384,18 @@
       "displayName": "Longbow",
       "category": "weapon",
       "subcategory": "martial-ranged",
-      "cost": { "amount": 50, "unit": "gp" },
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
       "weight": 2,
       "damage": "1d8",
       "damageType": "piercing",
-      "properties": ["ammunition", "heavy", "two-handed"],
+      "properties": [
+        "ammunition",
+        "heavy",
+        "two-handed"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.66"
     },
@@ -279,7 +404,10 @@
       "displayName": "Arrow",
       "category": "adventuring-gear",
       "subcategory": "ammunition",
-      "cost": { "amount": 0.05, "unit": "gp" },
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
       "weight": 0.05,
       "source": "SRD 5.1",
       "srdReference": "SRD p.68"
@@ -289,7 +417,10 @@
       "displayName": "Crossbow Bolt",
       "category": "adventuring-gear",
       "subcategory": "ammunition",
-      "cost": { "amount": 0.05, "unit": "gp" },
+      "cost": {
+        "amount": 0.05,
+        "unit": "gp"
+      },
       "weight": 0.075,
       "source": "SRD 5.1",
       "srdReference": "SRD p.68"
@@ -299,7 +430,10 @@
       "displayName": "Scale Mail",
       "category": "armor",
       "subcategory": "medium",
-      "cost": { "amount": 50, "unit": "gp" },
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
       "weight": 45,
       "armorClass": 14,
       "stealthDisadvantage": true,
@@ -311,7 +445,10 @@
       "displayName": "Quiver",
       "category": "adventuring-gear",
       "subcategory": "container",
-      "cost": { "amount": 1, "unit": "gp" },
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
@@ -321,7 +458,10 @@
       "displayName": "Druidic Focus",
       "category": "adventuring-gear",
       "subcategory": "focus",
-      "cost": { "amount": 1, "unit": "gp" },
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -331,7 +471,10 @@
       "displayName": "Component Pouch",
       "category": "adventuring-gear",
       "subcategory": "focus",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 2,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -341,7 +484,10 @@
       "displayName": "Thieves' Tools",
       "category": "adventuring-gear",
       "subcategory": "tools",
-      "cost": { "amount": 25, "unit": "gp" },
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -351,7 +497,10 @@
       "displayName": "Spellbook",
       "category": "adventuring-gear",
       "subcategory": "focus",
-      "cost": { "amount": 50, "unit": "gp" },
+      "cost": {
+        "amount": 50,
+        "unit": "gp"
+      },
       "weight": 3,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -361,9 +510,27 @@
       "displayName": "Burglar's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 16, "unit": "gp" },
+      "cost": {
+        "amount": 16,
+        "unit": "gp"
+      },
       "weight": 44.5,
-      "contents": ["item:backpack", "item:ball-bearings-1000", "item:string-10-feet", "item:bell", "item:candle-5", "item:crowbar", "item:hammer", "item:piton-10", "item:hooded-lantern", "item:oil-flask-2", "item:rations-5", "item:tinderbox", "item:waterskin", "item:rope-hempen-50"],
+      "contents": [
+        "item:backpack",
+        "item:ball-bearings-1000",
+        "item:string-10-feet",
+        "item:bell",
+        "item:candle-5",
+        "item:crowbar",
+        "item:hammer",
+        "item:piton-10",
+        "item:hooded-lantern",
+        "item:oil-flask-2",
+        "item:rations-5",
+        "item:tinderbox",
+        "item:waterskin",
+        "item:rope-hempen-50"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -372,9 +539,24 @@
       "displayName": "Diplomat's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 39, "unit": "gp" },
+      "cost": {
+        "amount": 39,
+        "unit": "gp"
+      },
       "weight": 36,
-      "contents": ["item:chest", "item:case-map-or-scroll-2", "item:fine-clothes", "item:ink-bottle", "item:ink-pen", "item:lamp", "item:oil-flask-2", "item:paper-5", "item:perfume-vial", "item:sealing-wax", "item:soap"],
+      "contents": [
+        "item:chest",
+        "item:case-map-or-scroll-2",
+        "item:fine-clothes",
+        "item:ink-bottle",
+        "item:ink-pen",
+        "item:lamp",
+        "item:oil-flask-2",
+        "item:paper-5",
+        "item:perfume-vial",
+        "item:sealing-wax",
+        "item:soap"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -383,9 +565,20 @@
       "displayName": "Entertainer's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 40, "unit": "gp" },
+      "cost": {
+        "amount": 40,
+        "unit": "gp"
+      },
       "weight": 38,
-      "contents": ["item:backpack", "item:bedroll", "item:costume-2", "item:candle-5", "item:rations-5", "item:waterskin", "item:disguise-kit"],
+      "contents": [
+        "item:backpack",
+        "item:bedroll",
+        "item:costume-2",
+        "item:candle-5",
+        "item:rations-5",
+        "item:waterskin",
+        "item:disguise-kit"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -394,9 +587,20 @@
       "displayName": "Scholar's Pack",
       "category": "adventuring-gear",
       "subcategory": "pack",
-      "cost": { "amount": 40, "unit": "gp" },
+      "cost": {
+        "amount": 40,
+        "unit": "gp"
+      },
       "weight": 10,
-      "contents": ["item:backpack", "item:book-of-lore", "item:ink-bottle", "item:ink-pen", "item:parchment-10", "item:small-bag-of-sand", "item:small-knife"],
+      "contents": [
+        "item:backpack",
+        "item:book-of-lore",
+        "item:ink-bottle",
+        "item:ink-pen",
+        "item:parchment-10",
+        "item:small-bag-of-sand",
+        "item:small-knife"
+      ],
       "source": "SRD 5.1",
       "srdReference": "SRD p.69"
     },
@@ -405,7 +609,10 @@
       "displayName": "Lute",
       "category": "adventuring-gear",
       "subcategory": "musical-instrument",
-      "cost": { "amount": 35, "unit": "gp" },
+      "cost": {
+        "amount": 35,
+        "unit": "gp"
+      },
       "weight": 2,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -415,7 +622,10 @@
       "displayName": "Drum",
       "category": "adventuring-gear",
       "subcategory": "musical-instrument",
-      "cost": { "amount": 6, "unit": "gp" },
+      "cost": {
+        "amount": 6,
+        "unit": "gp"
+      },
       "weight": 3,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
@@ -425,7 +635,413 @@
       "displayName": "Flute",
       "category": "adventuring-gear",
       "subcategory": "musical-instrument",
-      "cost": { "amount": 2, "unit": "gp" },
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:club",
+      "displayName": "Club",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": {
+        "amount": 0.1,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "damage": "1d4",
+      "damageType": "bludgeoning",
+      "properties": [
+        "light"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:greatclub",
+      "displayName": "Greatclub",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": {
+        "amount": 0.2,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "damage": "1d8",
+      "damageType": "bludgeoning",
+      "properties": [
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:light-hammer",
+      "displayName": "Light Hammer",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "damage": "1d4",
+      "damageType": "bludgeoning",
+      "properties": [
+        "light",
+        "thrown"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:sickle",
+      "displayName": "Sickle",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "damage": "1d4",
+      "damageType": "slashing",
+      "properties": [
+        "light"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:spear",
+      "displayName": "Spear",
+      "category": "weapon",
+      "subcategory": "simple-melee",
+      "cost": {
+        "amount": 1,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": [
+        "thrown",
+        "versatile"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:sling",
+      "displayName": "Sling",
+      "category": "weapon",
+      "subcategory": "simple-ranged",
+      "cost": {
+        "amount": 0.01,
+        "unit": "gp"
+      },
+      "weight": 0,
+      "damage": "1d4",
+      "damageType": "bludgeoning",
+      "properties": [
+        "ammunition"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65"
+    },
+    {
+      "id": "item:battleaxe",
+      "displayName": "Battleaxe",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "damage": "1d8",
+      "damageType": "slashing",
+      "properties": [
+        "versatile"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:flail",
+      "displayName": "Flail",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "damage": "1d8",
+      "damageType": "bludgeoning",
+      "properties": [],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:glaive",
+      "displayName": "Glaive",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 20,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "damage": "1d10",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "reach",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:halberd",
+      "displayName": "Halberd",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 20,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "damage": "1d10",
+      "damageType": "slashing",
+      "properties": [
+        "heavy",
+        "reach",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:lance",
+      "displayName": "Lance",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "damage": "1d12",
+      "damageType": "piercing",
+      "properties": [
+        "reach",
+        "special"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:maul",
+      "displayName": "Maul",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 10,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "damage": "2d6",
+      "damageType": "bludgeoning",
+      "properties": [
+        "heavy",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:morningstar",
+      "displayName": "Morningstar",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 15,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "damage": "1d8",
+      "damageType": "piercing",
+      "properties": [],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:pike",
+      "displayName": "Pike",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 18,
+      "damage": "1d10",
+      "damageType": "piercing",
+      "properties": [
+        "heavy",
+        "reach",
+        "two-handed"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:trident",
+      "displayName": "Trident",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 4,
+      "damage": "1d6",
+      "damageType": "piercing",
+      "properties": [
+        "thrown",
+        "versatile"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:war-pick",
+      "displayName": "War Pick",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 5,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "damage": "1d8",
+      "damageType": "piercing",
+      "properties": [],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:whip",
+      "displayName": "Whip",
+      "category": "weapon",
+      "subcategory": "martial-melee",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 3,
+      "damage": "1d4",
+      "damageType": "slashing",
+      "properties": [
+        "finesse",
+        "reach"
+      ],
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66"
+    },
+    {
+      "id": "item:bagpipes",
+      "displayName": "Bagpipes",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
+      "weight": 6,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:dulcimer",
+      "displayName": "Dulcimer",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 25,
+        "unit": "gp"
+      },
+      "weight": 10,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:horn",
+      "displayName": "Horn",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 3,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:lyre",
+      "displayName": "Lyre",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:pan-flute",
+      "displayName": "Pan Flute",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 12,
+        "unit": "gp"
+      },
+      "weight": 2,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:shawm",
+      "displayName": "Shawm",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 2,
+        "unit": "gp"
+      },
+      "weight": 1,
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.70"
+    },
+    {
+      "id": "item:viol",
+      "displayName": "Viol",
+      "category": "adventuring-gear",
+      "subcategory": "musical-instrument",
+      "cost": {
+        "amount": 30,
+        "unit": "gp"
+      },
       "weight": 1,
       "source": "SRD 5.1",
       "srdReference": "SRD p.70"
