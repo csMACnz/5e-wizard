@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/feat.schema.json",
+  "title": "FeatDataFile",
+  "description": "Collection of SRD feats and class/background features.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "feats"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": { "type": "string" },
+    "feats": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Feat" }
+    }
+  },
+  "definitions": {
+    "Feat": {
+      "type": "object",
+      "required": ["id", "displayName", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^feat:[a-z0-9]+(-[a-z0-9]+)*$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 200 },
+        "source": { "type": "string" },
+        "srdReference": { "type": "string" }
+      }
+    }
+  }
+}

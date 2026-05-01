@@ -73,6 +73,9 @@ public class ClassDefinition
     [JsonPropertyName("subclassOptions")]
     public List<SubclassDefinition> SubclassOptions { get; set; } = [];
 
+    [JsonPropertyName("featuresByLevel")]
+    public Dictionary<string, List<string>> FeaturesByLevel { get; set; } = [];
+
     [JsonPropertyName("startingEquipmentIds")]
     public List<string> StartingEquipmentIds { get; set; } = [];
 
