@@ -397,7 +397,11 @@ else
                     <MudSelect T="string" Label="Background"
                                Value="@_selectedBackgroundId"
                                ValueChanged="@OnBackgroundChanged"
-                               Variant="Variant.Outlined" Required="true">
+                               Variant="Variant.Outlined" Required="true"
+                               Adornment="Adornment.End"
+                               AdornmentIcon="@Icons.Material.Filled.Casino"
+                               OnAdornmentClick="RandomizeBackground"
+                               AdornmentAriaLabel="Random background">
                         <MudSelectItem Value="@string.Empty">— select background —</MudSelectItem>
                         @foreach (var bg in _backgrounds)
                         {
@@ -1708,6 +1712,14 @@ else
         var race = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
         if (race == null || race.Subraces.Count == 0) return;
         _selectedSubraceId = race.Subraces[Random.Shared.Next(race.Subraces.Count)].Id;
+        ValidateAndShowStepErrors();
+    }
+
+    // ── Background randomization ──────────────────────────────────────────
+    private void RandomizeBackground()
+    {
+        if (_backgrounds.Count == 0) return;
+        OnBackgroundChanged(_backgrounds[Random.Shared.Next(_backgrounds.Count)].Id);
         ValidateAndShowStepErrors();
     }
 
