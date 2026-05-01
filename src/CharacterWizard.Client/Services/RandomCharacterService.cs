@@ -29,12 +29,15 @@ public sealed class RandomCharacterService(IDataService dataService)
         var backgrounds = await dataService.GetBackgroundsAsync();
         var spells = await dataService.GetSpellsAsync();
         var equipment = await dataService.GetEquipmentAsync();
+        var fullNames = await dataService.GetFullNamesAsync();
+
+        var namePool = fullNames.Count > 0 ? fullNames : _characterNameOptions;
 
         var c = new Character();
         var rng = Random.Shared;
 
         // Step 1 — Meta
-        c.Name = _characterNameOptions[rng.Next(_characterNameOptions.Length)];
+        c.Name = namePool[rng.Next(namePool.Count)];
         c.GenerationMethod = GenerationMethod.Roll;
 
         // Step 2 — Ability Scores (4d6 drop lowest)

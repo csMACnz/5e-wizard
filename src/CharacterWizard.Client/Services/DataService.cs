@@ -11,6 +11,7 @@ public sealed class DataService : IDataService
     private List<BackgroundDefinition>? _backgrounds;
     private List<SpellDefinition>? _spells;
     private List<EquipmentItemDefinition>? _equipment;
+    private NamesData? _names;
 
     public DataService(HttpClient http)
     {
@@ -70,5 +71,40 @@ public sealed class DataService : IDataService
         }
 
         return _equipment;
+    }
+
+    public async Task<IReadOnlyList<string>> GetFullNamesAsync()
+    {
+        await EnsureNamesLoadedAsync();
+        return _names!.Full.Count > 0 ? _names.Full : [];
+    }
+
+    public async Task<IReadOnlyList<string>> GetGivenNamesAsync()
+    {
+        await EnsureNamesLoadedAsync();
+        return _names!.Given.Count > 0 ? _names.Given : [];
+    }
+
+    public async Task<IReadOnlyList<string>> GetSurnamesAsync()
+    {
+        await EnsureNamesLoadedAsync();
+        return _names!.Surname.Count > 0 ? _names.Surname : [];
+    }
+
+    private async Task EnsureNamesLoadedAsync()
+    {
+        if (_names is null)
+        {
+            try
+            {
+                _names = await _http.GetFromJsonAsync<NamesData>("data/names.json");
+            }
+            catch
+            {
+                // Fall back to empty lists; callers will use their built-in fallback arrays.
+            }
+
+            _names ??= new NamesData();
+        }
     }
 }

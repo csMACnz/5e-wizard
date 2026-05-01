@@ -188,4 +188,34 @@ public class DataDeserializationTests
         Assert.NotEmpty(acolyte!.StartingEquipmentIds);
         Assert.Contains("item:holy-symbol", acolyte.StartingEquipmentIds);
     }
+
+    [Fact]
+    public void Names_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<NamesData>("names.json");
+
+        Assert.NotEmpty(data.Full);
+        Assert.NotEmpty(data.Given);
+        Assert.NotEmpty(data.Surname);
+    }
+
+    [Fact]
+    public void Names_Json_Has500EntriesEach()
+    {
+        var data = DeserializeFile<NamesData>("names.json");
+
+        Assert.Equal(500, data.Full.Count);
+        Assert.Equal(500, data.Given.Count);
+        Assert.Equal(500, data.Surname.Count);
+    }
+
+    [Fact]
+    public void Names_Json_AllEntriesNonEmpty()
+    {
+        var data = DeserializeFile<NamesData>("names.json");
+
+        Assert.All(data.Full, name => Assert.False(string.IsNullOrWhiteSpace(name), $"Full name entry is empty or whitespace"));
+        Assert.All(data.Given, name => Assert.False(string.IsNullOrWhiteSpace(name), $"Given name entry is empty or whitespace"));
+        Assert.All(data.Surname, name => Assert.False(string.IsNullOrWhiteSpace(name), $"Surname entry is empty or whitespace"));
+    }
 }
