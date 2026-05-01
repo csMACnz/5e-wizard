@@ -7,6 +7,7 @@
 @inject IDataService DataService
 @inject CharacterWizardState State
 @inject IJSRuntime JS
+@inject NavigationManager Nav
 
 <PageTitle>Character Wizard</PageTitle>
 
@@ -869,8 +870,7 @@ else
                 </MudButton>
                 <MudButton Variant="Variant.Outlined" Color="Color.Default"
                            StartIcon="@Icons.Material.Filled.Print"
-                           Href="print"
-                           Target="_blank">
+                           OnClick="@(() => Nav.NavigateTo("print"))">
                     Print Sheet
                 </MudButton>
             </MudStack>
