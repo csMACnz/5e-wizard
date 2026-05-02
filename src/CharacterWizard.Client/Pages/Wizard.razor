@@ -56,7 +56,7 @@ else
             <MudGrid>
                 <MudItem xs="12" sm="6">
                     <MudTextField Value="@_characterName"
-                                  ValueChanged="@((string v) => { _characterName = v; ValidateAndShowStepErrors(); })"
+                                  ValueChanged="@(async (string v) => { _characterName = v; await ValidateAndAutoSaveAsync(); })"
                                   Label="Character Name" Required="true"
                                   Immediate="true"
                                   Variant="Variant.Outlined" HelperText="Required"
@@ -67,11 +67,15 @@ else
                                   aria-required="true" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_playerName" Label="Player Name"
+                    <MudTextField Value="@_playerName"
+                                  ValueChanged="@(async (string v) => { _playerName = v; await ValidateAndAutoSaveAsync(); })"
+                                  Label="Player Name"
                                   Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
-                    <MudTextField @bind-Value="_campaignName" Label="Campaign Name"
+                    <MudTextField Value="@_campaignName"
+                                  ValueChanged="@(async (string v) => { _campaignName = v; await ValidateAndAutoSaveAsync(); })"
+                                  Label="Campaign Name"
                                   Variant="Variant.Outlined"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -83,7 +87,7 @@ else
                 <strong>Ability Score Generation Method</strong>
             </MudText>
             <MudRadioGroup @bind-Value="_generationMethodStr" T="string"
-                           @bind-Value:after="ValidateAndShowStepErrors">
+                           @bind-Value:after="ValidateAndAutoSaveAsync">
                 <MudStack Spacing="2">
                     <MudRadio Value="@nameof(GenerationMethod.StandardArray)" Color="Color.Primary">
                         <MudText><strong>Standard Array</strong> — Assign [@string.Join(", ", _abilitiesConfig.StandardArray)] to your abilities</MudText>
@@ -119,7 +123,7 @@ else
                         <MudItem xs="12" sm="6" md="4">
                             <MudSelect T="int" Label="@ab"
                                        Value="@_abilitySelections[ab]"
-                                       ValueChanged="@((int v) => { _abilitySelections[ab] = v; ValidateAndShowStepErrors(); })"
+                                       ValueChanged="@(async (int v) => { _abilitySelections[ab] = v; await ValidateAndAutoSaveAsync(); })"
                                        Variant="Variant.Outlined">
                                 <MudSelectItem Value="0">— select —</MudSelectItem>
                                 @foreach (int v in _abilitiesConfig.StandardArray)
@@ -151,13 +155,13 @@ else
                                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-1">
                                     <MudIconButton Icon="@Icons.Material.Filled.Remove" Size="Size.Small"
                                                    Color="Color.Primary" Disabled="@(baseScore <= _abilitiesConfig.PointBuy.MinScore)"
-                                                   OnClick="@(() => DecrementAbility(ab))"
+                                                   OnClick="@(async () => await DecrementAbility(ab))"
                                                    aria-label="@($"Decrease {ab}")" />
                                     <MudText Typo="Typo.h6" Style="min-width:2em;text-align:center">@baseScore</MudText>
                                     <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small"
                                                    Color="Color.Primary"
                                                    Disabled="@(baseScore >= _abilitiesConfig.PointBuy.MaxScore || pbSpent + nextExtra > _abilitiesConfig.PointBuy.Budget)"
-                                                   OnClick="@(() => IncrementAbility(ab))"
+                                                   OnClick="@(async () => await IncrementAbility(ab))"
                                                    aria-label="@($"Increase {ab}")" />
                                     <MudText Color="Color.Secondary">mod @Modifier(baseScore)</MudText>
                                 </MudStack>
@@ -184,12 +188,12 @@ else
                         <MudItem xs="12" sm="6" md="4">
                             <MudNumericField T="int" Label="@ab"
                                             Value="@_rollValues[ab]"
-                                            ValueChanged="@((int v) => { _rollValues[ab] = v; ValidateAndShowStepErrors(); })"
+                                            ValueChanged="@(async (int v) => { _rollValues[ab] = v; await ValidateAndAutoSaveAsync(); })"
                                             Min="@RollValidator.MinScore" Max="@RollValidator.MaxScore" Variant="Variant.Outlined"
                                             HelperText="@($"mod {Modifier(_rollValues[ab])}")"
                                             Adornment="Adornment.End"
                                             AdornmentIcon="@Icons.Material.Filled.Casino"
-                                            OnAdornmentClick="@(() => RerollAbility(ab))"
+                                            OnAdornmentClick="@(async () => await RerollAbility(ab))"
                                             AdornmentAriaLabel="@($"Reroll {ab}")" />
                         </MudItem>
                     }
@@ -206,7 +210,7 @@ else
                 <MudItem xs="12" sm="6">
                     <MudSelect T="string" Label="Race"
                                Value="_selectedRaceId"
-                               ValueChanged="@((string v) => { _selectedRaceId = v; _selectedSubraceId = string.Empty; ValidateAndShowStepErrors(); })"
+                               ValueChanged="@(async (string v) => { _selectedRaceId = v; _selectedSubraceId = string.Empty; await ValidateAndAutoSaveAsync(); })"
                                Variant="Variant.Outlined" Required="true"
                                Adornment="Adornment.End"
                                AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -224,7 +228,7 @@ else
                     <MudItem xs="12" sm="6">
                         <MudSelect T="string" Label="Subrace"
                                    Value="_selectedSubraceId"
-                                   ValueChanged="@((string v) => { _selectedSubraceId = v; ValidateAndShowStepErrors(); })"
+                                   ValueChanged="@(async (string v) => { _selectedSubraceId = v; await ValidateAndAutoSaveAsync(); })"
                                    Variant="Variant.Outlined" Required="true"
                                    Adornment="Adornment.End"
                                    AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -312,7 +316,7 @@ else
                             {
                                 <MudSpacer />
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
-                                               Color="Color.Error" OnClick="@(() => RemoveClassEntry(classIdx))"
+                                               Color="Color.Error" OnClick="@(async () => await RemoveClassEntry(classIdx))"
                                                aria-label="Remove class" />
                             }
                         </MudStack>
@@ -320,11 +324,11 @@ else
                             <MudItem xs="12" sm="7">
                                 <MudSelect T="string" Label="Class"
                                            Value="@_classEntries[classIdx].ClassId"
-                                           ValueChanged="@((string v) => { _classEntries[classIdx].ClassId = v; _classEntries[classIdx].SubclassId = string.Empty; ValidateAndShowStepErrors(); })"
+                                           ValueChanged="@(async (string v) => { _classEntries[classIdx].ClassId = v; _classEntries[classIdx].SubclassId = string.Empty; await ValidateAndAutoSaveAsync(); })"
                                            Variant="Variant.Outlined" Required="true"
                                            Adornment="Adornment.End"
                                            AdornmentIcon="@Icons.Material.Filled.Casino"
-                                           OnAdornmentClick="@(() => RandomizeClass(classIdx))"
+                                           OnAdornmentClick="@(async () => await RandomizeClass(classIdx))"
                                            AdornmentAriaLabel="Random class">
                                     <MudSelectItem Value="@string.Empty">— select class —</MudSelectItem>
                                     @foreach (var cls in _classes)
@@ -338,7 +342,7 @@ else
                             <MudItem xs="12" sm="3">
                                 <MudNumericField T="int" Label="Level"
                                                 Value="@_classEntries[classIdx].Level"
-                                                ValueChanged="@((int v) => { _classEntries[classIdx].Level = v; ValidateAndShowStepErrors(); })"
+                                                ValueChanged="@(async (int v) => { _classEntries[classIdx].Level = v; await ValidateAndAutoSaveAsync(); })"
                                                 Min="1" Max="20" Variant="Variant.Outlined" />
                             </MudItem>
                         </MudGrid>
@@ -349,11 +353,11 @@ else
                         {
                             <MudSelect T="string" Label="@clsDef.SubclassLabel"
                                        Value="@_classEntries[classIdx].SubclassId"
-                                       ValueChanged="@((string v) => { _classEntries[classIdx].SubclassId = v; ValidateAndShowStepErrors(); })"
+                                       ValueChanged="@(async (string v) => { _classEntries[classIdx].SubclassId = v; await ValidateAndAutoSaveAsync(); })"
                                        Variant="Variant.Outlined" Required="true" Class="mt-2"
                                        Adornment="Adornment.End"
                                        AdornmentIcon="@Icons.Material.Filled.Casino"
-                                       OnAdornmentClick="@(() => RandomizeSubclass(classIdx))"
+                                       OnAdornmentClick="@(async () => await RandomizeSubclass(classIdx))"
                                        AdornmentAriaLabel="Random subclass">
                                 <MudSelectItem Value="@string.Empty">— select @(clsDef.SubclassLabel.ToLowerInvariant()) —</MudSelectItem>
                                 @foreach (var sub in clsDef.SubclassOptions)
@@ -479,7 +483,7 @@ else
 
                             <MudRadioGroup T="string"
                                            Value="@radioVal"
-                                           ValueChanged="@((string v) => OnAsiRadioChanged(classEntry.ClassId, asiLevel, v))">
+                                           ValueChanged="@(async (string v) => await OnAsiRadioChanged(classEntry.ClassId, asiLevel, v))">
                                 <MudStack Spacing="1">
                                     <MudRadio Value="@("plus2")" Color="Color.Primary">+2 to one ability</MudRadio>
                                     <MudRadio Value="@("split")" Color="Color.Primary">+1 / +1 to two abilities</MudRadio>
@@ -492,7 +496,7 @@ else
                                 <MudSelect T="string"
                                            Label="Ability (+2)"
                                            Value="@(currentChoice?.AbilityOne ?? string.Empty)"
-                                           ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, null))"
+                                           ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, null))"
                                            Variant="Variant.Outlined" Class="mt-2" Style="max-width:220px">
                                     <MudSelectItem Value="@string.Empty">— select ability —</MudSelectItem>
                                     @foreach (var ab in Abilities)
@@ -507,7 +511,7 @@ else
                                     <MudSelect T="string"
                                                Label="First ability (+1)"
                                                Value="@(currentChoice?.AbilityOne ?? string.Empty)"
-                                               ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
+                                               ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
                                                Variant="Variant.Outlined" Style="max-width:200px">
                                         <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
                                         @foreach (var ab in Abilities)
@@ -518,7 +522,7 @@ else
                                     <MudSelect T="string"
                                                Label="Second ability (+1)"
                                                Value="@(currentChoice?.AbilityTwo ?? string.Empty)"
-                                               ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
+                                               ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
                                                Variant="Variant.Outlined" Style="max-width:200px">
                                         <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
                                         @foreach (var ab in Abilities)
@@ -534,7 +538,7 @@ else
                                 <MudSelect T="string"
                                            Label="Choose a feat"
                                            Value="@(currentChoice?.FeatId ?? string.Empty)"
-                                           ValueChanged="@((string v) => OnAsiFeatChanged(classEntry.ClassId, asiLevel, v))"
+                                           ValueChanged="@(async (string v) => await OnAsiFeatChanged(classEntry.ClassId, asiLevel, v))"
                                            Variant="Variant.Outlined" Class="mt-2" Style="max-width:340px">
                                     <MudSelectItem Value="@string.Empty">— select feat —</MudSelectItem>
                                     @foreach (var gf in generalFeats)
@@ -623,7 +627,7 @@ else
                         bool skillDisabled = isGrantedByBackground || alreadyMaxed;
                         <MudItem xs="12" sm="6" md="4">
                             <MudCheckBox T="bool" Value="_classSkillSelections[skillIdx]"
-                                         ValueChanged="@((bool v) => { _classSkillSelections[skillIdx] = v; ValidateAndShowStepErrors(); })"
+                                         ValueChanged="@(async (bool v) => { _classSkillSelections[skillIdx] = v; await ValidateAndAutoSaveAsync(); })"
                                          Disabled="@skillDisabled"
                                          Color="Color.Primary"
                                          Label="@(SkillLabel(_classSkillOptionIds[skillIdx]) + (isGrantedByBackground ? " (from background)" : string.Empty))" />
@@ -697,7 +701,7 @@ else
                                     </MudText>
                                     <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
                                                StartIcon="@Icons.Material.Filled.Casino"
-                                               OnClick="@(() => RandomizeCantrips(entry.ClassId, maxCantrips))">
+                                               OnClick="@(async () => await RandomizeCantrips(entry.ClassId, maxCantrips))">
                                         Random Cantrips
                                     </MudButton>
                                 </MudStack>
@@ -710,7 +714,7 @@ else
                                         <MudItem xs="12" sm="6" md="4">
                                             <MudCheckBox T="bool"
                                                          Value="@isSelected"
-                                                         ValueChanged="@((bool v) => ToggleSpell(entry.ClassId, spellId, v))"
+                                                         ValueChanged="@(async (bool v) => await ToggleSpell(entry.ClassId, spellId, v))"
                                                          Disabled="@disableAdd"
                                                          Color="Color.Primary"
                                                          Label="@spell.DisplayName" />
@@ -736,7 +740,7 @@ else
                                     </MudText>
                                     <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
                                                StartIcon="@Icons.Material.Filled.Casino"
-                                               OnClick="@(() => RandomizeSpells(entry.ClassId, maxKnown, isPrepare, level, sc.SpellcastingAbility))">
+                                               OnClick="@(async () => await RandomizeSpells(entry.ClassId, maxKnown, isPrepare, level, sc.SpellcastingAbility))">
                                         Random Spells
                                     </MudButton>
                                 </MudStack>
@@ -755,7 +759,7 @@ else
                                                 <MudTooltip Text="@spell.Description" Placement="Placement.Top">
                                                     <MudCheckBox T="bool"
                                                                  Value="@isSelected"
-                                                                 ValueChanged="@((bool v) => ToggleSpell(entry.ClassId, spellId, v))"
+                                                                 ValueChanged="@(async (bool v) => await ToggleSpell(entry.ClassId, spellId, v))"
                                                                  Disabled="@disableAdd"
                                                                  Color="Color.Secondary"
                                                                  Label="@($"{spell.DisplayName}{(spell.Ritual ? " (R)" : string.Empty)}{(spell.Concentration ? " (C)" : string.Empty)}")" />
@@ -821,7 +825,7 @@ else
                     <MudCardContent>
                         <MudRadioGroup T="string"
                                        Value="@(_classStartingWealthChosen ? "wealth" : "equipment")"
-                                       ValueChanged="@((string v) => OnEquipmentOrWealthChanged(v))"
+                                       ValueChanged="@(async (string v) => await OnEquipmentOrWealthChanged(v))"
                                        Class="mb-2">
                             <MudStack Spacing="1">
                                 <MudRadio Value="@("equipment")" Color="Color.Primary">
@@ -846,7 +850,7 @@ else
                             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                                 <MudNumericField T="int?"
                                                  Value="_classStartingGold"
-                                                 ValueChanged="@((int? v) => { _classStartingGold = v; ValidateAndShowStepErrors(); })"
+                                                 ValueChanged="@(async (int? v) => { _classStartingGold = v; await ValidateAndAutoSaveAsync(); })"
                                                  Label="Starting Gold (gp)"
                                                  Variant="Variant.Outlined"
                                                  Min="0"
@@ -908,7 +912,7 @@ else
                             <MudCardContent>
                                 <MudRadioGroup T="string"
                                                Value="@(currentChoice?.Item1)"
-                                               ValueChanged="@((string optId) => OnEquipmentOptionChanged(groupId, optId))"
+                                               ValueChanged="@(async (string optId) => await OnEquipmentOptionChanged(groupId, optId))"
                                                Class="mb-2">
                                     <MudStack Spacing="1">
                                         @foreach (var option in choiceGroup.Options)
@@ -928,7 +932,7 @@ else
                                     {
                                         <MudSelect T="string"
                                                    Value="@(currentChoice.Value.Item2)"
-                                                   ValueChanged="@((string itemId) => OnEquipmentItemPicked(groupId, itemId))"
+                                                   ValueChanged="@(async (string itemId) => await OnEquipmentItemPicked(groupId, itemId))"
                                                    Label="Choose an item"
                                                    Variant="Variant.Outlined"
                                                    Class="mt-2"
@@ -990,7 +994,7 @@ else
                             <MudItem xs="12" sm="6" md="4">
                                 <MudCheckBox T="bool"
                                              Value="@isSelected"
-                                             ValueChanged="@((bool v) => ToggleEquipment(itemId, v))"
+                                             ValueChanged="@(async (bool v) => await ToggleEquipment(itemId, v))"
                                              Color="Color.Primary"
                                              Label="@item.DisplayName" />
                             </MudItem>
@@ -1584,7 +1588,7 @@ else
     }
 
     // ── ASI choice event handlers ─────────────────────────────────────────
-    private void OnAsiRadioChanged(string classId, int grantLevel, string radioValue)
+    private async Task OnAsiRadioChanged(string classId, int grantLevel, string radioValue)
     {
         string key = $"{classId}|{grantLevel}";
         if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
@@ -1597,10 +1601,10 @@ else
         existing.AbilityTwo = null;
 
         _allAsiChoicesByKey[key] = existing;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void OnAsiAbilityChanged(string classId, int grantLevel, string? abilityOne, string? abilityTwo)
+    private async Task OnAsiAbilityChanged(string classId, int grantLevel, string? abilityOne, string? abilityTwo)
     {
         string key = $"{classId}|{grantLevel}";
         if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
@@ -1610,10 +1614,10 @@ else
         existing.AbilityOne = string.IsNullOrEmpty(abilityOne) ? null : abilityOne;
         existing.AbilityTwo = string.IsNullOrEmpty(abilityTwo) ? null : abilityTwo;
         _allAsiChoicesByKey[key] = existing;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void OnAsiFeatChanged(string classId, int grantLevel, string featId)
+    private async Task OnAsiFeatChanged(string classId, int grantLevel, string featId)
     {
         string key = $"{classId}|{grantLevel}";
         if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
@@ -1623,7 +1627,7 @@ else
         existing.AbilityTwo = null;
         existing.FeatId = string.IsNullOrEmpty(featId) ? null : featId;
         _allAsiChoicesByKey[key] = existing;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     private int GetAbilityBase(string ability) =>
@@ -1673,7 +1677,7 @@ else
     }
 
     // ── Spell helpers ─────────────────────────────────────────────────────
-    private void ToggleSpell(string classId, string spellId, bool selected)
+    private async Task ToggleSpell(string classId, string spellId, bool selected)
     {
         if (!_selectedSpells.ContainsKey(classId))
             _selectedSpells[classId] = [];
@@ -1681,48 +1685,48 @@ else
             _selectedSpells[classId].Add(spellId);
         else
             _selectedSpells[classId].Remove(spellId);
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Equipment helpers ─────────────────────────────────────────────────
-    private void ToggleEquipment(string itemId, bool selected)
+    private async Task ToggleEquipment(string itemId, bool selected)
     {
         if (selected)
             _selectedEquipmentIds.Add(itemId);
         else
             _selectedEquipmentIds.Remove(itemId);
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void OnEquipmentOrWealthChanged(string value)
+    private async Task OnEquipmentOrWealthChanged(string value)
     {
         _classStartingWealthChosen = value == "wealth";
         if (!_classStartingWealthChosen)
             _classStartingGold = null;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void OnEquipmentOptionChanged(string groupId, string optionId)
+    private async Task OnEquipmentOptionChanged(string groupId, string optionId)
     {
         _equipmentChoices[groupId] = (optionId, null);
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void OnEquipmentItemPicked(string groupId, string itemId)
+    private async Task OnEquipmentItemPicked(string groupId, string itemId)
     {
         if (_equipmentChoices.TryGetValue(groupId, out var current))
             _equipmentChoices[groupId] = (current.OptionId, itemId);
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RollStartingWealth()
+    private async Task RollStartingWealth()
     {
         var primaryClassId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
         var config = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClassId);
         if (config == null) return;
 
         _classStartingGold = RollWealthExpression(config.StartingWealthRoll);
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     private static int RollWealthExpression(string expression)
@@ -1747,7 +1751,7 @@ else
         return total * multiplier;
     }
 
-    private void OnStrictEquipmentChanged(bool strict)
+    private async Task OnStrictEquipmentChanged(bool strict)
     {
         _strictEquipment = strict;
         if (strict)
@@ -1762,11 +1766,11 @@ else
                     _selectedEquipmentIds.Remove(id);
             }
         }
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Point buy helpers ─────────────────────────────────────────────────
-    private void IncrementAbility(string ability)
+    private async Task IncrementAbility(string ability)
     {
         int minScore = _abilitiesConfig.PointBuy.MinScore;
         int maxScore = _abilitiesConfig.PointBuy.MaxScore;
@@ -1777,24 +1781,29 @@ else
         int nextCost = PointBuyCost(current + 1) - PointBuyCost(current);
         if (spent + nextCost <= budget)
             _pointBuyValues[ability] = current + 1;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void DecrementAbility(string ability)
+    private async Task DecrementAbility(string ability)
     {
         int minScore = _abilitiesConfig.PointBuy.MinScore;
         int current = _pointBuyValues.GetValueOrDefault(ability, minScore);
         if (current > minScore) _pointBuyValues[ability] = current - 1;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Class entry helpers ───────────────────────────────────────────────
-    private void AddClassEntry() => _classEntries.Add(new ClassEntry());
+    private async Task AddClassEntry()
+    {
+        _classEntries.Add(new ClassEntry());
+        await ValidateAndAutoSaveAsync();
+    }
 
-    private void RemoveClassEntry(int idx)
+    private async Task RemoveClassEntry(int idx)
     {
         if (idx > 0 && idx < _classEntries.Count)
             _classEntries.RemoveAt(idx);
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Skill option helpers ──────────────────────────────────────────────
@@ -1826,7 +1835,7 @@ else
         _classSkillSelections = newSel;
     }
 
-    private void OnBackgroundChanged(string value)
+    private async Task OnBackgroundChanged(string value)
     {
         _selectedBackgroundId = value;
         var newBg = _backgrounds.FirstOrDefault(b => b.Id == value);
@@ -1836,7 +1845,7 @@ else
                 if (_classSkillSelections[i] && newBg.SkillProficiencies.Contains(_classSkillOptionIds[i]))
                     _classSkillSelections[i] = false;
         }
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Commit state → character model ───────────────────────────────────
@@ -2318,6 +2327,13 @@ else
         _stepErrors = result.Errors;
     }
 
+    private async Task ValidateAndAutoSaveAsync()
+    {
+        ValidateAndShowStepErrors();
+        CommitAllToCharacter();
+        await SaveSessionAsync();
+    }
+
     // ── Randomizer helpers ────────────────────────────────────────────────
     private static readonly string[] _characterNameOptions =
     [
@@ -2336,16 +2352,17 @@ else
         "The Emerald Enclave", "Tomb of the Old Gods",
     ];
 
-    private void RandomizeCharacterName()
+    private async Task RandomizeCharacterName()
     {
         var namePool = _fullNames.Count > 0 ? _fullNames : _characterNameOptions;
         _characterName = namePool[Random.Shared.Next(namePool.Count)];
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RandomizeCampaignName()
+    private async Task RandomizeCampaignName()
     {
         _campaignName = _campaignNameOptions[Random.Shared.Next(_campaignNameOptions.Length)];
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Ability score roll helpers ────────────────────────────────────────
@@ -2359,72 +2376,79 @@ else
         return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
     }
 
-    private void RollAllAbilities()
+    private async Task RollAllAbilities()
     {
         foreach (var ab in Abilities)
             _rollValues[ab] = RollAbilityScore();
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RerollAbility(string ability)
+    private async Task RerollAbility(string ability)
     {
         _rollValues[ability] = RollAbilityScore();
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RandomlyAssignStandardArray()
+    private async Task RandomlyAssignStandardArray()
     {
         var shuffled = _abilitiesConfig.StandardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
         for (int i = 0; i < Abilities.Length; i++)
             _abilitySelections[Abilities[i]] = shuffled[i];
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Race randomization ────────────────────────────────────────────────
-    private void RandomizeRace()
+    private async Task RandomizeRace()
     {
         if (_races.Count == 0) return;
         _selectedRaceId = _races[Random.Shared.Next(_races.Count)].Id;
         _selectedSubraceId = string.Empty;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RandomizeSubrace()
+    private async Task RandomizeSubrace()
     {
         var race = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
         if (race == null || race.Subraces.Count == 0) return;
         _selectedSubraceId = race.Subraces[Random.Shared.Next(race.Subraces.Count)].Id;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Background randomization ──────────────────────────────────────────
-    private void RandomizeBackground()
+    private async Task RandomizeBackground()
     {
         if (_backgrounds.Count == 0) return;
-        OnBackgroundChanged(_backgrounds[Random.Shared.Next(_backgrounds.Count)].Id);
-        ValidateAndShowStepErrors();
+        _selectedBackgroundId = _backgrounds[Random.Shared.Next(_backgrounds.Count)].Id;
+        var newBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+        if (newBg != null)
+        {
+            for (int i = 0; i < _classSkillOptionIds.Count; i++)
+                if (_classSkillSelections[i] && newBg.SkillProficiencies.Contains(_classSkillOptionIds[i]))
+                    _classSkillSelections[i] = false;
+        }
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Class randomization ───────────────────────────────────────────────
-    private void RandomizeClass(int classIdx)
+    private async Task RandomizeClass(int classIdx)
     {
         if (_classes.Count == 0 || classIdx >= _classEntries.Count) return;
         _classEntries[classIdx].ClassId = _classes[Random.Shared.Next(_classes.Count)].Id;
         _classEntries[classIdx].SubclassId = string.Empty;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RandomizeSubclass(int classIdx)
+    private async Task RandomizeSubclass(int classIdx)
     {
         if (classIdx >= _classEntries.Count) return;
         var clsDef = _classes.FirstOrDefault(c => c.Id == _classEntries[classIdx].ClassId);
         if (clsDef == null || clsDef.SubclassOptions.Count == 0) return;
         _classEntries[classIdx].SubclassId = clsDef.SubclassOptions[Random.Shared.Next(clsDef.SubclassOptions.Count)].Id;
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Skill randomization ───────────────────────────────────────────────
-    private void RandomizeSkills()
+    private async Task RandomizeSkills()
     {
         var primaryId = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
         var primaryCls = _classes.FirstOrDefault(c => c.Id == primaryId);
@@ -2445,11 +2469,11 @@ else
         foreach (var (_, idx) in available)
             _classSkillSelections[idx] = true;
 
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Spell randomization ───────────────────────────────────────────────
-    private void RandomizeCantrips(string classId, int maxCantrips)
+    private async Task RandomizeCantrips(string classId, int maxCantrips)
     {
         var cantrips = _spells.Where(s => s.ClassIds.Contains(classId) && s.Level == 0).ToList();
 
@@ -2465,10 +2489,10 @@ else
         foreach (var spell in cantrips.OrderBy(_ => Random.Shared.Next()).Take(maxCantrips))
             _selectedSpells[classId].Add(spell.Id);
 
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
-    private void RandomizeSpells(string classId, int maxKnown, bool isPrepare, int classLevel, string spellcastingAbility)
+    private async Task RandomizeSpells(string classId, int maxKnown, bool isPrepare, int classLevel, string spellcastingAbility)
     {
         var leveledSpells = _spells.Where(s => s.ClassIds.Contains(classId) && s.Level > 0).ToList();
 
@@ -2495,7 +2519,7 @@ else
         foreach (var spell in leveledSpells.OrderBy(_ => Random.Shared.Next()).Take(countToSelect))
             _selectedSpells[classId].Add(spell.Id);
 
-        ValidateAndShowStepErrors();
+        await ValidateAndAutoSaveAsync();
     }
 
     // ── Navigation ────────────────────────────────────────────────────────
@@ -2537,8 +2561,9 @@ else
         {
             _activeStep = idx;
             State.ActiveStep = _activeStep;
-            _stepErrors = [];
+            ValidateAndShowStepErrors();
             if (_activeStep == 8) RunReviewValidation();
+            CommitAllToCharacter();
             await SaveSessionAsync();
         }
     }
