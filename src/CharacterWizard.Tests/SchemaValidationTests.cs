@@ -84,6 +84,78 @@ public class SchemaValidationTests
     }
 
     [Fact]
+    public async Task AbilitiesJson_ValidatesAgainstAbilitiesSchema()
+    {
+        var schema = await LoadSchemaAsync("abilities.schema.json");
+        var data = LoadDataFile("abilities.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"abilities.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
+    public async Task BackgroundsJson_ValidatesAgainstBackgroundSchema()
+    {
+        var schema = await LoadSchemaAsync("background.schema.json");
+        var data = LoadDataFile("backgrounds.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"backgrounds.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
+    public async Task ClassStartingEquipmentJson_ValidatesAgainstClassStartingEquipmentSchema()
+    {
+        var schema = await LoadSchemaAsync("class-starting-equipment.schema.json");
+        var data = LoadDataFile("class-starting-equipment.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"class-starting-equipment.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
+    public async Task EquipmentJson_ValidatesAgainstEquipmentSchema()
+    {
+        var schema = await LoadSchemaAsync("equipment.schema.json");
+        var data = LoadDataFile("equipment.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"equipment.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
+    public async Task NamesJson_ValidatesAgainstNamesSchema()
+    {
+        var schema = await LoadSchemaAsync("names.schema.json");
+        var data = LoadDataFile("names.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"names.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
+    public async Task DataVersionJson_ValidatesAgainstDataVersionSchema()
+    {
+        var schema = await LoadSchemaAsync("data-version.schema.json");
+        var data = LoadDataFile("data-version.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"data-version.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
     public void DataFiles_HaveRequiredFields()
     {
         var required = new[]

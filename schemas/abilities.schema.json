@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/abilities.schema.json",
+  "title": "AbilitiesDataFile",
+  "description": "Ability score generation rules: standard array, point buy, and roll.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "standardArray", "pointBuy", "roll"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "description": "Schema version for this data file." },
+    "source": { "type": "string", "description": "Ruleset source (e.g. 'SRD 5.1')." },
+    "standardArray": {
+      "type": "array",
+      "description": "The six ability score values used in the standard array generation method.",
+      "items": { "type": "integer", "minimum": 1, "maximum": 20 },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "pointBuy": { "$ref": "#/definitions/PointBuyConfig" },
+    "roll": { "$ref": "#/definitions/RollConfig" }
+  },
+  "definitions": {
+    "PointBuyConfig": {
+      "type": "object",
+      "description": "Configuration for the point-buy ability score generation method.",
+      "required": ["budget", "minScore", "maxScore", "costs"],
+      "additionalProperties": false,
+      "properties": {
+        "budget": { "type": "integer", "minimum": 1, "description": "Total points available to spend." },
+        "minScore": { "type": "integer", "minimum": 1, "description": "Minimum purchasable ability score." },
+        "maxScore": { "type": "integer", "minimum": 1, "description": "Maximum purchasable ability score." },
+        "costs": {
+          "type": "array",
+          "description": "Cost table mapping each score to its point cost.",
+          "items": { "$ref": "#/definitions/PointBuyCost" }
+        }
+      }
+    },
+    "PointBuyCost": {
+      "type": "object",
+      "required": ["score", "cost"],
+      "additionalProperties": false,
+      "properties": {
+        "score": { "type": "integer", "minimum": 1, "description": "Ability score value." },
+        "cost": { "type": "integer", "minimum": 0, "description": "Point cost for this score." }
+      }
+    },
+    "RollConfig": {
+      "type": "object",
+      "description": "Configuration for the dice-roll ability score generation method.",
+      "required": ["method", "count"],
+      "additionalProperties": false,
+      "properties": {
+        "method": { "type": "string", "description": "Dice roll method identifier (e.g. '4d6-drop-lowest')." },
+        "count": { "type": "integer", "minimum": 1, "description": "Number of rolls to make." }
+      }
+    }
+  }
+}

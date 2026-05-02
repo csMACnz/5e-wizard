@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/background.schema.json",
+  "title": "BackgroundDataFile",
+  "description": "Collection of SRD character backgrounds with mechanical fields.",
+  "type": "object",
+  "required": ["schemaVersion", "source", "backgrounds"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "description": "Schema version for this data file." },
+    "source": { "type": "string", "description": "Ruleset source (e.g. 'SRD 5.1')." },
+    "backgrounds": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Background" }
+    }
+  },
+  "definitions": {
+    "Background": {
+      "type": "object",
+      "required": ["id", "displayName", "skillProficiencies", "toolProficiencies", "languageCount", "startingEquipmentIds", "startingGold", "featureId", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^background:[a-z0-9-]+$", "description": "Unique background identifier." },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80, "description": "Human-readable background name." },
+        "description": { "type": "string", "description": "Short flavour description of the background." },
+        "skillProficiencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skill proficiency IDs granted by this background."
+        },
+        "toolProficiencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tool proficiency IDs granted by this background."
+        },
+        "languageCount": { "type": "integer", "minimum": 0, "description": "Number of additional languages the character may learn." },
+        "startingEquipmentIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Item IDs included in this background's starting equipment."
+        },
+        "startingGold": { "type": "integer", "minimum": 0, "description": "Starting gold pieces granted by this background." },
+        "featureId": { "type": "string", "description": "Feat ID for the background's special feature." },
+        "source": { "type": "string", "description": "Ruleset source for this background entry." },
+        "srdReference": { "type": "string", "description": "Page reference in the SRD." }
+      }
+    }
+  }
+}

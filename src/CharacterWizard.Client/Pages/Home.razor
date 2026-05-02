@@ -55,7 +55,7 @@
     private void StartNewCharacter()
     {
         State.SessionId = Guid.NewGuid().ToString("N");
-        State.Character = new();
+        State.Character = new() { Id = Guid.NewGuid().ToString() };
         State.ActiveStep = 0;
         Navigation.NavigateTo($"wizard?session={State.SessionId}");
     }
@@ -64,6 +64,8 @@
     {
         _rolling = true;
         var character = await RandomCharacter.GenerateAsync();
+        if (string.IsNullOrEmpty(character.Id))
+            character.Id = Guid.NewGuid().ToString();
         State.SessionId = Guid.NewGuid().ToString("N");
         State.Character = character;
         State.ActiveStep = 7;
