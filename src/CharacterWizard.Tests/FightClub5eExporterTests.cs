@@ -627,7 +627,7 @@ public class FightClub5eExporterTests
     }
 
     [Fact]
-    public void Export_MaxHp_UsesHitPointEntriesWhenPresent()
+    public void Export_MaxHp_UsesHitPointEntriesWithManualAndAverageRolls()
     {
         // Fighter 3 (d10), CON 14 (mod +2).
         // HitPointEntries: lvl1=10, lvl2=6 (average), lvl3=9 (manual)
