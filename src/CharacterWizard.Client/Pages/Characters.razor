@@ -25,7 +25,7 @@ else if (_sessions.Count == 0)
                        OnClick="@StartNew">
                 Start New Character
             </MudButton>
-            <MudButton Variant="Variant.Outlined" Href="/">
+            <MudButton Variant="Variant.Outlined" Href="@Nav.BaseUri">
                 Back to Home
             </MudButton>
         </MudStack>
@@ -81,7 +81,7 @@ else
                    OnClick="@StartNew">
             Start New Character
         </MudButton>
-        <MudButton Variant="Variant.Outlined" Href="/">
+        <MudButton Variant="Variant.Outlined" Href="@Nav.BaseUri">
             Back to Home
         </MudButton>
     </MudStack>
