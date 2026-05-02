@@ -627,9 +627,9 @@ public class FightClub5eExporterTests
     public void Export_MaxHp_MulticlassIsCorrect()
     {
         // Fighter 3 (d10), Wizard 2 (d6), CON 16 (mod +3) — no HitPointEntries, uses fixed-average fallback
-        // Fighter: lvl1=max(1,10+3)=13; lvls2-3=2×max(1,6+3)=18  (avg d10 = floor(10/2)+1 = 6)
-        // Wizard:  lvl1=max(1,6+3)=9;   lvl2  =max(1,4+3)=7       (avg d6  = floor(6/2)+1  = 4)
-        // Total = 13+18+9+7 = 47
+        // Fighter avg = floor(10/2)+1 = 6; lvl1=max(1,10+3)=13; lvls2-3=2×max(1,6+3)=2×9=18 → 31
+        // Wizard  avg = floor(6/2)+1  = 4; lvl1=max(1,6+3)=9;   lvl2  =max(1,4+3)=7        → 16
+        // Total = 31+16 = 47
         var character = new Character
         {
             Name = "Myra",
