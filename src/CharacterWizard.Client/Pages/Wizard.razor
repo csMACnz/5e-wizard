@@ -564,6 +564,13 @@ else
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
+                        <MudAlert Severity="Severity.Info" Class="mb-3" Dense="true">
+                            <MudText Typo="Typo.body2">
+                                <strong>Level 1:</strong> You always receive the maximum hit die value (e.g., a Fighter gets 10 from a d10).<br />
+                                <strong>Levels 2+:</strong> Take the <em>fixed average</em> (⌊hit die / 2⌋ + 1) or enter a <em>manual</em> roll in the range [1, hit die].<br />
+                                <strong>Total Max HP</strong> = sum of all per-level die values + (CON modifier × total level), minimum 1 per level.
+                            </MudText>
+                        </MudAlert>
                         @foreach (var hpEntry in _classEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)))
                         {
                             var hpClsDef = _classes.FirstOrDefault(c => c.Id == hpEntry.ClassId);
@@ -1171,9 +1178,24 @@ else
                             <MudText Typo="Typo.caption" Class="mt-1">Total Level: @c.TotalLevel</MudText>
                             @{
                                 int reviewConMod = Modifier(c.AbilityScores.CON.Final);
-                                int reviewMaxHp = c.HitPointEntries.Count > 0
-                                    ? c.HitPointEntries.Sum(e => Math.Max(1, e.DieRollValue + reviewConMod))
-                                    : c.Levels.Sum(l => { var cl = _classes.FirstOrDefault(x => x.Id == l.ClassId); int hd = cl?.HitDie ?? 8; return l.Level * Math.Max(1, hd + reviewConMod); });
+                                int reviewMaxHp;
+                                if (c.HitPointEntries.Count > 0)
+                                {
+                                    reviewMaxHp = c.HitPointEntries.Sum(e => Math.Max(1, e.DieRollValue + reviewConMod));
+                                }
+                                else
+                                {
+                                    // Fixed-average fallback (level 1 = max, levels 2+ = floor(hd/2)+1)
+                                    reviewMaxHp = 0;
+                                    foreach (var rl in c.Levels)
+                                    {
+                                        var rcl = _classes.FirstOrDefault(x => x.Id == rl.ClassId);
+                                        int rhd = rcl?.HitDie ?? 8;
+                                        int ravg = (rhd / 2) + 1;
+                                        if (rl.Level >= 1) reviewMaxHp += Math.Max(1, rhd + reviewConMod);
+                                        if (rl.Level > 1) reviewMaxHp += (rl.Level - 1) * Math.Max(1, ravg + reviewConMod);
+                                    }
+                                }
                             }
                             <MudText Typo="Typo.caption" Class="mt-1">Max HP: <strong>@reviewMaxHp</strong></MudText>
                         </MudCardContent>

@@ -575,9 +575,10 @@ public class FightClub5eExporterTests
     // ── HP ────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Export_MaxHp_CalculatedUsingMaxDiePerLevel()
+    public void Export_MaxHp_FallbackLevel1_UsesMaxDieValue()
     {
-        // Fighter 1, CON 14 (mod +2): max HP = 1 × max(1, 10 + 2) = 12
+        // Fighter 1 (no HitPointEntries — fallback algorithm). Level 1 always uses max die.
+        // CON 14 (mod +2): HP = max(1, 10 + 2) = 12
         var character = new Character
         {
             Name = "Aric",
@@ -599,10 +600,36 @@ public class FightClub5eExporterTests
     }
 
     [Fact]
+    public void Export_MaxHp_FallbackLevels2Plus_UsesFixedAverage()
+    {
+        // Fighter 3 (no HitPointEntries — fallback algorithm). CON 10 (mod 0).
+        // lvl1 = max die = 10; lvls 2-3 = 2 × (floor(10/2)+1) = 2×6 = 12 → total = 22
+        var character = new Character
+        {
+            Name = "Aric",
+            TotalLevel = 3,
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3 }],
+            AbilityScores = new AbilityScores
+            {
+                CON = new AbilityBlock { Base = 10 },
+                DEX = new AbilityBlock { Base = 10 },
+                WIS = new AbilityBlock { Base = 10 },
+            },
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        Assert.Equal("22", c.Element("hpMax")!.Value);
+    }
+
+    [Fact]
     public void Export_MaxHp_MulticlassIsCorrect()
     {
-        // Fighter 3 (d10), Wizard 2 (d6), CON 16 (mod +3)
-        // HP = 3 × max(1, 10+3) + 2 × max(1, 6+3) = 3×13 + 2×9 = 39 + 18 = 57
+        // Fighter 3 (d10), Wizard 2 (d6), CON 16 (mod +3) — no HitPointEntries, uses fixed-average fallback
+        // Fighter: lvl1=max(1,10+3)=13; lvls2-3=2×max(1,6+3)=18  (avg d10 = floor(10/2)+1 = 6)
+        // Wizard:  lvl1=max(1,6+3)=9;   lvl2  =max(1,4+3)=7       (avg d6  = floor(6/2)+1  = 4)
+        // Total = 13+18+9+7 = 47
         var character = new Character
         {
             Name = "Myra",
@@ -623,7 +650,7 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("57", c.Element("hpMax")!.Value);
+        Assert.Equal("47", c.Element("hpMax")!.Value);
     }
 
     [Fact]
@@ -659,9 +686,10 @@ public class FightClub5eExporterTests
     }
 
     [Fact]
-    public void Export_MaxHp_FallsBackToMaxDieWhenNoEntries()
+    public void Export_MaxHp_FallsBackToAverageAlgorithmWhenNoEntries()
     {
-        // Fighter 1, CON 14 (mod +2): fallback = 1 × max(1, 10+2) = 12
+        // Fighter 1 only — level 1 always uses max die under the fixed-average algorithm.
+        // CON 14 (mod +2): max HP = max(1, 10+2) = 12
         var character = new Character
         {
             Name = "Aric",

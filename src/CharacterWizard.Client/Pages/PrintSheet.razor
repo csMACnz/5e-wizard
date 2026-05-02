@@ -637,13 +637,19 @@ else
             return total;
         }
 
-        // Fallback: use maximum hit die per level when no entries are recorded
+        // Fallback: fixed-average algorithm (level 1 = max, levels 2+ = floor(hitDie/2)+1)
         int fallback = 0;
         foreach (var classLevel in c.Levels)
         {
             var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
             int hd = cls?.HitDie ?? 8;
-            fallback += classLevel.Level * Math.Max(1, hd + conMod);
+            int avg = (hd / 2) + 1;
+            // Level 1: maximum hit die value
+            if (classLevel.Level >= 1)
+                fallback += Math.Max(1, hd + conMod);
+            // Levels 2+: fixed average
+            if (classLevel.Level > 1)
+                fallback += (classLevel.Level - 1) * Math.Max(1, avg + conMod);
         }
         return fallback;
     }

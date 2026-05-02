@@ -278,9 +278,9 @@ public class FightClub5eExporter
 
     /// <summary>
     /// Calculates max HP from the character's HitPointEntries when present,
-    /// otherwise falls back to using the maximum hit die value on every level (no averaging).
-    /// Per-level CON contribution: max(1, dieRollValue + CON modifier) for each entry,
-    /// or max(1, hitDie + CON modifier) × level for the fallback path.
+    /// otherwise falls back to the fixed-average algorithm:
+    ///   level 1 per class  = max hit die value + CON modifier
+    ///   levels 2+ per class = floor(hitDie/2)+1 + CON modifier (min 1 per level)
     /// </summary>
     private int CalculateMaxHp(Character c, int conMod)
     {
@@ -292,14 +292,19 @@ public class FightClub5eExporter
             return total;
         }
 
-        // Fallback: use maximum hit die value per level (legacy / no-entries path)
+        // Fallback: fixed-average algorithm (no HitPointEntries recorded)
         int fallback = 0;
         foreach (var classLevel in c.Levels)
         {
             var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
             int hitDie = cls?.HitDie ?? 8;
-            int perLevel = Math.Max(1, hitDie + conMod);
-            fallback += classLevel.Level * perLevel;
+            int average = (hitDie / 2) + 1;
+            // Level 1: always the maximum hit die value
+            if (classLevel.Level >= 1)
+                fallback += Math.Max(1, hitDie + conMod);
+            // Levels 2+: fixed average (floor(hitDie/2)+1)
+            if (classLevel.Level > 1)
+                fallback += (classLevel.Level - 1) * Math.Max(1, average + conMod);
         }
         return fallback;
     }
