@@ -1241,6 +1241,9 @@ else
             {
                 State.SessionId = saved.SessionId;
                 State.Character = saved.Character;
+                // Backfill character Id for sessions saved before this field was introduced
+                if (string.IsNullOrEmpty(State.Character.Id))
+                    State.Character.Id = Guid.NewGuid().ToString();
                 State.ActiveStep = saved.ActiveStep;
                 return;
             }
@@ -1252,6 +1255,10 @@ else
             // No session param and no existing session — assign a new ID and update URL
             State.SessionId = Guid.NewGuid().ToString("N");
         }
+
+        // Ensure the character has a unique ID distinct from the session ID
+        if (string.IsNullOrEmpty(State.Character.Id))
+            State.Character.Id = Guid.NewGuid().ToString();
 
         // Reflect the session ID in the URL so it can be bookmarked
         Nav.NavigateTo($"wizard?session={State.SessionId}", replace: true);

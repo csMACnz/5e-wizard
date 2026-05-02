@@ -114,7 +114,7 @@ else
     private void StartNew()
     {
         State.SessionId = Guid.NewGuid().ToString("N");
-        State.Character = new();
+        State.Character = new() { Id = Guid.NewGuid().ToString() };
         State.ActiveStep = 0;
         Nav.NavigateTo($"wizard?session={State.SessionId}");
     }

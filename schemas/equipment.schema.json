@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/equipment.schema.json",
+  "title": "EquipmentDataFile",
+  "description": "Collection of SRD equipment items (weapons, armour, and adventuring gear).",
+  "type": "object",
+  "required": ["schemaVersion", "source", "equipment"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "description": "Schema version for this data file." },
+    "source": { "type": "string", "description": "Ruleset source (e.g. 'SRD 5.1')." },
+    "equipment": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/EquipmentItem" }
+    }
+  },
+  "definitions": {
+    "EquipmentItem": {
+      "type": "object",
+      "required": ["id", "displayName", "category", "subcategory", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^item:[a-z0-9-]+$", "description": "Unique equipment item identifier." },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 80, "description": "Human-readable item name." },
+        "category": {
+          "type": "string",
+          "enum": ["weapon", "armor", "adventuring-gear"],
+          "description": "Top-level item category."
+        },
+        "subcategory": {
+          "type": "string",
+          "description": "More specific item subcategory (e.g. 'simple-melee', 'light', 'pack')."
+        },
+        "cost": { "$ref": "#/definitions/ItemCost" },
+        "weight": { "type": "number", "minimum": 0, "description": "Item weight in pounds." },
+        "damage": { "type": ["string", "null"], "description": "Damage dice expression for weapons (e.g. '1d8')." },
+        "damageType": { "type": ["string", "null"], "description": "Damage type for weapons (e.g. 'slashing')." },
+        "properties": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Weapon or item property tags (e.g. 'versatile', 'finesse')."
+        },
+        "armorClass": { "type": "integer", "minimum": 0, "description": "Base armour class value (armour items)." },
+        "strengthRequirement": { "type": "integer", "minimum": 0, "description": "Minimum Strength score required to wear this armour without speed penalty." },
+        "stealthDisadvantage": { "type": "boolean", "description": "If true, wearing this armour imposes disadvantage on Stealth checks." },
+        "contents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Item IDs included in this pack or container."
+        },
+        "source": { "type": "string", "description": "Ruleset source for this item." },
+        "srdReference": { "type": "string", "description": "Page reference in the SRD." }
+      }
+    },
+    "ItemCost": {
+      "type": "object",
+      "required": ["amount", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": { "type": "number", "minimum": 0, "description": "Cost amount." },
+        "unit": { "type": "string", "description": "Currency unit (e.g. 'gp', 'sp', 'cp')." }
+      }
+    }
+  }
+}

@@ -112,6 +112,8 @@
     },
     "validationReport": {
       "type": "array",
+      "readOnly": true,
+      "description": "Output-only; validation messages computed during export. Ignored on import.",
       "items": {
         "type": "object",
         "required": ["severity", "code", "message"],
@@ -135,7 +137,7 @@
         "base": { "type": "integer", "minimum": 1, "maximum": 20 },
         "racialBonus": { "type": "integer" },
         "otherBonus": { "type": "integer" },
-        "final": { "type": "integer", "minimum": 1, "maximum": 30 }
+        "final": { "type": "integer", "minimum": 1, "maximum": 30, "readOnly": true, "description": "Output-only; computed as base + racialBonus + otherBonus. Ignored on import." }
       }
     }
   }
