@@ -14,11 +14,16 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
     private const string SessionKeyPrefix = "5ew_session_";
 
     /// <summary>
-    /// The storage format version this build can read and write.
-    /// Sessions persisted with a different version are treated as unreadable
-    /// and returned as <see langword="null"/> so the caller can skip them gracefully.
+    /// The storage format version this build writes.
+    /// When loading, sessions with any version between 1 and this value (inclusive) are
+    /// accepted so that sessions saved by older builds are not silently discarded.
+    /// Sessions persisted with a version higher than this value are rejected so that stale
+    /// code never silently mis-reads data it does not understand.
+    /// Supported versions:
+    ///   1 — initial session shape.
+    ///   2 — added <see cref="CharacterWizard.Shared.Models.Character.AsiChoices"/> for by-level ASI/feat choices.
     /// </summary>
-    public const int SupportedSchemaVersion = 1;
+    public const int SupportedSchemaVersion = 2;
 
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {
@@ -44,7 +49,7 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
         try
         {
             var session = JsonSerializer.Deserialize<CharacterSession>(json, SerializerOptions);
-            if (session is null || session.SchemaVersion != SupportedSchemaVersion)
+            if (session is null || session.SchemaVersion < 1 || session.SchemaVersion > SupportedSchemaVersion)
                 return null;
 
             return session;
