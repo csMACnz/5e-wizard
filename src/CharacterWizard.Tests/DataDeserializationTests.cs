@@ -335,6 +335,7 @@ public class DataDeserializationTests
             Assert.False(string.IsNullOrWhiteSpace(feat.Id), $"Feat missing Id: {feat.DisplayName}");
             Assert.False(string.IsNullOrWhiteSpace(feat.DisplayName), $"Feat missing DisplayName: {feat.Id}");
             Assert.False(string.IsNullOrWhiteSpace(feat.Source), $"Feat '{feat.Id}' missing Source");
+            Assert.False(string.IsNullOrWhiteSpace(feat.Type), $"Feat '{feat.Id}' missing Type");
         }
     }
 

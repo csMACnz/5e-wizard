@@ -8,10 +8,12 @@ public class CharacterSession
     /// Storage format version. Increment when the shape of a persisted session changes
     /// in a way that is not backward-compatible. The loader rejects sessions whose version
     /// it does not recognise so that stale data is never silently mis-read.
-    /// Current supported version: 1.
+    /// Supported versions:
+    ///   1 — initial session shape.
+    ///   2 — added <see cref="Character.AsiChoices"/> for by-level ASI/feat choices.
     /// </summary>
     [JsonPropertyName("schemaVersion")]
-    public int SchemaVersion { get; set; } = 1;
+    public int SchemaVersion { get; set; } = 2;
 
     [JsonPropertyName("sessionId")]
     public string SessionId { get; set; } = string.Empty;

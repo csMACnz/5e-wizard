@@ -12,19 +12,22 @@ public class CharacterValidator
     private readonly IReadOnlyList<BackgroundDefinition> _backgrounds;
     private readonly IReadOnlyList<SpellDefinition> _spells;
     private readonly IReadOnlyList<EquipmentItemDefinition> _equipment;
+    private readonly IReadOnlyList<FeatDefinition> _feats;
 
     public CharacterValidator(
         IReadOnlyList<RaceDefinition> races,
         IReadOnlyList<ClassDefinition> classes,
         IReadOnlyList<BackgroundDefinition> backgrounds,
         IReadOnlyList<SpellDefinition>? spells = null,
-        IReadOnlyList<EquipmentItemDefinition>? equipment = null)
+        IReadOnlyList<EquipmentItemDefinition>? equipment = null,
+        IReadOnlyList<FeatDefinition>? feats = null)
     {
         _races = races;
         _classes = classes;
         _backgrounds = backgrounds;
         _spells = spells ?? [];
         _equipment = equipment ?? [];
+        _feats = feats ?? [];
     }
 
     /// <summary>
@@ -86,6 +89,14 @@ public class CharacterValidator
             var equipResult = new EquipmentValidator(_equipment).Validate(character);
             result.Errors.AddRange(equipResult.Errors);
             result.Warnings.AddRange(equipResult.Warnings);
+        }
+
+        // Level feature / ASI choice validation
+        if (_feats.Count > 0)
+        {
+            var featResult = new LevelFeatureValidator(_classes, _feats).Validate(character);
+            result.Errors.AddRange(featResult.Errors);
+            result.Warnings.AddRange(featResult.Warnings);
         }
 
         return result;

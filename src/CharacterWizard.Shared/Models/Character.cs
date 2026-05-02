@@ -40,6 +40,32 @@ public class CharacterProficiencies
     public List<string> Languages { get; set; } = [];
 }
 
+public class AsiChoice
+{
+    /// <summary>The class that grants this ASI opportunity.</summary>
+    public string ClassId { get; set; } = string.Empty;
+
+    /// <summary>The class level at which this ASI fires.</summary>
+    public int ClassLevel { get; set; }
+
+    /// <summary>
+    /// When non-null, the player chose to take a general feat instead of an ability bump.
+    /// When null, the player chose an ability score improvement.
+    /// </summary>
+    public string? FeatId { get; set; }
+
+    /// <summary>
+    /// For ability-bump choices: the ability to increase by +2 (if AbilityTwo is null)
+    /// or by +1 (if AbilityTwo is also set). E.g. "STR".
+    /// </summary>
+    public string? AbilityOne { get; set; }
+
+    /// <summary>
+    /// For the +1/+1 split: the second ability to increase by +1. Null for a +2-to-one choice.
+    /// </summary>
+    public string? AbilityTwo { get; set; }
+}
+
 public class CharacterFeature
 {
     public string FeatureId { get; set; } = string.Empty;
@@ -87,6 +113,14 @@ public class Character
     public List<CharacterFeature> Features { get; set; } = [];
     public List<CharacterSpell> Spells { get; set; } = [];
     public List<CharacterEquipmentItem> Equipment { get; set; } = [];
+
+    /// <summary>
+    /// The player's ASI/feat choices, one per feat:asi opportunity that is active at the
+    /// character's current level. When the level is lowered and then re-raised in the same
+    /// session, choices are restored from in-memory state; they are stripped from exports
+    /// and session saves when the level that grants them is no longer active.
+    /// </summary>
+    public List<AsiChoice> AsiChoices { get; set; } = [];
 
     /// <summary>
     /// If true, the player chose to take class starting wealth (rolled gold) instead of class

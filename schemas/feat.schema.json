@@ -17,14 +17,15 @@
   "definitions": {
     "Feat": {
       "type": "object",
-      "required": ["id", "displayName", "source"],
+      "required": ["id", "displayName", "source", "type"],
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string", "pattern": "^feat:[a-z0-9]+(-[a-z0-9]+)*$" },
         "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
         "description": { "type": "string", "maxLength": 200 },
         "source": { "type": "string" },
-        "srdReference": { "type": "string" }
+        "srdReference": { "type": "string" },
+        "type": { "type": "string", "enum": ["asi", "class", "background", "general"] }
       }
     }
   }
