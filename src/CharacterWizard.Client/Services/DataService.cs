@@ -36,7 +36,7 @@ public sealed class DataService : IDataService
     {
         if (_classes is null)
         {
-            var data = await _http.GetFromJsonAsync<ClassesData>("data/classes.json");
+            var data = await _http.GetFromJsonAsync<ClassesData>("data/class.json");
             _classes = data?.Classes ?? [];
         }
 
@@ -80,8 +80,17 @@ public sealed class DataService : IDataService
     {
         if (_classStartingEquipment is null)
         {
-            var data = await _http.GetFromJsonAsync<ClassStartingEquipmentData>("data/class-starting-equipment.json");
-            _classStartingEquipment = data?.Entries ?? [];
+            var classes = await GetClassesAsync();
+            _classStartingEquipment = classes
+                .Where(c => c.StartingEquipment != null)
+                .Select(c => new ClassStartingEquipmentEntry
+                {
+                    ClassId = c.Id,
+                    StartingWealthRoll = c.StartingEquipment!.StartingWealthRoll,
+                    FixedItems = c.StartingEquipment.FixedItems,
+                    ChoiceGroups = c.StartingEquipment.ChoiceGroups
+                })
+                .ToList();
         }
 
         return _classStartingEquipment;

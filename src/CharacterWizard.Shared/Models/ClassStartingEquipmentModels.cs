@@ -57,7 +57,32 @@ public class EquipmentChoiceGroup
 }
 
 /// <summary>
-/// Starting equipment configuration for a single class.
+/// Starting equipment and wealth configuration embedded in a class definition.
+/// </summary>
+public class ClassStartingEquipmentInfo
+{
+    /// <summary>
+    /// The dice roll formula for the class starting wealth alternative (e.g. "2d4*10").
+    /// Format: "{count}d{sides}*{multiplier}" where multiplier is optional (defaults to 1).
+    /// </summary>
+    [JsonPropertyName("startingWealthRoll")]
+    public string StartingWealthRoll { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Items (with quantity) that every character of this class receives automatically (no choice needed).
+    /// </summary>
+    [JsonPropertyName("fixedItems")]
+    public List<EquipmentGrantItem> FixedItems { get; set; } = [];
+
+    /// <summary>
+    /// Mutually exclusive choice groups. For each required group, the player must pick one option.
+    /// </summary>
+    [JsonPropertyName("choiceGroups")]
+    public List<EquipmentChoiceGroup> ChoiceGroups { get; set; } = [];
+}
+
+/// <summary>
+/// Starting equipment configuration for a single class, including its class ID for lookups.
 /// </summary>
 public class ClassStartingEquipmentEntry
 {
@@ -82,21 +107,6 @@ public class ClassStartingEquipmentEntry
     /// </summary>
     [JsonPropertyName("choiceGroups")]
     public List<EquipmentChoiceGroup> ChoiceGroups { get; set; } = [];
-}
-
-/// <summary>
-/// Top-level container for the class-starting-equipment.json data file.
-/// </summary>
-public class ClassStartingEquipmentData
-{
-    [JsonPropertyName("schemaVersion")]
-    public string SchemaVersion { get; set; } = string.Empty;
-
-    [JsonPropertyName("source")]
-    public string Source { get; set; } = string.Empty;
-
-    [JsonPropertyName("entries")]
-    public List<ClassStartingEquipmentEntry> Entries { get; set; } = [];
 }
 
 /// <summary>
