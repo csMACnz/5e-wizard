@@ -70,12 +70,14 @@ else
                     <MudTextField Value="@_playerName"
                                   ValueChanged="@(async (string v) => { _playerName = v; await ValidateAndAutoSaveAsync(); })"
                                   Label="Player Name"
+                                  Immediate="true"
                                   Variant="Variant.Outlined" />
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <MudTextField Value="@_campaignName"
                                   ValueChanged="@(async (string v) => { _campaignName = v; await ValidateAndAutoSaveAsync(); })"
                                   Label="Campaign Name"
+                                  Immediate="true"
                                   Variant="Variant.Outlined"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -2418,15 +2420,7 @@ else
     private async Task RandomizeBackground()
     {
         if (_backgrounds.Count == 0) return;
-        _selectedBackgroundId = _backgrounds[Random.Shared.Next(_backgrounds.Count)].Id;
-        var newBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
-        if (newBg != null)
-        {
-            for (int i = 0; i < _classSkillOptionIds.Count; i++)
-                if (_classSkillSelections[i] && newBg.SkillProficiencies.Contains(_classSkillOptionIds[i]))
-                    _classSkillSelections[i] = false;
-        }
-        await ValidateAndAutoSaveAsync();
+        await OnBackgroundChanged(_backgrounds[Random.Shared.Next(_backgrounds.Count)].Id);
     }
 
     // ── Class randomization ───────────────────────────────────────────────
@@ -2561,10 +2555,8 @@ else
         {
             _activeStep = idx;
             State.ActiveStep = _activeStep;
-            ValidateAndShowStepErrors();
             if (_activeStep == 8) RunReviewValidation();
-            CommitAllToCharacter();
-            await SaveSessionAsync();
+            await ValidateAndAutoSaveAsync();
         }
     }
 
