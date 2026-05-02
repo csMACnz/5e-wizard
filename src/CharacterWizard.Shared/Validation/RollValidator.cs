@@ -5,22 +5,28 @@ namespace CharacterWizard.Shared.Validation;
 /// </summary>
 public static class RollValidator
 {
+    /// <summary>Minimum possible score from 4d6-drop-lowest.</summary>
     public const int MinScore = 3;
+
+    /// <summary>Maximum possible score from 4d6-drop-lowest.</summary>
     public const int MaxScore = 18;
+
+    /// <summary>Default number of ability scores to roll (matches <c>roll.count</c> in abilities.json).</summary>
     public const int RequiredCount = 6;
 
     /// <summary>
-    /// Validates rolled ability scores (each in [3, 18], exactly 6 values).
+    /// Validates rolled ability scores (each in [3, 18], exactly <paramref name="count"/> values).
     /// </summary>
-    /// <param name="scores">The six rolled scores (before racial bonuses).</param>
-    public static ValidationResult Validate(IReadOnlyList<int> scores)
+    /// <param name="scores">The rolled scores (before racial bonuses).</param>
+    /// <param name="count">Expected number of scores; defaults to <see cref="RequiredCount"/> (6).</param>
+    public static ValidationResult Validate(IReadOnlyList<int> scores, int count = RequiredCount)
     {
         var result = new ValidationResult();
 
-        if (scores.Count != RequiredCount)
+        if (scores.Count != count)
         {
             result.Errors.Add(
-                $"ERR_ROLL_COUNT: Exactly {RequiredCount} ability scores are required, but got {scores.Count}.");
+                $"ERR_ROLL_COUNT: Exactly {count} ability scores are required, but got {scores.Count}.");
             return result;
         }
 

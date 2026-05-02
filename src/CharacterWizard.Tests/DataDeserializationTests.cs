@@ -379,5 +379,52 @@ public class DataDeserializationTests
         Assert.Contains("feat:alert", featIds);
         Assert.Contains("feat:tough", featIds);
     }
-}
 
+    [Fact]
+    public void Abilities_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<AbilitiesConfig>("abilities.json");
+
+        Assert.False(string.IsNullOrWhiteSpace(data.SchemaVersion), "SchemaVersion should not be empty");
+        Assert.False(string.IsNullOrWhiteSpace(data.Source), "Source should not be empty");
+    }
+
+    [Fact]
+    public void Abilities_Json_StandardArrayIsCorrect()
+    {
+        var data = DeserializeFile<AbilitiesConfig>("abilities.json");
+
+        Assert.Equal(6, data.StandardArray.Count);
+        Assert.Equal([15, 14, 13, 12, 10, 8], data.StandardArray);
+    }
+
+    [Fact]
+    public void Abilities_Json_PointBuyConfigIsCorrect()
+    {
+        var data = DeserializeFile<AbilitiesConfig>("abilities.json");
+
+        Assert.Equal(27, data.PointBuy.Budget);
+        Assert.Equal(8, data.PointBuy.MinScore);
+        Assert.Equal(15, data.PointBuy.MaxScore);
+        Assert.NotEmpty(data.PointBuy.Costs);
+
+        // Score 8 costs 0, score 15 costs 9
+        var cost8 = data.PointBuy.Costs.FirstOrDefault(c => c.Score == 8);
+        Assert.NotNull(cost8);
+        Assert.Equal(0, cost8!.Cost);
+
+        var cost15 = data.PointBuy.Costs.FirstOrDefault(c => c.Score == 15);
+        Assert.NotNull(cost15);
+        Assert.Equal(9, cost15!.Cost);
+    }
+
+    [Fact]
+    public void Abilities_Json_RollConfigIsCorrect()
+    {
+        var data = DeserializeFile<AbilitiesConfig>("abilities.json");
+
+        Assert.False(string.IsNullOrWhiteSpace(data.Roll.Method), "Roll method should not be empty");
+        Assert.Equal("4d6-drop-lowest", data.Roll.Method);
+        Assert.Equal(6, data.Roll.Count);
+    }
+}

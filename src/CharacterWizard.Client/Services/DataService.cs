@@ -13,6 +13,7 @@ public sealed class DataService : IDataService
     private List<EquipmentItemDefinition>? _equipment;
     private List<ClassStartingEquipmentEntry>? _classStartingEquipment;
     private NamesData? _names;
+    private AbilitiesConfig? _abilitiesConfig;
 
     public DataService(HttpClient http)
     {
@@ -118,5 +119,24 @@ public sealed class DataService : IDataService
 
             _names ??= new NamesData();
         }
+    }
+
+    public async Task<AbilitiesConfig> GetAbilitiesConfigAsync()
+    {
+        if (_abilitiesConfig is null)
+        {
+            try
+            {
+                _abilitiesConfig = await _http.GetFromJsonAsync<AbilitiesConfig>("data/abilities.json");
+            }
+            catch
+            {
+                // Fall back to default config; validators will use their built-in defaults.
+            }
+
+            _abilitiesConfig ??= new AbilitiesConfig();
+        }
+
+        return _abilitiesConfig;
     }
 }

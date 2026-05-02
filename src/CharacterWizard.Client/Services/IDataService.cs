@@ -13,4 +13,5 @@ public interface IDataService
     Task<IReadOnlyList<string>> GetFullNamesAsync();
     Task<IReadOnlyList<string>> GetGivenNamesAsync();
     Task<IReadOnlyList<string>> GetSurnamesAsync();
+    Task<AbilitiesConfig> GetAbilitiesConfigAsync();
 }

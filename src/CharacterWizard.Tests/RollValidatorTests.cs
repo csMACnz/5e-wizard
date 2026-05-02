@@ -64,4 +64,35 @@ public class RollValidatorTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_ROLL_COUNT"));
     }
+
+    [Fact]
+    public void CustomCount_Valid_ReturnsValid()
+    {
+        // config specifies 7 rolls
+        var scores = new[] { 16, 14, 13, 12, 10, 9, 8 };
+        var result = RollValidator.Validate(scores, count: 7);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        Assert.Empty(result.Errors);
+    }
+
+    [Fact]
+    public void CustomCount_WrongCount_ReturnsError()
+    {
+        var scores = new[] { 16, 14, 13, 12, 10, 9 }; // 6 scores but count = 7 required
+        var result = RollValidator.Validate(scores, count: 7);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_ROLL_COUNT") && e.Contains("7"));
+    }
+
+    [Fact]
+    public void CustomCount_ErrorMessage_MentionsConfiguredCount()
+    {
+        var scores = new[] { 16, 14, 13 }; // 3 scores but count = 4 required
+        var result = RollValidator.Validate(scores, count: 4);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("4") && e.Contains("3"));
+    }
 }

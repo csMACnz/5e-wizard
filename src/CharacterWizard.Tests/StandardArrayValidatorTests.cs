@@ -65,4 +65,38 @@ public class StandardArrayValidatorTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_STDARRAY_INVALID"));
     }
+
+    [Fact]
+    public void CustomArray_Valid_ReturnsValid()
+    {
+        var customArray = new[] { 17, 15, 13, 11, 9, 7 };
+        var scores = new[] { 7, 9, 11, 13, 15, 17 }; // same values, different order
+        var result = StandardArrayValidator.Validate(scores, customArray);
+
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        Assert.Empty(result.Errors);
+    }
+
+    [Fact]
+    public void CustomArray_Invalid_ReturnsError()
+    {
+        var customArray = new[] { 17, 15, 13, 11, 9, 7 };
+        var scores = new[] { 15, 14, 13, 12, 10, 8 }; // SRD values, not matching custom
+        var result = StandardArrayValidator.Validate(scores, customArray);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_STDARRAY_INVALID"));
+    }
+
+    [Fact]
+    public void CustomArray_ErrorMessage_ContainsCustomValues()
+    {
+        var customArray = new[] { 17, 15, 13, 11, 9, 7 };
+        var scores = new[] { 15, 14, 13, 12, 10, 8 };
+        var result = StandardArrayValidator.Validate(scores, customArray);
+
+        Assert.False(result.IsValid);
+        // Error message should list the custom array values, not the default [15, 14, 13, 12, 10, 8]
+        Assert.Contains(result.Errors, e => e.Contains("17") && e.Contains("7"));
+    }
 }

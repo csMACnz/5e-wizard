@@ -21,15 +21,32 @@ public static class PointBuyValidator
     public const int DefaultMaxScore = 15;
 
     /// <summary>
+    /// Validates the six base ability scores against point-buy rules using a <see cref="PointBuyConfig"/>.
+    /// </summary>
+    /// <param name="scores">The six base scores (before racial bonuses).</param>
+    /// <param name="config">The point-buy configuration from <c>abilities.json</c>.</param>
+    public static ValidationResult Validate(IReadOnlyList<int> scores, PointBuyConfig config)
+    {
+        var costs = config.Costs.Count > 0
+            ? config.Costs.ToDictionary(c => c.Score, c => c.Cost)
+            : null;
+        return Validate(scores, config.Budget, costs, config.MinScore, config.MaxScore);
+    }
+
+    /// <summary>
     /// Validates the six base ability scores against point-buy rules.
     /// </summary>
     /// <param name="scores">The six base scores (before racial bonuses).</param>
     /// <param name="budget">Total point budget (default 27).</param>
     /// <param name="costs">Cost table; if null uses the SRD defaults.</param>
+    /// <param name="minScore">Minimum allowed score (default 8).</param>
+    /// <param name="maxScore">Maximum allowed score (default 15).</param>
     public static ValidationResult Validate(
         IReadOnlyList<int> scores,
         int budget = DefaultBudget,
-        Dictionary<int, int>? costs = null)
+        Dictionary<int, int>? costs = null,
+        int minScore = DefaultMinScore,
+        int maxScore = DefaultMaxScore)
     {
         var result = new ValidationResult();
         var costTable = costs ?? DefaultCosts;
@@ -44,11 +61,11 @@ public static class PointBuyValidator
         for (int i = 0; i < scores.Count; i++)
         {
             int score = scores[i];
-            if (score < DefaultMinScore || score > DefaultMaxScore)
+            if (score < minScore || score > maxScore)
             {
                 result.Errors.Add(
                     $"ERR_POINTBUY_RANGE: Score {score} at index {i} is outside the allowed range " +
-                    $"[{DefaultMinScore},{DefaultMaxScore}].");
+                    $"[{minScore},{maxScore}].");
                 continue;
             }
 
