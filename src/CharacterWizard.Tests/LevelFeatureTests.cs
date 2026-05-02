@@ -215,8 +215,8 @@ public class LevelFeatureTests
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 8 }],
             AsiChoices =
             [
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, AbilityOne = "STR" },
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 8, AbilityOne = "CON", AbilityTwo = "WIS" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "plus2", AbilityOne = "STR" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 8, Mode = "split", AbilityOne = "CON", AbilityTwo = "WIS" },
             ],
         };
 
@@ -249,7 +249,7 @@ public class LevelFeatureTests
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 4 }],
             AsiChoices =
             [
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, FeatId = "feat:rage" }, // not a general feat
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "feat", FeatId = "feat:rage" }, // not a general feat
             ],
         };
 
@@ -266,7 +266,7 @@ public class LevelFeatureTests
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 4 }],
             AsiChoices =
             [
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, FeatId = "feat:alert" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "feat", FeatId = "feat:alert" },
             ],
         };
 
@@ -284,7 +284,7 @@ public class LevelFeatureTests
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 4 }],
             AsiChoices =
             [
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, FeatId = "feat:nonexistent" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "feat", FeatId = "feat:nonexistent" },
             ],
         };
 
@@ -305,8 +305,8 @@ public class LevelFeatureTests
             Levels = [new ClassLevel { ClassId = "class:fighter", Level = 8 }],
             AsiChoices =
             [
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, AbilityOne = "STR" },
-                new AsiChoice { ClassId = "class:fighter", ClassLevel = 8, FeatId = "feat:alert" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "plus2", AbilityOne = "STR" },
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 8, Mode = "feat", FeatId = "feat:alert" },
             ],
         };
 
@@ -318,10 +318,12 @@ public class LevelFeatureTests
 
         var choice4 = restored.AsiChoices.First(a => a.ClassLevel == 4);
         Assert.Equal("class:fighter", choice4.ClassId);
+        Assert.Equal("plus2", choice4.Mode);
         Assert.Equal("STR", choice4.AbilityOne);
         Assert.Null(choice4.FeatId);
 
         var choice8 = restored.AsiChoices.First(a => a.ClassLevel == 8);
+        Assert.Equal("feat", choice8.Mode);
         Assert.Equal("feat:alert", choice8.FeatId);
         Assert.Null(choice8.AbilityOne);
     }

@@ -469,10 +469,7 @@ else
                             string asiKey = $"{classEntry.ClassId}|{asiLevel}";
                             _allAsiChoicesByKey.TryGetValue(asiKey, out var currentChoice);
 
-                            string radioVal = currentChoice?.FeatId != null ? "feat"
-                                : currentChoice?.AbilityTwo != null ? "split"
-                                : currentChoice?.AbilityOne != null ? "plus2"
-                                : string.Empty;
+                            string radioVal = currentChoice?.Mode ?? string.Empty;
 
                             <MudDivider Class="my-2" />
                             <MudText Typo="Typo.subtitle2" Class="mb-1">
@@ -1578,19 +1575,11 @@ else
         if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
             existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
 
-        // Reset the choice and apply the selection type
+        // Set the mode and clear incompatible fields
+        existing.Mode = radioValue;
         existing.FeatId = null;
         existing.AbilityOne = null;
         existing.AbilityTwo = null;
-
-        if (radioValue == "plus2")
-        {
-            // Leave abilities null until user picks from dropdown
-        }
-        else if (radioValue == "split")
-        {
-            existing.AbilityTwo = string.Empty; // sentinel: user selected split but hasn't picked yet
-        }
 
         _allAsiChoicesByKey[key] = existing;
         ValidateAndShowStepErrors();
@@ -1934,10 +1923,10 @@ else
             if (choice.FeatId != null) continue;
             if (choice.AbilityOne != null)
             {
-                int bonus = choice.AbilityTwo == null ? 2 : 1;
+                int bonus = choice.Mode == "split" ? 1 : 2;
                 AddOtherBonus(c.AbilityScores, choice.AbilityOne, bonus);
             }
-            if (choice.AbilityTwo != null)
+            if (choice.Mode == "split" && choice.AbilityTwo != null)
                 AddOtherBonus(c.AbilityScores, choice.AbilityTwo, 1);
         }
 
