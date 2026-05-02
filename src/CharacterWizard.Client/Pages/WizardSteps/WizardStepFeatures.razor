@@ -202,8 +202,8 @@
 
                     if (capturedLvl == 1)
                     {
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2">
-                            <MudText Style="min-width:180px">@hpClsDisplay level 1:</MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2" Style="flex-wrap:wrap">
+                            <MudText>@hpClsDisplay level 1:</MudText>
                             <MudChip T="string" Color="Color.Default" Size="Size.Small">
                                 @hpHitDie (max d@(hpHitDie))
                             </MudChip>
@@ -223,28 +223,32 @@
                             <MudRadioGroup T="string"
                                            Value="@hpMethod"
                                            ValueChanged="@(async (string v) => await OnHpMethodChanged(capturedClassId, capturedLvl, v, capturedAverage))">
-                                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                                    <MudRadio Value="@("average")" Color="Color.Primary">
-                                        Average (@capturedAverage)
-                                    </MudRadio>
-                                    <MudRadio Value="@("manual")" Color="Color.Primary">
-                                        Manual
-                                    </MudRadio>
+                                <MudStack Row="false" Spacing="1">
+                                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Style="flex-wrap:wrap">
+                                        <MudRadio Value="@("average")" Color="Color.Primary">
+                                            Average (@capturedAverage)
+                                        </MudRadio>
+                                        <MudRadio Value="@("manual")" Color="Color.Primary">
+                                            Manual
+                                        </MudRadio>
+                                    </MudStack>
                                     @if (hpMethod == "manual")
                                     {
-                                        <MudNumericField T="int"
-                                                         Value="@hpValue"
-                                                         ValueChanged="@(async (int v) => await OnHpValueChanged(capturedClassId, capturedLvl, v))"
-                                                         Label="@($"Roll (1–{capturedHitDie})")"
-                                                         Min="1" Max="@capturedHitDie"
-                                                         Immediate="true"
-                                                         Variant="Variant.Outlined"
-                                                         Style="max-width:130px" />
-                                        <MudIconButton Icon="@Icons.Material.Filled.Casino"
-                                                       Color="Color.Secondary"
-                                                       Size="Size.Small"
-                                                       OnClick="@(async () => { Randomizer.RollHp(capturedClassId, capturedLvl, capturedHitDie); await OnChanged.InvokeAsync(); })"
-                                                       aria-label="@($"Roll d{capturedHitDie} for {hpClsDisplay} level {capturedLvl}")" />
+                                        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                            <MudNumericField T="int"
+                                                             Value="@hpValue"
+                                                             ValueChanged="@(async (int v) => await OnHpValueChanged(capturedClassId, capturedLvl, v))"
+                                                             Label="@($"Roll (1–{capturedHitDie})")"
+                                                             Min="1" Max="@capturedHitDie"
+                                                             Immediate="true"
+                                                             Variant="Variant.Outlined"
+                                                             Style="max-width:130px;min-width:100px" />
+                                            <MudIconButton Icon="@Icons.Material.Filled.Casino"
+                                                           Color="Color.Secondary"
+                                                           Size="Size.Small"
+                                                           OnClick="@(async () => { Randomizer.RollHp(capturedClassId, capturedLvl, capturedHitDie); await OnChanged.InvokeAsync(); })"
+                                                           aria-label="@($"Roll d{capturedHitDie} for {hpClsDisplay} level {capturedLvl}")" />
+                                        </MudStack>
                                     }
                                 </MudStack>
                             </MudRadioGroup>
