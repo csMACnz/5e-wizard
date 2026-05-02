@@ -127,7 +127,7 @@ else
                                        Value="@_abilitySelections[ab]"
                                        ValueChanged="@(async (int v) => { _abilitySelections[ab] = v; await ValidateAndAutoSaveAsync(); })"
                                        Variant="Variant.Outlined">
-                                <MudSelectItem Value="0">— select —</MudSelectItem>
+                                <MudSelectItem Value="0"></MudSelectItem>
                                 @foreach (int v in _abilitiesConfig.StandardArray)
                                 {
                                     <MudSelectItem Value="@v">@v (mod @Modifier(v))</MudSelectItem>
@@ -218,7 +218,7 @@ else
                                AdornmentIcon="@Icons.Material.Filled.Casino"
                                OnAdornmentClick="RandomizeRace"
                                AdornmentAriaLabel="Random race">
-                        <MudSelectItem Value="@string.Empty">— select race —</MudSelectItem>
+                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
                         @foreach (var race in _races)
                         {
                             <MudSelectItem Value="@race.Id">@race.DisplayName</MudSelectItem>
@@ -236,7 +236,7 @@ else
                                    AdornmentIcon="@Icons.Material.Filled.Casino"
                                    OnAdornmentClick="RandomizeSubrace"
                                    AdornmentAriaLabel="Random subrace">
-                            <MudSelectItem Value="@string.Empty">— select subrace —</MudSelectItem>
+                            <MudSelectItem Value="@string.Empty"></MudSelectItem>
                             @foreach (var sub in currentRace.Subraces)
                             {
                                 <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
@@ -332,7 +332,7 @@ else
                                            AdornmentIcon="@Icons.Material.Filled.Casino"
                                            OnAdornmentClick="@(async () => await RandomizeClass(classIdx))"
                                            AdornmentAriaLabel="Random class">
-                                    <MudSelectItem Value="@string.Empty">— select class —</MudSelectItem>
+                                    <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                     @foreach (var cls in _classes)
                                     {
                                         <MudSelectItem Value="@cls.Id">
@@ -361,7 +361,7 @@ else
                                        AdornmentIcon="@Icons.Material.Filled.Casino"
                                        OnAdornmentClick="@(async () => await RandomizeSubclass(classIdx))"
                                        AdornmentAriaLabel="Random subclass">
-                                <MudSelectItem Value="@string.Empty">— select @(clsDef.SubclassLabel.ToLowerInvariant()) —</MudSelectItem>
+                                <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                 @foreach (var sub in clsDef.SubclassOptions)
                                 {
                                     <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
@@ -500,7 +500,7 @@ else
                                            Value="@(currentChoice?.AbilityOne ?? string.Empty)"
                                            ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, null))"
                                            Variant="Variant.Outlined" Class="mt-2" Style="max-width:220px">
-                                    <MudSelectItem Value="@string.Empty">— select ability —</MudSelectItem>
+                                    <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                     @foreach (var ab in Abilities)
                                     {
                                         <MudSelectItem Value="@ab">@ab</MudSelectItem>
@@ -515,7 +515,7 @@ else
                                                Value="@(currentChoice?.AbilityOne ?? string.Empty)"
                                                ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
                                                Variant="Variant.Outlined" Style="max-width:200px">
-                                        <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
+                                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                         @foreach (var ab in Abilities)
                                         {
                                             <MudSelectItem Value="@ab">@ab</MudSelectItem>
@@ -526,7 +526,7 @@ else
                                                Value="@(currentChoice?.AbilityTwo ?? string.Empty)"
                                                ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
                                                Variant="Variant.Outlined" Style="max-width:200px">
-                                        <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
+                                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                         @foreach (var ab in Abilities)
                                         {
                                             <MudSelectItem Value="@ab">@ab</MudSelectItem>
@@ -542,7 +542,7 @@ else
                                            Value="@(currentChoice?.FeatId ?? string.Empty)"
                                            ValueChanged="@(async (string v) => await OnAsiFeatChanged(classEntry.ClassId, asiLevel, v))"
                                            Variant="Variant.Outlined" Class="mt-2" Style="max-width:340px">
-                                    <MudSelectItem Value="@string.Empty">— select feat —</MudSelectItem>
+                                    <MudSelectItem Value="@string.Empty"></MudSelectItem>
                                     @foreach (var gf in generalFeats)
                                     {
                                         <MudSelectItem Value="@gf.Id">@gf.DisplayName</MudSelectItem>
@@ -659,7 +659,7 @@ else
                                AdornmentIcon="@Icons.Material.Filled.Casino"
                                OnAdornmentClick="RandomizeBackground"
                                AdornmentAriaLabel="Random background">
-                        <MudSelectItem Value="@string.Empty">— select background —</MudSelectItem>
+                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
                         @foreach (var bg in _backgrounds)
                         {
                             <MudSelectItem Value="@bg.Id">@bg.DisplayName</MudSelectItem>
