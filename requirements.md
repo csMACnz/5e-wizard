@@ -73,9 +73,16 @@ FR1 — Wizard flows
   - FR1.9.7: `Character.Features` shall be populated during `CommitAllToCharacter()` in the following order: race trait IDs (`SourceId = raceId`), subrace trait IDs (`SourceId = subraceId`), background feature (`SourceId = backgroundId`), class features per level excluding `feat:asi` (`SourceId = classId`), and general feats taken via ASI choices (`SourceId = classId`).
   - FR1.9.8: For exportable ASI choices where an ability bump (not a feat) was selected, the corresponding `Character.AbilityScores.<ability>.OtherBonus` value shall be incremented (+2 for a single-ability choice, +1/+1 for a split choice). These bonuses are accumulated only from exportable choices (level-eligible) and recalculated on every `CommitAllToCharacter()` call.
   - FR1.9.9: Exportable ASI choices are defined as entries in `_allAsiChoicesByKey` where the corresponding class entry still exists and `classEntry.Level >= choice.ClassLevel`. Non-exportable choices (level lowered since choice was made) are excluded from session saves, JSON exports, and FC5e XML exports, while remaining in memory.
+  - FR1.9.10: The Level Features step shall include a "Hit Points" panel for assigning hit points for each class level, appearing after the ASI/feat choices section.
+  - FR1.9.11: For level 1, the HP die-roll value shall be fixed at the class's maximum hit die value (equal to the class's `hitDie`, e.g. 10 for a Fighter with d10) and displayed as a read-only entry. No user input is presented for level 1.
+  - FR1.9.12: For each level above 1, the user shall be presented with two mutually-exclusive options for that level's HP die-roll value:
+    1. "Average" — automatically uses the fixed average value for the class's hit die: `floor(hitDie / 2) + 1` (e.g. 5 for d8, 6 for d10, 7 for d12). This is the default selection.
+    2. "Manual" — exposes a numeric input field pre-filled with the average, and a "Roll" button that uses a client-side PRNG to simulate the class's hit die and overwrites the input with the result. The entered value must be within the valid range [1, hitDie] and is validated immediately on change.
+  - FR1.9.13: The "Roll" button for manual HP entry uses a client-side PRNG seeded at click time (consistent with all other randomisation buttons per the general randomisation constraints). After rolling, the same step-level validation that runs on manual change is triggered immediately.
+  - FR1.9.14: For multiclass characters, each level's HP entry is associated with the class that owns that level and uses that class's `hitDie` for the average calculation, roll range, and validation. The HP panel presents levels in ascending order across all class entries.
 - FR1.10: Review & final validation with explicit errors/warnings.
 
-General constraints applying to all randomisation buttons (FR1.1.1, FR1.2.1, FR1.2.2, FR1.3.1, FR1.3.2, FR1.4.2, FR1.4.3, FR1.6.1, FR1.8.1, FR1.8.2):
+General constraints applying to all randomisation buttons (FR1.1.1, FR1.2.1, FR1.2.2, FR1.3.1, FR1.3.2, FR1.4.2, FR1.4.3, FR1.6.1, FR1.8.1, FR1.8.2, FR1.9.13):
 - All random selections use a client-side PRNG seeded at click time (no server call needed; consistent with NFR1 client-only operation).
 - After any random selection, the same step-level validation that runs on manual change must be triggered immediately.
 - Randomisation buttons use the Casino dice icon and secondary colour styling to match FR1.1.1's established dice-button pattern.
@@ -88,6 +95,7 @@ FR2 — Validation
 - FR2.3: Provide machine-readable error codes and human-friendly messages (e.g., ERR_MULTICLASS_PREREQ — "Strength 13 is required to multiclass into Barbarian"). Level-feature validation codes:
   - `WARN_ASI_INCOMPLETE` — an ASI/feat opportunity at a given class level has no choice saved (non-blocking warning).
   - `ERR_ASI_INVALID_FEAT` — a general feat was chosen for an ASI slot but the feat ID is unknown or its `type` is not `"general"`.
+  - `ERR_HP_ROLL_OUT_OF_RANGE` — a manually-entered hit-point die-roll value for a given level is outside the valid range [1, hitDie] for that level's class (e.g. a value of 0 or 11 for a d10 class).
 - FR2.4: CI validates canonical /data JSON files against JSON schemas and custom rules.
 
 FR3 — Data & Customization
@@ -104,12 +112,12 @@ FR3 — Data & Customization
 - FR3.7: `IDataService` shall expose `GetFeatsAsync()` returning `IReadOnlyList<FeatDefinition>`, loading from `data/feats.json` with single-load caching.
 
 FR4 — Export / Import / Share
-- FR4.1: Export validated character JSON (schema-backed). The downloaded filename must include the character name and total level (e.g. `thorin-level5.json`).
+- FR4.1: Export validated character JSON (schema-backed). The downloaded filename must include the character name and total level (e.g. `thorin-level5.json`). The exported `hitPoints` object shall contain only `maximum` (the calculated total max HP); `current` and `temporary` fields are not tracked by this application and shall not be present in the export.
 - FR4.2: Import to resume or validate existing characters.
 - FR4.3: Printable view (HTML print stylesheet and optional PDF generation client-side).
   - FR4.3.1: The printable character sheet shall include a "Features & Traits" section that lists all `Character.Features` entries with display names resolved from `feats.json` (falling back to the raw feature ID if not found). The source of each feature (race, subrace, background, class) shall be displayed alongside the feature name.
 - FR4.4: Optional URL state encoding for shareable links (client-side: base64 or compressed state in URL query).
-- FR4.5: On the Review step of the wizard, provide an "Export for FightClub 5e" button that generates and downloads a `.xml` file in the FightClub 5e character XML format. The export is offered regardless of validation state (warnings/errors are shown but do not block download). Only a best-effort mapping of available SRD data is produced; fields without a mapping (e.g. alignment, personality traits) are emitted as empty or default values. The downloaded filename must include the character name and total level (e.g. `thorin-level5.xml`).
+- FR4.5: On the Review step of the wizard, provide an "Export for FightClub 5e" button that generates and downloads a `.xml` file in the FightClub 5e character XML format. The export is offered regardless of validation state (warnings/errors are shown but do not block download). Only a best-effort mapping of available SRD data is produced; fields without a mapping (e.g. alignment, personality traits) are emitted as empty or default values. The downloaded filename must include the character name and total level (e.g. `thorin-level5.xml`). Since current HP is not tracked, the `<hpCurrent>` element shall be emitted with the same value as `<hpMax>` as a neutral default.
   - FR4.5.1: When emitting `<feat>` elements from `Character.Features`, the exporter shall resolve the `FeatureId` to its `DisplayName` via `feats.json` for the `<name>` child element. The `SourceId` (or source description) shall be placed in the `<text>` child.
 
 FR5 — Hosting & CI/CD
@@ -170,7 +178,7 @@ Core data model (high-level)
   - backgroundId
   - proficiencies: weapons/armor/tools/languages
   - skills: {skillId: proficiencyLevel} (none/proficient/expert)
-  - hitPoints: formula-driven (per-class hit dice + CON)
+  - hitPoints: maximum hit points only; current hit points and temporary hit points are gameplay mechanics outside the scope of this application and are not tracked; stored as a list of per-level entries each recording the level, classId, method (average or manual), and the die-roll value chosen (excluding CON modifier); total max HP = sum of all per-level die-roll values + (CON modifier × total character level), with each level's contribution floored at a minimum of 1 after CON is applied.
   - features: list of resolved features (with source references and optional display overrides)
   - asiChoices: list of {classId, classLevel, mode ("plus2"|"split"|"feat"|null), featId?, abilityOne?, abilityTwo?} — exportable subset only (level-eligible choices at session save/export time)
   - spells: known/prepared/spellSlots per class feature
