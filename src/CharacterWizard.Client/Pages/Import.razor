@@ -50,7 +50,7 @@ else if (_importedCharacter != null)
                     <MudItem xs="12" sm="6">
                         <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Class / Level</MudText>
                         <MudText>
-                            @string.Join(", ", _importedCharacter.Levels.Select(l => $"{l.ClassId.Replace("class:", string.Empty)} {l.Level}"))
+                            @string.Join(", ", _importedCharacter.Levels.Select(l => $"{StripPrefix(l.ClassId)} {l.Level}"))
                             (Total: @_importedCharacter.TotalLevel)
                         </MudText>
                     </MudItem>
@@ -60,10 +60,10 @@ else if (_importedCharacter != null)
                     <MudItem xs="12" sm="6">
                         <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Race</MudText>
                         <MudText>
-                            @_importedCharacter.RaceId.Replace("race:", string.Empty).Replace("subrace:", string.Empty)
+                            @StripPrefix(_importedCharacter.RaceId)
                             @if (!string.IsNullOrWhiteSpace(_importedCharacter.SubraceId))
                             {
-                                <span> / @_importedCharacter.SubraceId.Replace("subrace:", string.Empty)</span>
+                                <span> / @StripPrefix(_importedCharacter.SubraceId)</span>
                             }
                         </MudText>
                     </MudItem>
@@ -72,7 +72,7 @@ else if (_importedCharacter != null)
                 {
                     <MudItem xs="12" sm="6">
                         <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Background</MudText>
-                        <MudText>@_importedCharacter.BackgroundId.Replace("background:", string.Empty)</MudText>
+                        <MudText>@StripPrefix(_importedCharacter.BackgroundId)</MudText>
                     </MudItem>
                 }
             </MudGrid>
@@ -235,7 +235,7 @@ else
         bool isXml = filename?.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) == true
                      || content.TrimStart().StartsWith('<');
 
-        Character? character;
+        Character character;
 
         if (isXml)
         {
@@ -252,18 +252,14 @@ else
         }
         else
         {
-            character = new CharacterJsonImporter().Import(content);
-            if (character == null)
+            var imported = new CharacterJsonImporter().Import(content);
+            if (imported == null)
             {
                 _error = "Failed to parse character JSON. Make sure the file was exported from this wizard or is a valid character JSON file.";
                 return;
             }
-        }
 
-        if (character == null)
-        {
-            _error = "No valid character data found in the imported content.";
-            return;
+            character = imported;
         }
 
         _importedCharacter = character;
@@ -308,4 +304,9 @@ else
         _pasteText = string.Empty;
         _selectedFileName = string.Empty;
     }
+
+    // ── Display helpers ───────────────────────────────────────────────────────
+
+    private static string StripPrefix(string id) =>
+        id.Contains(':') ? id[(id.IndexOf(':') + 1)..] : id;
 }

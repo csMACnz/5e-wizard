@@ -37,8 +37,13 @@ public class CharacterJsonImporter
         {
             return JsonSerializer.Deserialize<Character>(json, Options);
         }
-        catch
+        catch (JsonException)
         {
+            return null;
+        }
+        catch (NotSupportedException)
+        {
+            // Thrown when the JSON contains a type that cannot be deserialized.
             return null;
         }
     }
