@@ -10,6 +10,7 @@ public interface IDataService
     Task<IReadOnlyList<SpellDefinition>> GetSpellsAsync();
     Task<IReadOnlyList<EquipmentItemDefinition>> GetEquipmentAsync();
     Task<IReadOnlyList<ClassStartingEquipmentEntry>> GetClassStartingEquipmentAsync();
+    Task<IReadOnlyList<FeatDefinition>> GetFeatsAsync();
     Task<IReadOnlyList<string>> GetFullNamesAsync();
     Task<IReadOnlyList<string>> GetGivenNamesAsync();
     Task<IReadOnlyList<string>> GetSurnamesAsync();

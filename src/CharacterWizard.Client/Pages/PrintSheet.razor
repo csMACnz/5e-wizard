@@ -308,7 +308,7 @@ else
                     <div class="features-list">
                         @foreach (var feat in c.Features)
                         {
-                            <span class="feature-item">@(feat.DisplayOverride ?? feat.FeatureId)</span>
+                            <span class="feature-item">@(feat.DisplayOverride ?? FeatureDisplayName(feat.FeatureId))</span>
                             <span class="feature-source"> (@feat.SourceId)</span>
                             @if (feat != c.Features[^1])
                             {
@@ -562,6 +562,7 @@ else
     private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
     private IReadOnlyList<SpellDefinition> _spells = [];
     private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
+    private IReadOnlyList<FeatDefinition> _feats = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -570,6 +571,7 @@ else
         _backgrounds = await DataService.GetBackgroundsAsync();
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
+        _feats = await DataService.GetFeatsAsync();
         _loading = false;
     }
 
@@ -592,6 +594,15 @@ else
     };
 
     private static int GetAbilityScore(Character c, string ab) => GetBlock(c, ab).Final;
+
+    private string FeatureDisplayName(string id)
+    {
+        var featDef = _feats.FirstOrDefault(f => f.Id == id);
+        if (featDef != null) return featDef.DisplayName;
+        // Fall back to human-readable for trait: IDs
+        var s = id.Replace("trait:", string.Empty).Replace("feat:", string.Empty).Replace("-", " ");
+        return s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : id;
+    }
 
     // ── Proficiency & calculated values ─────────────────────────────────────
 

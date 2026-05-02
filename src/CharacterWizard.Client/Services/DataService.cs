@@ -12,6 +12,7 @@ public sealed class DataService : IDataService
     private List<SpellDefinition>? _spells;
     private List<EquipmentItemDefinition>? _equipment;
     private List<ClassStartingEquipmentEntry>? _classStartingEquipment;
+    private List<FeatDefinition>? _feats;
     private NamesData? _names;
 
     public DataService(HttpClient http)
@@ -83,6 +84,17 @@ public sealed class DataService : IDataService
         }
 
         return _classStartingEquipment;
+    }
+
+    public async Task<IReadOnlyList<FeatDefinition>> GetFeatsAsync()
+    {
+        if (_feats is null)
+        {
+            var data = await _http.GetFromJsonAsync<FeatsData>("data/feats.json");
+            _feats = data?.Feats ?? [];
+        }
+
+        return _feats;
     }
 
     public async Task<IReadOnlyList<string>> GetFullNamesAsync()

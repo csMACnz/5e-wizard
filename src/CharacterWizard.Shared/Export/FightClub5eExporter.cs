@@ -68,19 +68,22 @@ public class FightClub5eExporter
     private readonly IReadOnlyList<BackgroundDefinition> _backgrounds;
     private readonly IReadOnlyList<SpellDefinition> _spells;
     private readonly IReadOnlyList<EquipmentItemDefinition> _equipment;
+    private readonly IReadOnlyList<FeatDefinition> _feats;
 
     public FightClub5eExporter(
         IReadOnlyList<RaceDefinition> races,
         IReadOnlyList<ClassDefinition> classes,
         IReadOnlyList<BackgroundDefinition> backgrounds,
         IReadOnlyList<SpellDefinition> spells,
-        IReadOnlyList<EquipmentItemDefinition> equipment)
+        IReadOnlyList<EquipmentItemDefinition> equipment,
+        IReadOnlyList<FeatDefinition>? feats = null)
     {
         _races = races;
         _classes = classes;
         _backgrounds = backgrounds;
         _spells = spells;
         _equipment = equipment;
+        _feats = feats ?? [];
     }
 
     /// <summary>Exports the character as a FightClub 5e XML string.</summary>
@@ -190,8 +193,12 @@ public class FightClub5eExporter
         // that is the child element the FC5e format uses for feature description content.
         foreach (var feature in c.Features)
         {
+            var featDef = _feats.FirstOrDefault(f => f.Id == feature.FeatureId);
+            string featName = feature.DisplayOverride
+                ?? featDef?.DisplayName
+                ?? feature.FeatureId;
             elements.Add(new XElement("feat",
-                new XElement("name", feature.DisplayOverride ?? feature.FeatureId),
+                new XElement("name", featName),
                 new XElement("text", feature.SourceId)));
         }
 

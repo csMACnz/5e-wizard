@@ -61,6 +61,18 @@ FR1 — Wizard flows
   - FR1.8.1: For each spellcasting class card, add a "Random Cantrips" dice button in the cantrips section (visible only when `maxCantrips > 0`). Clicking it randomly selects exactly `maxCantrips` cantrips from the available cantrip list for that class, replacing any current cantrip selections for that class.
   - FR1.8.2: For each spellcasting class card, add a "Random Spells" dice button in the known/leveled spells section. For known-spell casters (non-prepare), it randomly selects exactly `maxKnown` spells from the full leveled spell list for that class. For prepare casters, it randomly selects a reasonable default count (equal to the spellcasting modifier + class level, capped to the total available spells) and marks them as prepared. Any previous leveled spell selections for that class are replaced.
 - FR1.9: Level progression: show features unlocked per class level, including ASIs and feature choices.
+  - FR1.9.1: A dedicated "Level Features" wizard step (Step 5) shall be inserted between the Class step and the Background step.
+  - FR1.9.2: The Level Features step shall display a read-only racial traits panel at the top, listing all trait IDs from the selected race's `traitIds` (and the selected subrace's `traitIds` if applicable), with display names resolved via `feats.json`.
+  - FR1.9.3: For each class entry, the Level Features step shall display a read-only "Automatic Features" panel listing all class features granted from level 1 up to and including the character's current class level, excluding the `feat:asi` sentinel. Each feature shall show its display name (resolved from `feats.json`) and level number.
+  - FR1.9.4: For each class level that contains the `feat:asi` sentinel (at or below the character's current class level), an interactive "ASI choice" block shall be rendered with the header "Level N — Ability Score Improvement or Feat" and three mutually-exclusive radio options:
+    1. `+2 to one ability` — exposes a single ability dropdown for the +2 target.
+    2. `+1 / +1 to two abilities` — exposes two ability dropdowns for the two +1 targets.
+    3. `Take a feat` — exposes a select populated with all feats where `type = "general"`.
+  - FR1.9.5: ASI/feat choices are bound to in-memory shadow state (`_allAsiChoicesByKey`, keyed as `"classId|classLevel"`). This dictionary retains every choice made in the current browser session regardless of whether the class level has subsequently been lowered, so that choices rehydrate automatically if the level is raised again.
+  - FR1.9.6: Step validation shall issue a non-blocking warning (`WARN_ASI_INCOMPLETE`) for each `feat:asi` opportunity that has no choice saved. These warnings shall not prevent the user from advancing.
+  - FR1.9.7: `Character.Features` shall be populated during `CommitAllToCharacter()` in the following order: race trait IDs (`SourceId = raceId`), subrace trait IDs (`SourceId = subraceId`), background feature (`SourceId = backgroundId`), class features per level excluding `feat:asi` (`SourceId = classId`), and general feats taken via ASI choices (`SourceId = classId`).
+  - FR1.9.8: For exportable ASI choices where an ability bump (not a feat) was selected, the corresponding `Character.AbilityScores.<ability>.OtherBonus` value shall be incremented (+2 for a single-ability choice, +1/+1 for a split choice). These bonuses are accumulated only from exportable choices (level-eligible) and recalculated on every `CommitAllToCharacter()` call.
+  - FR1.9.9: Exportable ASI choices are defined as entries in `_allAsiChoicesByKey` where the corresponding class entry still exists and `classEntry.Level >= choice.ClassLevel`. Non-exportable choices (level lowered since choice was made) are excluded from session saves, JSON exports, and FC5e XML exports, while remaining in memory.
 - FR1.10: Review & final validation with explicit errors/warnings.
 
 General constraints applying to all randomisation buttons (FR1.1.1, FR1.2.1, FR1.2.2, FR1.3.1, FR1.3.2, FR1.4.2, FR1.4.3, FR1.6.1, FR1.8.1, FR1.8.2):
@@ -73,7 +85,9 @@ FR2 — Validation
 - FR2.1: Step-level validation: run relevant validators for immediate feedback.
   - FR2.1.1 (BUG-FIX): Step validation errors shall be visible on screen after any field change/edit within a step, not only on "Next" click. This applies to all input field wizard steps.
 - FR2.2: Full validation engine producing structured report: errors (fatal) and warnings.
-- FR2.3: Provide machine-readable error codes and human-friendly messages (e.g., ERR_MULTICLASS_PREREQ — "Strength 13 is required to multiclass into Barbarian").
+- FR2.3: Provide machine-readable error codes and human-friendly messages (e.g., ERR_MULTICLASS_PREREQ — "Strength 13 is required to multiclass into Barbarian"). Level-feature validation codes:
+  - `WARN_ASI_INCOMPLETE` — an ASI/feat opportunity at a given class level has no choice saved (non-blocking warning).
+  - `ERR_ASI_INVALID_FEAT` — a general feat was chosen for an ASI slot but the feat ID is unknown or its `type` is not `"general"`.
 - FR2.4: CI validates canonical /data JSON files against JSON schemas and custom rules.
 
 FR3 — Data & Customization
@@ -81,13 +95,22 @@ FR3 — Data & Customization
 - FR3.2: Each data object separates mechanic fields (ids, numeric bonuses, rules references) from display fields (displayName, description).
 - FR3.3: Contributors change flavor by editing displayName/description only for UI flair without changing mechanical fields.
 - FR3.4: Seed repository with SRD canonical mechanics (mechanics & minimal flavor).
+- FR3.5: Every entry in `feats.json` shall carry a `"type"` field with one of four values: `"class"` (auto-granted class feature), `"background"` (auto-granted background feature), `"general"` (player-selectable feat; valid as an ASI alternative), or `"asi"` (the `feat:asi` sentinel entry only). The `feat.schema.json` schema shall make `"type"` a required enum field.
+- FR3.6: Data integrity rules (enforced by tests):
+  - Every feat ID listed in `ClassDefinition.featuresByLevel` shall resolve to a known entry in `feats.json`.
+  - Every `BackgroundDefinition.featureId` (where non-empty) shall resolve to a feat in `feats.json` with `type = "background"`.
+  - Every feat with `type = "class"` shall appear in at least one class's `featuresByLevel`.
+  - Every feat with `type = "general"` shall not appear in any class's `featuresByLevel` or as a background `featureId`.
+- FR3.7: `IDataService` shall expose `GetFeatsAsync()` returning `IReadOnlyList<FeatDefinition>`, loading from `data/feats.json` with single-load caching.
 
 FR4 — Export / Import / Share
 - FR4.1: Export validated character JSON (schema-backed). The downloaded filename must include the character name and total level (e.g. `thorin-level5.json`).
 - FR4.2: Import to resume or validate existing characters.
 - FR4.3: Printable view (HTML print stylesheet and optional PDF generation client-side).
+  - FR4.3.1: The printable character sheet shall include a "Features & Traits" section that lists all `Character.Features` entries with display names resolved from `feats.json` (falling back to the raw feature ID if not found). The source of each feature (race, subrace, background, class) shall be displayed alongside the feature name.
 - FR4.4: Optional URL state encoding for shareable links (client-side: base64 or compressed state in URL query).
 - FR4.5: On the Review step of the wizard, provide an "Export for FightClub 5e" button that generates and downloads a `.xml` file in the FightClub 5e character XML format. The export is offered regardless of validation state (warnings/errors are shown but do not block download). Only a best-effort mapping of available SRD data is produced; fields without a mapping (e.g. alignment, personality traits) are emitted as empty or default values. The downloaded filename must include the character name and total level (e.g. `thorin-level5.xml`).
+  - FR4.5.1: When emitting `<feat>` elements from `Character.Features`, the exporter shall resolve the `FeatureId` to its `DisplayName` via `feats.json` for the `<name>` child element. The `SourceId` (or source description) shall be placed in the `<text>` child.
 
 FR5 — Hosting & CI/CD
 - FR5.1: Deploy static site to GitHub Pages (repo subpath /5e-wizard).
@@ -113,7 +136,7 @@ FR7 — Session Management and Local Storage
   - FR7.2.2: Each session shall be stored as a JSON object under the key `5ew_session_<sessionId>` in localStorage, containing a `schemaVersion` integer, the session ID, character name (for display in the list), creation timestamp, last-modified timestamp, active step, and the full `Character` object.
   - FR7.2.3: A session index (an ordered list of session IDs) shall be maintained in localStorage under the key `5ew_sessions` to allow enumeration without scanning all localStorage keys.
   - FR7.2.4: Local storage operations shall be non-blocking and shall not affect wizard step performance (NFR2 still applies).
-  - FR7.2.5: The `schemaVersion` field shall start at `1` and shall be incremented whenever the persisted session format changes in a backward-incompatible way. When loading a session, the application shall reject (return null / skip) any session whose `schemaVersion` does not match the current supported version, ensuring stale or future-format data is never silently mis-read.
+  - FR7.2.5: The `schemaVersion` field shall start at `1` and shall be incremented whenever the persisted session format changes in a backward-incompatible way. When loading a session, the application shall reject (return null / skip) any session whose `schemaVersion` does not match the current supported version, ensuring stale or future-format data is never silently mis-read. Current supported version: `2` (bumped from `1` when `Character.AsiChoices` was added).
 - FR7.3: Character session list screen.
   - FR7.3.1: A dedicated "My Characters" page shall be accessible at `/characters`, linked from the landing page.
   - FR7.3.2: The page shall list all character sessions stored in local storage, displaying: character name (or "Unnamed Character" if blank), creation date, last-modified date, and current wizard step reached.
@@ -149,6 +172,7 @@ Core data model (high-level)
   - skills: {skillId: proficiencyLevel} (none/proficient/expert)
   - hitPoints: formula-driven (per-class hit dice + CON)
   - features: list of resolved features (with source references and optional display overrides)
+  - asiChoices: list of {classId, classLevel, mode ("plus2"|"split"|"feat"|null), featId?, abilityOne?, abilityTwo?} — exportable subset only (level-eligible choices at session save/export time)
   - spells: known/prepared/spellSlots per class feature
   - equipment: items w/ quantity
   - validationReport: list of {severity, code, message, detail, path}
@@ -167,6 +191,7 @@ Validation engine design
     - proficiency & skill selection cardinality
     - spellcasting constraints (slots, known/prepared)
     - equipment starting-choice constraints
+    - level features & ASI choices (`LevelFeatureValidator`)
   - Composition: step validators (contextual) and final full-run.
 - Output:
   - Structured ValidationResult {isValid: bool, errors: [], warnings: []}
@@ -181,10 +206,10 @@ User flows & UI components
   2. Ability scores UI (Standard Array, Point Buy, Roll)
   3. Race/Subrace selector + apply features
   4. Class selection (including multiclass flow), subclass picker
-  5. Background & proficiencies
-  6. Skill & expertise assignment
-  7. Equipment starter package selection
-  8. Spells (if caster)
+  5. **Level Features** — racial traits, auto-granted class features (read-only), and interactive ASI/feat choices per qualifying level
+  6. Background & proficiencies (combined with skill selection)
+  7. Spells (if caster)
+  8. Equipment starter package selection
   9. Review & final validation
 - Character sheet viewer (print friendly)
 - Components:

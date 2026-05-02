@@ -7,234 +7,1712 @@
       "displayName": "Ability Score Improvement",
       "description": "Increase one ability score by 2 or two ability scores by 1 (max 20).",
       "source": "SRD 5.1",
-      "srdReference": "SRD p.63"
+      "srdReference": "SRD p.63",
+      "type": "asi"
     },
-
-    { "id": "feat:shelter-of-the-faithful", "displayName": "Shelter of the Faithful", "description": "Gain aid from temples and clergy of your faith: lodging, healing, and local knowledge.", "source": "SRD 5.1", "srdReference": "SRD p.125" },
-    { "id": "feat:criminal-contact", "displayName": "Criminal Contact", "description": "You have a reliable and trustworthy contact in the criminal underworld.", "source": "SRD 5.1", "srdReference": "SRD p.125" },
-    { "id": "feat:rustic-hospitality", "displayName": "Rustic Hospitality", "description": "Common folk shelter and hide you; they won't report you to authorities.", "source": "SRD 5.1", "srdReference": "SRD p.131" },
-    { "id": "feat:position-of-privilege", "displayName": "Position of Privilege", "description": "Your noble bearing opens doors to high society and commands deference from commoners.", "source": "SRD 5.1", "srdReference": "SRD p.135" },
-    { "id": "feat:researcher", "displayName": "Researcher", "description": "When you fail to recall lore, you know where to find it in a library or from a sage.", "source": "SRD 5.1", "srdReference": "SRD p.138" },
-    { "id": "feat:military-rank", "displayName": "Military Rank", "description": "Your military rank grants authority over soldiers and access to military resources.", "source": "SRD 5.1", "srdReference": "SRD p.140" },
-
-    { "id": "feat:rage", "displayName": "Rage", "description": "Enter a battle rage: advantage on STR checks, bonus damage, resistance to physical damage.", "source": "SRD 5.1", "srdReference": "SRD p.16" },
-    { "id": "feat:unarmored-defense-barbarian", "displayName": "Unarmored Defense (Barbarian)", "description": "Without armor, AC equals 10 + DEX modifier + CON modifier.", "source": "SRD 5.1", "srdReference": "SRD p.16" },
-    { "id": "feat:reckless-attack", "displayName": "Reckless Attack", "description": "Attack with advantage on the first attack, but attackers have advantage on attacks against you until next turn.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:danger-sense", "displayName": "Danger Sense", "description": "Advantage on DEX saves against visible effects while not blinded, deafened, or incapacitated.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:primal-path", "displayName": "Primal Path", "description": "Choose a Primal Path subclass that shapes the nature of your rage.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:primal-knowledge", "displayName": "Primal Knowledge", "description": "Gain proficiency in one additional skill from the Barbarian skill list.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:extra-attack-barbarian", "displayName": "Extra Attack", "description": "Attack twice instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:fast-movement", "displayName": "Fast Movement", "description": "Speed increases by 10 ft while not wearing heavy armor.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:feral-instinct", "displayName": "Feral Instinct", "description": "Advantage on initiative rolls; can enter rage to act first when surprised.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:brutal-critical-1", "displayName": "Brutal Critical", "description": "Roll one additional weapon damage die on a melee critical hit.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:brutal-critical-2", "displayName": "Brutal Critical (2 dice)", "description": "Roll two additional weapon damage dice on a melee critical hit.", "source": "SRD 5.1", "srdReference": "SRD p.17" },
-    { "id": "feat:brutal-critical-3", "displayName": "Brutal Critical (3 dice)", "description": "Roll three additional weapon damage dice on a melee critical hit.", "source": "SRD 5.1", "srdReference": "SRD p.18" },
-    { "id": "feat:relentless-rage", "displayName": "Relentless Rage", "description": "When reduced to 0 HP while raging, make a DC 10 CON save to drop to 1 HP instead.", "source": "SRD 5.1", "srdReference": "SRD p.18" },
-    { "id": "feat:persistent-rage", "displayName": "Persistent Rage", "description": "Rage only ends early if you fall unconscious or choose to end it.", "source": "SRD 5.1", "srdReference": "SRD p.18" },
-    { "id": "feat:primal-champion", "displayName": "Primal Champion", "description": "STR and CON each increase by 4 (may exceed 20).", "source": "SRD 5.1", "srdReference": "SRD p.18" },
-
-    { "id": "feat:spellcasting-bard", "displayName": "Spellcasting (Bard)", "description": "Cast bard spells using CHA as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.20" },
-    { "id": "feat:bardic-inspiration-d6", "displayName": "Bardic Inspiration (d6)", "description": "Grant an ally a d6 Bardic Inspiration die to add to one ability check, attack, or save.", "source": "SRD 5.1", "srdReference": "SRD p.20" },
-    { "id": "feat:jack-of-all-trades", "displayName": "Jack of All Trades", "description": "Add half proficiency bonus to ability checks not using proficiency.", "source": "SRD 5.1", "srdReference": "SRD p.20" },
-    { "id": "feat:song-of-rest-d6", "displayName": "Song of Rest (d6)", "description": "Allies regain an extra d6 HP when spending Hit Dice during a short rest.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:bard-college", "displayName": "Bard College", "description": "Choose a Bard College subclass that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:expertise-bard", "displayName": "Expertise (Bard)", "description": "Double proficiency bonus for two chosen skills or tools.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:bardic-inspiration-d8", "displayName": "Bardic Inspiration (d8)", "description": "Your Bardic Inspiration die becomes a d8.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:font-of-inspiration", "displayName": "Font of Inspiration", "description": "Regain all uses of Bardic Inspiration at the end of a short or long rest.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:countercharm", "displayName": "Countercharm", "description": "Use your action to give allies within 30 ft advantage on saves against charmed or frightened.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:bard-college-feature", "displayName": "Bard College Feature", "description": "Gain an additional feature from your chosen Bard College subclass.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:bardic-inspiration-d10", "displayName": "Bardic Inspiration (d10)", "description": "Your Bardic Inspiration die becomes a d10.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:magical-secrets-10", "displayName": "Magical Secrets (Level 10)", "description": "Learn 2 spells from any class's spell list.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:song-of-rest-d8", "displayName": "Song of Rest (d8)", "description": "Your Song of Rest die becomes a d8.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:song-of-rest-d10", "displayName": "Song of Rest (d10)", "description": "Your Song of Rest die becomes a d10.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:magical-secrets-14", "displayName": "Magical Secrets (Level 14)", "description": "Learn 2 more spells from any class's spell list.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:bardic-inspiration-d12", "displayName": "Bardic Inspiration (d12)", "description": "Your Bardic Inspiration die becomes a d12.", "source": "SRD 5.1", "srdReference": "SRD p.21" },
-    { "id": "feat:magical-secrets-18", "displayName": "Magical Secrets (Level 18)", "description": "Learn 2 more spells from any class's spell list.", "source": "SRD 5.1", "srdReference": "SRD p.22" },
-    { "id": "feat:song-of-rest-d12", "displayName": "Song of Rest (d12)", "description": "Your Song of Rest die becomes a d12.", "source": "SRD 5.1", "srdReference": "SRD p.22" },
-    { "id": "feat:superior-inspiration", "displayName": "Superior Inspiration", "description": "If you have no Bardic Inspiration dice when rolling initiative, regain one use.", "source": "SRD 5.1", "srdReference": "SRD p.22" },
-
-    { "id": "feat:spellcasting-cleric", "displayName": "Spellcasting (Cleric)", "description": "Cast cleric spells using WIS as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.28" },
-    { "id": "feat:divine-domain", "displayName": "Divine Domain", "description": "Choose a Divine Domain subclass granting domain spells and features.", "source": "SRD 5.1", "srdReference": "SRD p.28" },
-    { "id": "feat:channel-divinity-1", "displayName": "Channel Divinity (1/rest)", "description": "Channel divine energy once per short/long rest to fuel special effects.", "source": "SRD 5.1", "srdReference": "SRD p.29" },
-    { "id": "feat:divine-domain-feature", "displayName": "Divine Domain Feature", "description": "Gain an additional feature from your chosen Divine Domain subclass.", "source": "SRD 5.1", "srdReference": "SRD p.29" },
-    { "id": "feat:channel-divinity-2", "displayName": "Channel Divinity (2/rest)", "description": "Use Channel Divinity twice per short/long rest.", "source": "SRD 5.1", "srdReference": "SRD p.29" },
-    { "id": "feat:destroy-undead-cr-half", "displayName": "Destroy Undead (CR 1/2)", "description": "Undead of CR 1/2 or lower are destroyed on a failed Turn Undead save.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:channel-divinity-3", "displayName": "Channel Divinity (3/rest)", "description": "Use Channel Divinity three times per short/long rest.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:destroy-undead-cr-1", "displayName": "Destroy Undead (CR 1)", "description": "Undead of CR 1 or lower are destroyed on a failed Turn Undead save.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:divine-intervention", "displayName": "Divine Intervention", "description": "Call on your deity for aid; chance equal to cleric level of success.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:destroy-undead-cr-2", "displayName": "Destroy Undead (CR 2)", "description": "Undead of CR 2 or lower are destroyed on a failed Turn Undead save.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:destroy-undead-cr-3", "displayName": "Destroy Undead (CR 3)", "description": "Undead of CR 3 or lower are destroyed on a failed Turn Undead save.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:destroy-undead-cr-4", "displayName": "Destroy Undead (CR 4)", "description": "Undead of CR 4 or lower are destroyed on a failed Turn Undead save.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:channel-divinity-unlimited", "displayName": "Channel Divinity (Unlimited)", "description": "Use Channel Divinity an unlimited number of times; no need to rest between uses.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-    { "id": "feat:divine-intervention-auto", "displayName": "Divine Intervention (Automatic)", "description": "Your deity's intervention now succeeds automatically.", "source": "SRD 5.1", "srdReference": "SRD p.30" },
-
-    { "id": "feat:druidic", "displayName": "Druidic", "description": "Know Druidic, a secret language only druids know; can leave hidden messages.", "source": "SRD 5.1", "srdReference": "SRD p.37" },
-    { "id": "feat:spellcasting-druid", "displayName": "Spellcasting (Druid)", "description": "Cast druid spells using WIS as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.37" },
-    { "id": "feat:wild-shape", "displayName": "Wild Shape", "description": "Magically transform into beasts you have seen; limited by CR and movement types.", "source": "SRD 5.1", "srdReference": "SRD p.37" },
-    { "id": "feat:druid-circle", "displayName": "Druid Circle", "description": "Choose a Druid Circle subclass that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:wild-shape-cr-half-fly", "displayName": "Wild Shape (CR 1/2, Fly Speed)", "description": "Wild Shape allows beasts of up to CR 1/2 with a flying speed.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:wild-shape-cr-1", "displayName": "Wild Shape (CR 1)", "description": "Wild Shape allows beasts of up to CR 1 with any movement type.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:druid-circle-feature", "displayName": "Druid Circle Feature", "description": "Gain an additional feature from your chosen Druid Circle subclass.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:lands-stride", "displayName": "Land's Stride", "description": "Move through nonmagical difficult terrain without penalty; advantage on saves from magical plants.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:timeless-body-druid", "displayName": "Timeless Body (Druid)", "description": "Age ten times slower; no longer need food or water.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:beast-spells", "displayName": "Beast Spells", "description": "Cast druid spells in Wild Shape form, as long as they have no material components.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-    { "id": "feat:archdruid", "displayName": "Archdruid", "description": "Unlimited uses of Wild Shape; ignore verbal and somatic components while transformed.", "source": "SRD 5.1", "srdReference": "SRD p.38" },
-
-    { "id": "feat:fighting-style", "displayName": "Fighting Style", "description": "Adopt a fighting style specialty: Archery, Defense, Dueling, Great Weapon Fighting, Protection, or Two-Weapon.", "source": "SRD 5.1", "srdReference": "SRD p.46" },
-    { "id": "feat:second-wind", "displayName": "Second Wind", "description": "Bonus action to regain 1d10 + fighter level HP once per short or long rest.", "source": "SRD 5.1", "srdReference": "SRD p.46" },
-    { "id": "feat:action-surge-1", "displayName": "Action Surge", "description": "Take one additional action on your turn once per short or long rest.", "source": "SRD 5.1", "srdReference": "SRD p.46" },
-    { "id": "feat:martial-archetype", "displayName": "Martial Archetype", "description": "Choose a Martial Archetype subclass that grants additional combat features.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:extra-attack-1", "displayName": "Extra Attack", "description": "Attack twice instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:martial-archetype-feature", "displayName": "Martial Archetype Feature", "description": "Gain an additional feature from your chosen Martial Archetype subclass.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:indomitable-1", "displayName": "Indomitable", "description": "Reroll a failed saving throw once per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:extra-attack-2", "displayName": "Extra Attack (3 attacks)", "description": "Attack three times instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:indomitable-2", "displayName": "Indomitable (2/long rest)", "description": "Reroll failed saving throws up to twice per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:action-surge-2", "displayName": "Action Surge (2/rest)", "description": "Use Action Surge twice before a rest.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:indomitable-3", "displayName": "Indomitable (3/long rest)", "description": "Reroll failed saving throws up to three times per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-    { "id": "feat:extra-attack-3", "displayName": "Extra Attack (4 attacks)", "description": "Attack four times instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.47" },
-
-    { "id": "feat:unarmored-defense-monk", "displayName": "Unarmored Defense (Monk)", "description": "Without armor or shield, AC equals 10 + DEX modifier + WIS modifier.", "source": "SRD 5.1", "srdReference": "SRD p.55" },
-    { "id": "feat:martial-arts", "displayName": "Martial Arts", "description": "Use DEX for unarmed strikes and monk weapons; deal 1d4 unarmed damage; bonus unarmed strike.", "source": "SRD 5.1", "srdReference": "SRD p.55" },
-    { "id": "feat:ki", "displayName": "Ki", "description": "Spend ki points to fuel special monk abilities like Flurry of Blows, Patient Defense, and Step of the Wind.", "source": "SRD 5.1", "srdReference": "SRD p.55" },
-    { "id": "feat:unarmored-movement-10", "displayName": "Unarmored Movement (+10 ft)", "description": "Speed increases by 10 ft while not wearing armor or wielding a shield.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:monastic-tradition", "displayName": "Monastic Tradition", "description": "Choose a Monastic Tradition subclass that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:deflect-missiles", "displayName": "Deflect Missiles", "description": "Reduce ranged weapon damage by 1d10 + DEX + monk level; catch and throw it back if damage is reduced to 0.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:slow-fall", "displayName": "Slow Fall", "description": "Reduce falling damage by 5 times monk level.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:extra-attack-monk", "displayName": "Extra Attack (Monk)", "description": "Attack twice instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:stunning-strike", "displayName": "Stunning Strike", "description": "Spend 1 ki after hitting; target must make CON save or be stunned until end of your next turn.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:ki-empowered-strikes", "displayName": "Ki-Empowered Strikes", "description": "Unarmed strikes count as magical for overcoming resistance and immunity.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:monastic-tradition-feature", "displayName": "Monastic Tradition Feature", "description": "Gain an additional feature from your chosen Monastic Tradition subclass.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:unarmored-movement-15", "displayName": "Unarmored Movement (+15 ft)", "description": "Speed increases by 15 ft while not wearing armor or wielding a shield.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:evasion-monk", "displayName": "Evasion (Monk)", "description": "On a successful DEX save against an area effect, take no damage; half damage on failure.", "source": "SRD 5.1", "srdReference": "SRD p.56" },
-    { "id": "feat:stillness-of-mind", "displayName": "Stillness of Mind", "description": "Use your action to end one charmed or frightened condition on yourself.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:purity-of-body", "displayName": "Purity of Body", "description": "Immune to disease and poison.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:tongue-of-sun-moon", "displayName": "Tongue of the Sun and Moon", "description": "Understand all spoken languages and all creatures can understand your speech.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:diamond-soul", "displayName": "Diamond Soul", "description": "Proficiency in all saving throws; spend 1 ki to reroll a failed save.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:timeless-body-monk", "displayName": "Timeless Body (Monk)", "description": "No longer suffer penalties from aging; cannot be magically aged.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:empty-body", "displayName": "Empty Body", "description": "Spend 4 ki to become invisible for 1 minute with resistance to all damage except force.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-    { "id": "feat:perfect-self", "displayName": "Perfect Self", "description": "When you roll initiative with no ki points, regain 4 ki points.", "source": "SRD 5.1", "srdReference": "SRD p.57" },
-
-    { "id": "feat:divine-sense", "displayName": "Divine Sense", "description": "Detect celestials, fiends, and undead within 60 ft; sense holy or unhallowed sites.", "source": "SRD 5.1", "srdReference": "SRD p.64" },
-    { "id": "feat:lay-on-hands", "displayName": "Lay on Hands", "description": "Pool of healing equal to 5 × paladin level to restore HP or cure disease and poison.", "source": "SRD 5.1", "srdReference": "SRD p.64" },
-    { "id": "feat:fighting-style-paladin", "displayName": "Fighting Style (Paladin)", "description": "Adopt a paladin fighting style: Defense, Dueling, Great Weapon Fighting, or Protection.", "source": "SRD 5.1", "srdReference": "SRD p.64" },
-    { "id": "feat:spellcasting-paladin", "displayName": "Spellcasting (Paladin)", "description": "Cast paladin spells using CHA as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.64" },
-    { "id": "feat:divine-smite", "displayName": "Divine Smite", "description": "Expend a spell slot on a hit to deal radiant damage: 2d8 + 1d8 per slot level above 1st.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:divine-health", "displayName": "Divine Health", "description": "Immune to disease.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:sacred-oath", "displayName": "Sacred Oath", "description": "Take an oath and choose a Sacred Oath subclass granting oath spells and features.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:extra-attack-paladin", "displayName": "Extra Attack (Paladin)", "description": "Attack twice instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:aura-of-protection", "displayName": "Aura of Protection", "description": "Allies within 10 ft add CHA modifier (min 1) to all saving throws.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:sacred-oath-feature", "displayName": "Sacred Oath Feature", "description": "Gain an additional feature from your chosen Sacred Oath subclass.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:aura-of-courage", "displayName": "Aura of Courage", "description": "Allies within 10 ft can't be frightened while you are conscious.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:improved-divine-smite", "displayName": "Improved Divine Smite", "description": "Melee weapon attacks deal an extra 1d8 radiant damage.", "source": "SRD 5.1", "srdReference": "SRD p.65" },
-    { "id": "feat:cleansing-touch", "displayName": "Cleansing Touch", "description": "Use action to end one spell on a willing creature; uses equal CHA modifier per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.66" },
-    { "id": "feat:aura-improvements", "displayName": "Aura Improvements", "description": "Aura of Protection and Aura of Courage extend to 30 ft.", "source": "SRD 5.1", "srdReference": "SRD p.66" },
-
-    { "id": "feat:favored-enemy", "displayName": "Favored Enemy", "description": "Choose a favored enemy type; advantage on tracking and recalling information about them.", "source": "SRD 5.1", "srdReference": "SRD p.72" },
-    { "id": "feat:natural-explorer", "displayName": "Natural Explorer", "description": "Choose a favored terrain; double proficiency on INT/WIS checks related to it, and travel benefits.", "source": "SRD 5.1", "srdReference": "SRD p.72" },
-    { "id": "feat:fighting-style-ranger", "displayName": "Fighting Style (Ranger)", "description": "Adopt a ranger fighting style: Archery, Defense, Dueling, or Two-Weapon Fighting.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:spellcasting-ranger", "displayName": "Spellcasting (Ranger)", "description": "Cast ranger spells using WIS as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:ranger-archetype", "displayName": "Ranger Archetype", "description": "Choose a Ranger Archetype subclass that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:primeval-awareness", "displayName": "Primeval Awareness", "description": "Expend a spell slot to sense favored enemies within 1 mile (6 miles in favored terrain).", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:extra-attack-ranger", "displayName": "Extra Attack (Ranger)", "description": "Attack twice instead of once when you take the Attack action on your turn.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:favored-enemy-improvement", "displayName": "Favored Enemy (Additional)", "description": "Add another favored enemy type and one associated language.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:natural-explorer-improvement", "displayName": "Natural Explorer (Additional Terrain)", "description": "Add another favored terrain type.", "source": "SRD 5.1", "srdReference": "SRD p.73" },
-    { "id": "feat:hide-in-plain-sight", "displayName": "Hide in Plain Sight", "description": "Spend 1 minute applying natural camouflage; +10 bonus to Stealth while motionless.", "source": "SRD 5.1", "srdReference": "SRD p.74" },
-    { "id": "feat:ranger-archetype-feature", "displayName": "Ranger Archetype Feature", "description": "Gain an additional feature from your chosen Ranger Archetype subclass.", "source": "SRD 5.1", "srdReference": "SRD p.74" },
-    { "id": "feat:vanish", "displayName": "Vanish", "description": "Use Hide as a bonus action; can't be tracked by nonmagical means unless you choose to leave a trail.", "source": "SRD 5.1", "srdReference": "SRD p.74" },
-    { "id": "feat:feral-senses", "displayName": "Feral Senses", "description": "No disadvantage against invisible creatures; detect hidden creatures within 30 ft while not blinded.", "source": "SRD 5.1", "srdReference": "SRD p.74" },
-    { "id": "feat:foe-slayer", "displayName": "Foe Slayer", "description": "Once per turn, add WIS modifier to attack or damage roll against a favored enemy.", "source": "SRD 5.1", "srdReference": "SRD p.74" },
-
-    { "id": "feat:expertise-rogue", "displayName": "Expertise (Rogue)", "description": "Double proficiency bonus for two chosen skills or tools.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:sneak-attack-1d6", "displayName": "Sneak Attack (1d6)", "description": "Deal an extra 1d6 damage when hitting an off-guard target with a finesse or ranged weapon.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:thieves-cant", "displayName": "Thieves' Cant", "description": "Know the secret mix of jargon, slang, and code used by rogues to pass hidden messages.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:cunning-action", "displayName": "Cunning Action", "description": "Use a bonus action to Dash, Disengage, or Hide.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:sneak-attack-2d6", "displayName": "Sneak Attack (2d6)", "description": "Sneak Attack damage increases to 2d6.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:roguish-archetype", "displayName": "Roguish Archetype", "description": "Choose a Roguish Archetype subclass that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:sneak-attack-3d6", "displayName": "Sneak Attack (3d6)", "description": "Sneak Attack damage increases to 3d6.", "source": "SRD 5.1", "srdReference": "SRD p.81" },
-    { "id": "feat:uncanny-dodge", "displayName": "Uncanny Dodge", "description": "Use reaction to halve the damage of an attack that hits you and that you can see.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-4d6", "displayName": "Sneak Attack (4d6)", "description": "Sneak Attack damage increases to 4d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-5d6", "displayName": "Sneak Attack (5d6)", "description": "Sneak Attack damage increases to 5d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:evasion-rogue", "displayName": "Evasion (Rogue)", "description": "On a successful DEX save against an area effect, take no damage; half damage on failure.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-6d6", "displayName": "Sneak Attack (6d6)", "description": "Sneak Attack damage increases to 6d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:roguish-archetype-feature", "displayName": "Roguish Archetype Feature", "description": "Gain an additional feature from your chosen Roguish Archetype subclass.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-7d6", "displayName": "Sneak Attack (7d6)", "description": "Sneak Attack damage increases to 7d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:reliable-talent", "displayName": "Reliable Talent", "description": "Treat any roll of 9 or less as 10 on ability checks using proficiency.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:blindsense", "displayName": "Blindsense", "description": "Aware of hidden and invisible creatures within 10 ft.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-8d6", "displayName": "Sneak Attack (8d6)", "description": "Sneak Attack damage increases to 8d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:slippery-mind", "displayName": "Slippery Mind", "description": "Gain proficiency in WIS saving throws.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:sneak-attack-9d6", "displayName": "Sneak Attack (9d6)", "description": "Sneak Attack damage increases to 9d6.", "source": "SRD 5.1", "srdReference": "SRD p.82" },
-    { "id": "feat:elusive", "displayName": "Elusive", "description": "No attack roll has advantage against you while you aren't incapacitated.", "source": "SRD 5.1", "srdReference": "SRD p.83" },
-    { "id": "feat:sneak-attack-10d6", "displayName": "Sneak Attack (10d6)", "description": "Sneak Attack damage increases to 10d6.", "source": "SRD 5.1", "srdReference": "SRD p.83" },
-    { "id": "feat:stroke-of-luck", "displayName": "Stroke of Luck", "description": "If your attack misses, treat it as a hit; or if you fail an ability check, treat the d20 roll as 20.", "source": "SRD 5.1", "srdReference": "SRD p.83" },
-
-    { "id": "feat:spellcasting-sorcerer", "displayName": "Spellcasting (Sorcerer)", "description": "Cast sorcerer spells using CHA as your spellcasting ability.", "source": "SRD 5.1", "srdReference": "SRD p.90" },
-    { "id": "feat:sorcerous-origin", "displayName": "Sorcerous Origin", "description": "Choose a Sorcerous Origin subclass that shapes your innate magic.", "source": "SRD 5.1", "srdReference": "SRD p.90" },
-    { "id": "feat:font-of-magic", "displayName": "Font of Magic", "description": "Gain sorcery points equal to sorcerer level; convert slots to/from sorcery points.", "source": "SRD 5.1", "srdReference": "SRD p.90" },
-    { "id": "feat:metamagic", "displayName": "Metamagic", "description": "Choose two Metamagic options to alter your spells using sorcery points.", "source": "SRD 5.1", "srdReference": "SRD p.91" },
-    { "id": "feat:sorcerous-origin-feature", "displayName": "Sorcerous Origin Feature", "description": "Gain an additional feature from your chosen Sorcerous Origin subclass.", "source": "SRD 5.1", "srdReference": "SRD p.91" },
-    { "id": "feat:metamagic-additional", "displayName": "Metamagic (Additional)", "description": "Learn one additional Metamagic option.", "source": "SRD 5.1", "srdReference": "SRD p.91" },
-    { "id": "feat:sorcerous-restoration", "displayName": "Sorcerous Restoration", "description": "Regain 4 expended sorcery points on a short rest.", "source": "SRD 5.1", "srdReference": "SRD p.91" },
-
-    { "id": "feat:otherworldly-patron", "displayName": "Otherworldly Patron", "description": "Choose a patron and a Warlock subclass that grants expanded spells and features.", "source": "SRD 5.1", "srdReference": "SRD p.99" },
-    { "id": "feat:pact-magic", "displayName": "Pact Magic", "description": "Cast warlock spells using CHA; regain all slots on a short or long rest.", "source": "SRD 5.1", "srdReference": "SRD p.99" },
-    { "id": "feat:eldritch-invocations", "displayName": "Eldritch Invocations", "description": "Learn 2 Eldritch Invocations that grant special abilities.", "source": "SRD 5.1", "srdReference": "SRD p.99" },
-    { "id": "feat:pact-boon", "displayName": "Pact Boon", "description": "Choose a Pact Boon: Pact of the Chain, Pact of the Blade, or Pact of the Tome.", "source": "SRD 5.1", "srdReference": "SRD p.99" },
-    { "id": "feat:eldritch-invocations-improvement", "displayName": "Eldritch Invocations (Improvement)", "description": "Learn one additional Eldritch Invocation or replace one you know.", "source": "SRD 5.1", "srdReference": "SRD p.99" },
-    { "id": "feat:otherworldly-patron-feature", "displayName": "Otherworldly Patron Feature", "description": "Gain an additional feature from your chosen Otherworldly Patron subclass.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-    { "id": "feat:mystic-arcanum-6", "displayName": "Mystic Arcanum (6th Level)", "description": "Choose a 6th-level warlock spell to cast once per long rest without a spell slot.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-    { "id": "feat:mystic-arcanum-7", "displayName": "Mystic Arcanum (7th Level)", "description": "Choose a 7th-level warlock spell to cast once per long rest without a spell slot.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-    { "id": "feat:mystic-arcanum-8", "displayName": "Mystic Arcanum (8th Level)", "description": "Choose an 8th-level warlock spell to cast once per long rest without a spell slot.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-    { "id": "feat:mystic-arcanum-9", "displayName": "Mystic Arcanum (9th Level)", "description": "Choose a 9th-level warlock spell to cast once per long rest without a spell slot.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-    { "id": "feat:eldritch-master", "displayName": "Eldritch Master", "description": "Spend 1 minute entreating your patron to regain all expended pact magic slots once per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.100" },
-
-    { "id": "feat:spellcasting-wizard", "displayName": "Spellcasting (Wizard)", "description": "Cast wizard spells using INT as your spellcasting ability; copy spells into a spellbook.", "source": "SRD 5.1", "srdReference": "SRD p.106" },
-    { "id": "feat:arcane-recovery", "displayName": "Arcane Recovery", "description": "Once per day after a short rest, recover spell slots totaling up to half wizard level (rounded up).", "source": "SRD 5.1", "srdReference": "SRD p.107" },
-    { "id": "feat:arcane-tradition", "displayName": "Arcane Tradition", "description": "Choose an Arcane Tradition subclass (school of magic) that grants additional features.", "source": "SRD 5.1", "srdReference": "SRD p.107" },
-    { "id": "feat:arcane-tradition-feature", "displayName": "Arcane Tradition Feature", "description": "Gain an additional feature from your chosen Arcane Tradition subclass.", "source": "SRD 5.1", "srdReference": "SRD p.107" },
-    { "id": "feat:spell-mastery", "displayName": "Spell Mastery", "description": "Choose a 1st- and 2nd-level spell; cast them at their lowest level without a slot.", "source": "SRD 5.1", "srdReference": "SRD p.107" },
-    { "id": "feat:signature-spells", "displayName": "Signature Spells", "description": "Choose two 3rd-level wizard spells as signature spells; always prepared and castable for free once each per short rest.", "source": "SRD 5.1", "srdReference": "SRD p.107" },
-
-    { "id": "feat:alert", "displayName": "Alert", "description": "+5 bonus to initiative; can't be surprised; hidden creatures don't gain advantage on attacks against you.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:athlete", "displayName": "Athlete", "description": "+1 STR or DEX; stand from prone costs only 5 ft; climb without penalty; running long jump from 5 ft.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:actor", "displayName": "Actor", "description": "+1 CHA; advantage on Deception/Performance to pass as someone else; mimic sounds and voices.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:charger", "displayName": "Charger", "description": "After Dashing, make one bonus attack (+5 damage) or shove a creature.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:crossbow-expert", "displayName": "Crossbow Expert", "description": "Ignore loading; no disadvantage at melee range; bonus bolt after attacking with a one-handed weapon.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:defensive-duelist", "displayName": "Defensive Duelist", "description": "Reaction: add proficiency bonus to AC against one melee attack when wielding a finesse weapon.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:dual-wielder", "displayName": "Dual Wielder", "description": "+1 AC while dual-wielding; use non-light weapons for two-weapon fighting; draw two weapons at once.", "source": "SRD 5.1", "srdReference": "SRD p.165" },
-    { "id": "feat:dungeon-delver", "displayName": "Dungeon Delver", "description": "Advantage on detecting secret doors and traps; resistance to trap damage; Search for traps at normal pace.", "source": "SRD 5.1", "srdReference": "SRD p.166" },
-    { "id": "feat:durable", "displayName": "Durable", "description": "+1 CON; when spending Hit Dice on a short rest, minimum roll equals twice your CON modifier.", "source": "SRD 5.1", "srdReference": "SRD p.166" },
-    { "id": "feat:elemental-adept", "displayName": "Elemental Adept", "description": "Spells ignore resistance to a chosen damage type; treat 1s as 2s on damage dice for that type.", "source": "SRD 5.1", "srdReference": "SRD p.166" },
-    { "id": "feat:grappler", "displayName": "Grappler", "description": "Advantage on attacks against grappled creatures; use action to pin a grappled creature, restraining both.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:great-weapon-master", "displayName": "Great Weapon Master", "description": "On critical hit or kill, bonus attack; trade -5 to hit for +10 damage with heavy weapons.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:healer", "displayName": "Healer", "description": "Stabilize with a healer's kit; use a kit to restore 1d6 + 4 + max HD hp once per short rest.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:heavily-armored", "displayName": "Heavily Armored", "description": "+1 STR; gain proficiency with heavy armor.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:heavy-armor-master", "displayName": "Heavy Armor Master", "description": "+1 STR; while in heavy armor, reduce bludgeoning/piercing/slashing from non-magical attacks by 3.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:inspiring-leader", "displayName": "Inspiring Leader", "description": "Spend 10 minutes inspiring up to 6 allies; each gains temp HP equal to your level + CHA modifier.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:keen-mind", "displayName": "Keen Mind", "description": "+1 INT; always know north, hours until sunrise/sunset, and recall anything from the past 30 days.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:lightly-armored", "displayName": "Lightly Armored", "description": "+1 STR or DEX; gain proficiency with light armor.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:linguist", "displayName": "Linguist", "description": "+1 INT; learn 3 languages; create written ciphers that require successful INT check to decode.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:lucky", "displayName": "Lucky", "description": "3 luck points per long rest to reroll attack, ability check, or save—or force an enemy reroll.", "source": "SRD 5.1", "srdReference": "SRD p.167" },
-    { "id": "feat:mage-slayer", "displayName": "Mage Slayer", "description": "Reaction attack when a creature within 5 ft casts a spell; that creature has disadvantage on concentration.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:magic-initiate", "displayName": "Magic Initiate", "description": "Learn 2 cantrips and one 1st-level spell from a chosen class list, cast the spell once per long rest.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:martial-adept", "displayName": "Martial Adept", "description": "Learn 2 Battle Master maneuvers and gain 1 superiority die (d6).", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:medium-armor-master", "displayName": "Medium Armor Master", "description": "No disadvantage on Stealth in medium armor; DEX bonus to AC in medium armor increases to +3.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:mobile", "displayName": "Mobile", "description": "+10 ft speed; Dash through difficult terrain without penalty; no opportunity attacks when you move from a target.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:moderately-armored", "displayName": "Moderately Armored", "description": "+1 STR or DEX; gain proficiency with medium armor and shields.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:mounted-combatant", "displayName": "Mounted Combatant", "description": "Advantage on melee attacks against smaller unmounted creatures; redirect attacks from mount to you.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:observant", "displayName": "Observant", "description": "+1 INT or WIS; read lips; +5 bonus to passive Perception and passive Investigation.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:polearm-master", "displayName": "Polearm Master", "description": "Bonus attack with butt end of a polearm; opportunity attacks when enemies enter your reach.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:resilient", "displayName": "Resilient", "description": "+1 to chosen ability score; gain proficiency in that ability's saving throw.", "source": "SRD 5.1", "srdReference": "SRD p.168" },
-    { "id": "feat:ritual-caster", "displayName": "Ritual Caster", "description": "Acquire a ritual book with 2 rituals from a chosen class; copy more ritual spells found.", "source": "SRD 5.1", "srdReference": "SRD p.169" },
-    { "id": "feat:savage-attacker", "displayName": "Savage Attacker", "description": "Once per turn, reroll a melee weapon attack's damage dice and use either result.", "source": "SRD 5.1", "srdReference": "SRD p.169" },
-    { "id": "feat:sentinel", "displayName": "Sentinel", "description": "Opportunity attacks reduce speed to 0; attack even when enemy Disengages; react to attacks on allies.", "source": "SRD 5.1", "srdReference": "SRD p.169" },
-    { "id": "feat:sharpshooter", "displayName": "Sharpshooter", "description": "No disadvantage at long range; ignore half/three-quarters cover; trade -5 attack for +10 damage.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:shield-master", "displayName": "Shield Master", "description": "Bonus action shove after attacking; add shield bonus to DEX saves against targeted spells.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:skilled", "displayName": "Skilled", "description": "Gain proficiency in any combination of 3 skills or tools of your choice.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:skulker", "displayName": "Skulker", "description": "Hide when lightly obscured; missed attacks don't reveal position; no disadvantage in dim light.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:spell-sniper", "displayName": "Spell Sniper", "description": "Double the range of attack cantrips; ignore half/three-quarters cover; learn 1 attack cantrip.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:tavern-brawler", "displayName": "Tavern Brawler", "description": "+1 STR or CON; proficient with improvised weapons; unarmed strike deals 1d4; bonus grapple after unarmed hit.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:tough", "displayName": "Tough", "description": "HP maximum increases by 2 per character level (and 2 per future level gained).", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:war-caster", "displayName": "War Caster", "description": "Advantage on concentration saves; cast with weapons in hands; cast a spell as opportunity attack.", "source": "SRD 5.1", "srdReference": "SRD p.170" },
-    { "id": "feat:weapon-master", "displayName": "Weapon Master", "description": "+1 STR or DEX; gain proficiency with 4 weapons of your choice.", "source": "SRD 5.1", "srdReference": "SRD p.170" }
+    {
+      "id": "feat:shelter-of-the-faithful",
+      "displayName": "Shelter of the Faithful",
+      "description": "Gain aid from temples and clergy of your faith: lodging, healing, and local knowledge.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.125",
+      "type": "background"
+    },
+    {
+      "id": "feat:criminal-contact",
+      "displayName": "Criminal Contact",
+      "description": "You have a reliable and trustworthy contact in the criminal underworld.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.125",
+      "type": "background"
+    },
+    {
+      "id": "feat:rustic-hospitality",
+      "displayName": "Rustic Hospitality",
+      "description": "Common folk shelter and hide you; they won't report you to authorities.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.131",
+      "type": "background"
+    },
+    {
+      "id": "feat:position-of-privilege",
+      "displayName": "Position of Privilege",
+      "description": "Your noble bearing opens doors to high society and commands deference from commoners.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.135",
+      "type": "background"
+    },
+    {
+      "id": "feat:researcher",
+      "displayName": "Researcher",
+      "description": "When you fail to recall lore, you know where to find it in a library or from a sage.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.138",
+      "type": "background"
+    },
+    {
+      "id": "feat:military-rank",
+      "displayName": "Military Rank",
+      "description": "Your military rank grants authority over soldiers and access to military resources.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.140",
+      "type": "background"
+    },
+    {
+      "id": "feat:rage",
+      "displayName": "Rage",
+      "description": "Enter a battle rage: advantage on STR checks, bonus damage, resistance to physical damage.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.16",
+      "type": "class"
+    },
+    {
+      "id": "feat:unarmored-defense-barbarian",
+      "displayName": "Unarmored Defense (Barbarian)",
+      "description": "Without armor, AC equals 10 + DEX modifier + CON modifier.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.16",
+      "type": "class"
+    },
+    {
+      "id": "feat:reckless-attack",
+      "displayName": "Reckless Attack",
+      "description": "Attack with advantage on the first attack, but attackers have advantage on attacks against you until next turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:danger-sense",
+      "displayName": "Danger Sense",
+      "description": "Advantage on DEX saves against visible effects while not blinded, deafened, or incapacitated.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:primal-path",
+      "displayName": "Primal Path",
+      "description": "Choose a Primal Path subclass that shapes the nature of your rage.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:primal-knowledge",
+      "displayName": "Primal Knowledge",
+      "description": "Gain proficiency in one additional skill from the Barbarian skill list.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-barbarian",
+      "displayName": "Extra Attack",
+      "description": "Attack twice instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:fast-movement",
+      "displayName": "Fast Movement",
+      "description": "Speed increases by 10 ft while not wearing heavy armor.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:feral-instinct",
+      "displayName": "Feral Instinct",
+      "description": "Advantage on initiative rolls; can enter rage to act first when surprised.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:brutal-critical-1",
+      "displayName": "Brutal Critical",
+      "description": "Roll one additional weapon damage die on a melee critical hit.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:brutal-critical-2",
+      "displayName": "Brutal Critical (2 dice)",
+      "description": "Roll two additional weapon damage dice on a melee critical hit.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.17",
+      "type": "class"
+    },
+    {
+      "id": "feat:brutal-critical-3",
+      "displayName": "Brutal Critical (3 dice)",
+      "description": "Roll three additional weapon damage dice on a melee critical hit.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.18",
+      "type": "class"
+    },
+    {
+      "id": "feat:relentless-rage",
+      "displayName": "Relentless Rage",
+      "description": "When reduced to 0 HP while raging, make a DC 10 CON save to drop to 1 HP instead.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.18",
+      "type": "class"
+    },
+    {
+      "id": "feat:persistent-rage",
+      "displayName": "Persistent Rage",
+      "description": "Rage only ends early if you fall unconscious or choose to end it.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.18",
+      "type": "class"
+    },
+    {
+      "id": "feat:primal-champion",
+      "displayName": "Primal Champion",
+      "description": "STR and CON each increase by 4 (may exceed 20).",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.18",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-bard",
+      "displayName": "Spellcasting (Bard)",
+      "description": "Cast bard spells using CHA as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.20",
+      "type": "class"
+    },
+    {
+      "id": "feat:bardic-inspiration-d6",
+      "displayName": "Bardic Inspiration (d6)",
+      "description": "Grant an ally a d6 Bardic Inspiration die to add to one ability check, attack, or save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.20",
+      "type": "class"
+    },
+    {
+      "id": "feat:jack-of-all-trades",
+      "displayName": "Jack of All Trades",
+      "description": "Add half proficiency bonus to ability checks not using proficiency.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.20",
+      "type": "class"
+    },
+    {
+      "id": "feat:song-of-rest-d6",
+      "displayName": "Song of Rest (d6)",
+      "description": "Allies regain an extra d6 HP when spending Hit Dice during a short rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:bard-college",
+      "displayName": "Bard College",
+      "description": "Choose a Bard College subclass that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:expertise-bard",
+      "displayName": "Expertise (Bard)",
+      "description": "Double proficiency bonus for two chosen skills or tools.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:bardic-inspiration-d8",
+      "displayName": "Bardic Inspiration (d8)",
+      "description": "Your Bardic Inspiration die becomes a d8.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:font-of-inspiration",
+      "displayName": "Font of Inspiration",
+      "description": "Regain all uses of Bardic Inspiration at the end of a short or long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:countercharm",
+      "displayName": "Countercharm",
+      "description": "Use your action to give allies within 30 ft advantage on saves against charmed or frightened.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:bard-college-feature",
+      "displayName": "Bard College Feature",
+      "description": "Gain an additional feature from your chosen Bard College subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:bardic-inspiration-d10",
+      "displayName": "Bardic Inspiration (d10)",
+      "description": "Your Bardic Inspiration die becomes a d10.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:magical-secrets-10",
+      "displayName": "Magical Secrets (Level 10)",
+      "description": "Learn 2 spells from any class's spell list.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:song-of-rest-d8",
+      "displayName": "Song of Rest (d8)",
+      "description": "Your Song of Rest die becomes a d8.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:song-of-rest-d10",
+      "displayName": "Song of Rest (d10)",
+      "description": "Your Song of Rest die becomes a d10.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:magical-secrets-14",
+      "displayName": "Magical Secrets (Level 14)",
+      "description": "Learn 2 more spells from any class's spell list.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:bardic-inspiration-d12",
+      "displayName": "Bardic Inspiration (d12)",
+      "description": "Your Bardic Inspiration die becomes a d12.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.21",
+      "type": "class"
+    },
+    {
+      "id": "feat:magical-secrets-18",
+      "displayName": "Magical Secrets (Level 18)",
+      "description": "Learn 2 more spells from any class's spell list.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.22",
+      "type": "class"
+    },
+    {
+      "id": "feat:song-of-rest-d12",
+      "displayName": "Song of Rest (d12)",
+      "description": "Your Song of Rest die becomes a d12.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.22",
+      "type": "class"
+    },
+    {
+      "id": "feat:superior-inspiration",
+      "displayName": "Superior Inspiration",
+      "description": "If you have no Bardic Inspiration dice when rolling initiative, regain one use.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.22",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-cleric",
+      "displayName": "Spellcasting (Cleric)",
+      "description": "Cast cleric spells using WIS as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.28",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-domain",
+      "displayName": "Divine Domain",
+      "description": "Choose a Divine Domain subclass granting domain spells and features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.28",
+      "type": "class"
+    },
+    {
+      "id": "feat:channel-divinity-1",
+      "displayName": "Channel Divinity (1/rest)",
+      "description": "Channel divine energy once per short/long rest to fuel special effects.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.29",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-domain-feature",
+      "displayName": "Divine Domain Feature",
+      "description": "Gain an additional feature from your chosen Divine Domain subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.29",
+      "type": "class"
+    },
+    {
+      "id": "feat:channel-divinity-2",
+      "displayName": "Channel Divinity (2/rest)",
+      "description": "Use Channel Divinity twice per short/long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.29",
+      "type": "class"
+    },
+    {
+      "id": "feat:destroy-undead-cr-half",
+      "displayName": "Destroy Undead (CR 1/2)",
+      "description": "Undead of CR 1/2 or lower are destroyed on a failed Turn Undead save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:channel-divinity-3",
+      "displayName": "Channel Divinity (3/rest)",
+      "description": "Use Channel Divinity three times per short/long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:destroy-undead-cr-1",
+      "displayName": "Destroy Undead (CR 1)",
+      "description": "Undead of CR 1 or lower are destroyed on a failed Turn Undead save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-intervention",
+      "displayName": "Divine Intervention",
+      "description": "Call on your deity for aid; chance equal to cleric level of success.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:destroy-undead-cr-2",
+      "displayName": "Destroy Undead (CR 2)",
+      "description": "Undead of CR 2 or lower are destroyed on a failed Turn Undead save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:destroy-undead-cr-3",
+      "displayName": "Destroy Undead (CR 3)",
+      "description": "Undead of CR 3 or lower are destroyed on a failed Turn Undead save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:destroy-undead-cr-4",
+      "displayName": "Destroy Undead (CR 4)",
+      "description": "Undead of CR 4 or lower are destroyed on a failed Turn Undead save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:channel-divinity-unlimited",
+      "displayName": "Channel Divinity (Unlimited)",
+      "description": "Use Channel Divinity an unlimited number of times; no need to rest between uses.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-intervention-auto",
+      "displayName": "Divine Intervention (Automatic)",
+      "description": "Your deity's intervention now succeeds automatically.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.30",
+      "type": "class"
+    },
+    {
+      "id": "feat:druidic",
+      "displayName": "Druidic",
+      "description": "Know Druidic, a secret language only druids know; can leave hidden messages.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.37",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-druid",
+      "displayName": "Spellcasting (Druid)",
+      "description": "Cast druid spells using WIS as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.37",
+      "type": "class"
+    },
+    {
+      "id": "feat:wild-shape",
+      "displayName": "Wild Shape",
+      "description": "Magically transform into beasts you have seen; limited by CR and movement types.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.37",
+      "type": "class"
+    },
+    {
+      "id": "feat:druid-circle",
+      "displayName": "Druid Circle",
+      "description": "Choose a Druid Circle subclass that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:wild-shape-cr-half-fly",
+      "displayName": "Wild Shape (CR 1/2, Fly Speed)",
+      "description": "Wild Shape allows beasts of up to CR 1/2 with a flying speed.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:wild-shape-cr-1",
+      "displayName": "Wild Shape (CR 1)",
+      "description": "Wild Shape allows beasts of up to CR 1 with any movement type.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:druid-circle-feature",
+      "displayName": "Druid Circle Feature",
+      "description": "Gain an additional feature from your chosen Druid Circle subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:lands-stride",
+      "displayName": "Land's Stride",
+      "description": "Move through nonmagical difficult terrain without penalty; advantage on saves from magical plants.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:timeless-body-druid",
+      "displayName": "Timeless Body (Druid)",
+      "description": "Age ten times slower; no longer need food or water.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:beast-spells",
+      "displayName": "Beast Spells",
+      "description": "Cast druid spells in Wild Shape form, as long as they have no material components.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:archdruid",
+      "displayName": "Archdruid",
+      "description": "Unlimited uses of Wild Shape; ignore verbal and somatic components while transformed.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.38",
+      "type": "class"
+    },
+    {
+      "id": "feat:fighting-style",
+      "displayName": "Fighting Style",
+      "description": "Adopt a fighting style specialty: Archery, Defense, Dueling, Great Weapon Fighting, Protection, or Two-Weapon.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.46",
+      "type": "class"
+    },
+    {
+      "id": "feat:second-wind",
+      "displayName": "Second Wind",
+      "description": "Bonus action to regain 1d10 + fighter level HP once per short or long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.46",
+      "type": "class"
+    },
+    {
+      "id": "feat:action-surge-1",
+      "displayName": "Action Surge",
+      "description": "Take one additional action on your turn once per short or long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.46",
+      "type": "class"
+    },
+    {
+      "id": "feat:martial-archetype",
+      "displayName": "Martial Archetype",
+      "description": "Choose a Martial Archetype subclass that grants additional combat features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-1",
+      "displayName": "Extra Attack",
+      "description": "Attack twice instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:martial-archetype-feature",
+      "displayName": "Martial Archetype Feature",
+      "description": "Gain an additional feature from your chosen Martial Archetype subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:indomitable-1",
+      "displayName": "Indomitable",
+      "description": "Reroll a failed saving throw once per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-2",
+      "displayName": "Extra Attack (3 attacks)",
+      "description": "Attack three times instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:indomitable-2",
+      "displayName": "Indomitable (2/long rest)",
+      "description": "Reroll failed saving throws up to twice per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:action-surge-2",
+      "displayName": "Action Surge (2/rest)",
+      "description": "Use Action Surge twice before a rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:indomitable-3",
+      "displayName": "Indomitable (3/long rest)",
+      "description": "Reroll failed saving throws up to three times per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-3",
+      "displayName": "Extra Attack (4 attacks)",
+      "description": "Attack four times instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.47",
+      "type": "class"
+    },
+    {
+      "id": "feat:unarmored-defense-monk",
+      "displayName": "Unarmored Defense (Monk)",
+      "description": "Without armor or shield, AC equals 10 + DEX modifier + WIS modifier.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.55",
+      "type": "class"
+    },
+    {
+      "id": "feat:martial-arts",
+      "displayName": "Martial Arts",
+      "description": "Use DEX for unarmed strikes and monk weapons; deal 1d4 unarmed damage; bonus unarmed strike.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.55",
+      "type": "class"
+    },
+    {
+      "id": "feat:ki",
+      "displayName": "Ki",
+      "description": "Spend ki points to fuel special monk abilities like Flurry of Blows, Patient Defense, and Step of the Wind.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.55",
+      "type": "class"
+    },
+    {
+      "id": "feat:unarmored-movement-10",
+      "displayName": "Unarmored Movement (+10 ft)",
+      "description": "Speed increases by 10 ft while not wearing armor or wielding a shield.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:monastic-tradition",
+      "displayName": "Monastic Tradition",
+      "description": "Choose a Monastic Tradition subclass that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:deflect-missiles",
+      "displayName": "Deflect Missiles",
+      "description": "Reduce ranged weapon damage by 1d10 + DEX + monk level; catch and throw it back if damage is reduced to 0.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:slow-fall",
+      "displayName": "Slow Fall",
+      "description": "Reduce falling damage by 5 times monk level.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-monk",
+      "displayName": "Extra Attack (Monk)",
+      "description": "Attack twice instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:stunning-strike",
+      "displayName": "Stunning Strike",
+      "description": "Spend 1 ki after hitting; target must make CON save or be stunned until end of your next turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:ki-empowered-strikes",
+      "displayName": "Ki-Empowered Strikes",
+      "description": "Unarmed strikes count as magical for overcoming resistance and immunity.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:monastic-tradition-feature",
+      "displayName": "Monastic Tradition Feature",
+      "description": "Gain an additional feature from your chosen Monastic Tradition subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:unarmored-movement-15",
+      "displayName": "Unarmored Movement (+15 ft)",
+      "description": "Speed increases by 15 ft while not wearing armor or wielding a shield.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:evasion-monk",
+      "displayName": "Evasion (Monk)",
+      "description": "On a successful DEX save against an area effect, take no damage; half damage on failure.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.56",
+      "type": "class"
+    },
+    {
+      "id": "feat:stillness-of-mind",
+      "displayName": "Stillness of Mind",
+      "description": "Use your action to end one charmed or frightened condition on yourself.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:purity-of-body",
+      "displayName": "Purity of Body",
+      "description": "Immune to disease and poison.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:tongue-of-sun-moon",
+      "displayName": "Tongue of the Sun and Moon",
+      "description": "Understand all spoken languages and all creatures can understand your speech.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:diamond-soul",
+      "displayName": "Diamond Soul",
+      "description": "Proficiency in all saving throws; spend 1 ki to reroll a failed save.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:timeless-body-monk",
+      "displayName": "Timeless Body (Monk)",
+      "description": "No longer suffer penalties from aging; cannot be magically aged.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:empty-body",
+      "displayName": "Empty Body",
+      "description": "Spend 4 ki to become invisible for 1 minute with resistance to all damage except force.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:perfect-self",
+      "displayName": "Perfect Self",
+      "description": "When you roll initiative with no ki points, regain 4 ki points.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.57",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-sense",
+      "displayName": "Divine Sense",
+      "description": "Detect celestials, fiends, and undead within 60 ft; sense holy or unhallowed sites.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64",
+      "type": "class"
+    },
+    {
+      "id": "feat:lay-on-hands",
+      "displayName": "Lay on Hands",
+      "description": "Pool of healing equal to 5 \u00d7 paladin level to restore HP or cure disease and poison.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64",
+      "type": "class"
+    },
+    {
+      "id": "feat:fighting-style-paladin",
+      "displayName": "Fighting Style (Paladin)",
+      "description": "Adopt a paladin fighting style: Defense, Dueling, Great Weapon Fighting, or Protection.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-paladin",
+      "displayName": "Spellcasting (Paladin)",
+      "description": "Cast paladin spells using CHA as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.64",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-smite",
+      "displayName": "Divine Smite",
+      "description": "Expend a spell slot on a hit to deal radiant damage: 2d8 + 1d8 per slot level above 1st.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:divine-health",
+      "displayName": "Divine Health",
+      "description": "Immune to disease.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:sacred-oath",
+      "displayName": "Sacred Oath",
+      "description": "Take an oath and choose a Sacred Oath subclass granting oath spells and features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-paladin",
+      "displayName": "Extra Attack (Paladin)",
+      "description": "Attack twice instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:aura-of-protection",
+      "displayName": "Aura of Protection",
+      "description": "Allies within 10 ft add CHA modifier (min 1) to all saving throws.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:sacred-oath-feature",
+      "displayName": "Sacred Oath Feature",
+      "description": "Gain an additional feature from your chosen Sacred Oath subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:aura-of-courage",
+      "displayName": "Aura of Courage",
+      "description": "Allies within 10 ft can't be frightened while you are conscious.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:improved-divine-smite",
+      "displayName": "Improved Divine Smite",
+      "description": "Melee weapon attacks deal an extra 1d8 radiant damage.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.65",
+      "type": "class"
+    },
+    {
+      "id": "feat:cleansing-touch",
+      "displayName": "Cleansing Touch",
+      "description": "Use action to end one spell on a willing creature; uses equal CHA modifier per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66",
+      "type": "class"
+    },
+    {
+      "id": "feat:aura-improvements",
+      "displayName": "Aura Improvements",
+      "description": "Aura of Protection and Aura of Courage extend to 30 ft.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.66",
+      "type": "class"
+    },
+    {
+      "id": "feat:favored-enemy",
+      "displayName": "Favored Enemy",
+      "description": "Choose a favored enemy type; advantage on tracking and recalling information about them.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.72",
+      "type": "class"
+    },
+    {
+      "id": "feat:natural-explorer",
+      "displayName": "Natural Explorer",
+      "description": "Choose a favored terrain; double proficiency on INT/WIS checks related to it, and travel benefits.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.72",
+      "type": "class"
+    },
+    {
+      "id": "feat:fighting-style-ranger",
+      "displayName": "Fighting Style (Ranger)",
+      "description": "Adopt a ranger fighting style: Archery, Defense, Dueling, or Two-Weapon Fighting.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-ranger",
+      "displayName": "Spellcasting (Ranger)",
+      "description": "Cast ranger spells using WIS as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:ranger-archetype",
+      "displayName": "Ranger Archetype",
+      "description": "Choose a Ranger Archetype subclass that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:primeval-awareness",
+      "displayName": "Primeval Awareness",
+      "description": "Expend a spell slot to sense favored enemies within 1 mile (6 miles in favored terrain).",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:extra-attack-ranger",
+      "displayName": "Extra Attack (Ranger)",
+      "description": "Attack twice instead of once when you take the Attack action on your turn.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:favored-enemy-improvement",
+      "displayName": "Favored Enemy (Additional)",
+      "description": "Add another favored enemy type and one associated language.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:natural-explorer-improvement",
+      "displayName": "Natural Explorer (Additional Terrain)",
+      "description": "Add another favored terrain type.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.73",
+      "type": "class"
+    },
+    {
+      "id": "feat:hide-in-plain-sight",
+      "displayName": "Hide in Plain Sight",
+      "description": "Spend 1 minute applying natural camouflage; +10 bonus to Stealth while motionless.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.74",
+      "type": "class"
+    },
+    {
+      "id": "feat:ranger-archetype-feature",
+      "displayName": "Ranger Archetype Feature",
+      "description": "Gain an additional feature from your chosen Ranger Archetype subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.74",
+      "type": "class"
+    },
+    {
+      "id": "feat:vanish",
+      "displayName": "Vanish",
+      "description": "Use Hide as a bonus action; can't be tracked by nonmagical means unless you choose to leave a trail.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.74",
+      "type": "class"
+    },
+    {
+      "id": "feat:feral-senses",
+      "displayName": "Feral Senses",
+      "description": "No disadvantage against invisible creatures; detect hidden creatures within 30 ft while not blinded.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.74",
+      "type": "class"
+    },
+    {
+      "id": "feat:foe-slayer",
+      "displayName": "Foe Slayer",
+      "description": "Once per turn, add WIS modifier to attack or damage roll against a favored enemy.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.74",
+      "type": "class"
+    },
+    {
+      "id": "feat:expertise-rogue",
+      "displayName": "Expertise (Rogue)",
+      "description": "Double proficiency bonus for two chosen skills or tools.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-1d6",
+      "displayName": "Sneak Attack (1d6)",
+      "description": "Deal an extra 1d6 damage when hitting an off-guard target with a finesse or ranged weapon.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:thieves-cant",
+      "displayName": "Thieves' Cant",
+      "description": "Know the secret mix of jargon, slang, and code used by rogues to pass hidden messages.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:cunning-action",
+      "displayName": "Cunning Action",
+      "description": "Use a bonus action to Dash, Disengage, or Hide.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-2d6",
+      "displayName": "Sneak Attack (2d6)",
+      "description": "Sneak Attack damage increases to 2d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:roguish-archetype",
+      "displayName": "Roguish Archetype",
+      "description": "Choose a Roguish Archetype subclass that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-3d6",
+      "displayName": "Sneak Attack (3d6)",
+      "description": "Sneak Attack damage increases to 3d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.81",
+      "type": "class"
+    },
+    {
+      "id": "feat:uncanny-dodge",
+      "displayName": "Uncanny Dodge",
+      "description": "Use reaction to halve the damage of an attack that hits you and that you can see.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-4d6",
+      "displayName": "Sneak Attack (4d6)",
+      "description": "Sneak Attack damage increases to 4d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-5d6",
+      "displayName": "Sneak Attack (5d6)",
+      "description": "Sneak Attack damage increases to 5d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:evasion-rogue",
+      "displayName": "Evasion (Rogue)",
+      "description": "On a successful DEX save against an area effect, take no damage; half damage on failure.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-6d6",
+      "displayName": "Sneak Attack (6d6)",
+      "description": "Sneak Attack damage increases to 6d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:roguish-archetype-feature",
+      "displayName": "Roguish Archetype Feature",
+      "description": "Gain an additional feature from your chosen Roguish Archetype subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-7d6",
+      "displayName": "Sneak Attack (7d6)",
+      "description": "Sneak Attack damage increases to 7d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:reliable-talent",
+      "displayName": "Reliable Talent",
+      "description": "Treat any roll of 9 or less as 10 on ability checks using proficiency.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:blindsense",
+      "displayName": "Blindsense",
+      "description": "Aware of hidden and invisible creatures within 10 ft.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-8d6",
+      "displayName": "Sneak Attack (8d6)",
+      "description": "Sneak Attack damage increases to 8d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:slippery-mind",
+      "displayName": "Slippery Mind",
+      "description": "Gain proficiency in WIS saving throws.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-9d6",
+      "displayName": "Sneak Attack (9d6)",
+      "description": "Sneak Attack damage increases to 9d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.82",
+      "type": "class"
+    },
+    {
+      "id": "feat:elusive",
+      "displayName": "Elusive",
+      "description": "No attack roll has advantage against you while you aren't incapacitated.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.83",
+      "type": "class"
+    },
+    {
+      "id": "feat:sneak-attack-10d6",
+      "displayName": "Sneak Attack (10d6)",
+      "description": "Sneak Attack damage increases to 10d6.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.83",
+      "type": "class"
+    },
+    {
+      "id": "feat:stroke-of-luck",
+      "displayName": "Stroke of Luck",
+      "description": "If your attack misses, treat it as a hit; or if you fail an ability check, treat the d20 roll as 20.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.83",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-sorcerer",
+      "displayName": "Spellcasting (Sorcerer)",
+      "description": "Cast sorcerer spells using CHA as your spellcasting ability.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.90",
+      "type": "class"
+    },
+    {
+      "id": "feat:sorcerous-origin",
+      "displayName": "Sorcerous Origin",
+      "description": "Choose a Sorcerous Origin subclass that shapes your innate magic.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.90",
+      "type": "class"
+    },
+    {
+      "id": "feat:font-of-magic",
+      "displayName": "Font of Magic",
+      "description": "Gain sorcery points equal to sorcerer level; convert slots to/from sorcery points.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.90",
+      "type": "class"
+    },
+    {
+      "id": "feat:metamagic",
+      "displayName": "Metamagic",
+      "description": "Choose two Metamagic options to alter your spells using sorcery points.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.91",
+      "type": "class"
+    },
+    {
+      "id": "feat:sorcerous-origin-feature",
+      "displayName": "Sorcerous Origin Feature",
+      "description": "Gain an additional feature from your chosen Sorcerous Origin subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.91",
+      "type": "class"
+    },
+    {
+      "id": "feat:metamagic-additional",
+      "displayName": "Metamagic (Additional)",
+      "description": "Learn one additional Metamagic option.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.91",
+      "type": "class"
+    },
+    {
+      "id": "feat:sorcerous-restoration",
+      "displayName": "Sorcerous Restoration",
+      "description": "Regain 4 expended sorcery points on a short rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.91",
+      "type": "class"
+    },
+    {
+      "id": "feat:otherworldly-patron",
+      "displayName": "Otherworldly Patron",
+      "description": "Choose a patron and a Warlock subclass that grants expanded spells and features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99",
+      "type": "class"
+    },
+    {
+      "id": "feat:pact-magic",
+      "displayName": "Pact Magic",
+      "description": "Cast warlock spells using CHA; regain all slots on a short or long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99",
+      "type": "class"
+    },
+    {
+      "id": "feat:eldritch-invocations",
+      "displayName": "Eldritch Invocations",
+      "description": "Learn 2 Eldritch Invocations that grant special abilities.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99",
+      "type": "class"
+    },
+    {
+      "id": "feat:pact-boon",
+      "displayName": "Pact Boon",
+      "description": "Choose a Pact Boon: Pact of the Chain, Pact of the Blade, or Pact of the Tome.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99",
+      "type": "class"
+    },
+    {
+      "id": "feat:eldritch-invocations-improvement",
+      "displayName": "Eldritch Invocations (Improvement)",
+      "description": "Learn one additional Eldritch Invocation or replace one you know.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.99",
+      "type": "class"
+    },
+    {
+      "id": "feat:otherworldly-patron-feature",
+      "displayName": "Otherworldly Patron Feature",
+      "description": "Gain an additional feature from your chosen Otherworldly Patron subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:mystic-arcanum-6",
+      "displayName": "Mystic Arcanum (6th Level)",
+      "description": "Choose a 6th-level warlock spell to cast once per long rest without a spell slot.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:mystic-arcanum-7",
+      "displayName": "Mystic Arcanum (7th Level)",
+      "description": "Choose a 7th-level warlock spell to cast once per long rest without a spell slot.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:mystic-arcanum-8",
+      "displayName": "Mystic Arcanum (8th Level)",
+      "description": "Choose an 8th-level warlock spell to cast once per long rest without a spell slot.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:mystic-arcanum-9",
+      "displayName": "Mystic Arcanum (9th Level)",
+      "description": "Choose a 9th-level warlock spell to cast once per long rest without a spell slot.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:eldritch-master",
+      "displayName": "Eldritch Master",
+      "description": "Spend 1 minute entreating your patron to regain all expended pact magic slots once per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.100",
+      "type": "class"
+    },
+    {
+      "id": "feat:spellcasting-wizard",
+      "displayName": "Spellcasting (Wizard)",
+      "description": "Cast wizard spells using INT as your spellcasting ability; copy spells into a spellbook.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.106",
+      "type": "class"
+    },
+    {
+      "id": "feat:arcane-recovery",
+      "displayName": "Arcane Recovery",
+      "description": "Once per day after a short rest, recover spell slots totaling up to half wizard level (rounded up).",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.107",
+      "type": "class"
+    },
+    {
+      "id": "feat:arcane-tradition",
+      "displayName": "Arcane Tradition",
+      "description": "Choose an Arcane Tradition subclass (school of magic) that grants additional features.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.107",
+      "type": "class"
+    },
+    {
+      "id": "feat:arcane-tradition-feature",
+      "displayName": "Arcane Tradition Feature",
+      "description": "Gain an additional feature from your chosen Arcane Tradition subclass.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.107",
+      "type": "class"
+    },
+    {
+      "id": "feat:spell-mastery",
+      "displayName": "Spell Mastery",
+      "description": "Choose a 1st- and 2nd-level spell; cast them at their lowest level without a slot.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.107",
+      "type": "class"
+    },
+    {
+      "id": "feat:signature-spells",
+      "displayName": "Signature Spells",
+      "description": "Choose two 3rd-level wizard spells as signature spells; always prepared and castable for free once each per short rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.107",
+      "type": "class"
+    },
+    {
+      "id": "feat:alert",
+      "displayName": "Alert",
+      "description": "+5 bonus to initiative; can't be surprised; hidden creatures don't gain advantage on attacks against you.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:athlete",
+      "displayName": "Athlete",
+      "description": "+1 STR or DEX; stand from prone costs only 5 ft; climb without penalty; running long jump from 5 ft.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:actor",
+      "displayName": "Actor",
+      "description": "+1 CHA; advantage on Deception/Performance to pass as someone else; mimic sounds and voices.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:charger",
+      "displayName": "Charger",
+      "description": "After Dashing, make one bonus attack (+5 damage) or shove a creature.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:crossbow-expert",
+      "displayName": "Crossbow Expert",
+      "description": "Ignore loading; no disadvantage at melee range; bonus bolt after attacking with a one-handed weapon.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:defensive-duelist",
+      "displayName": "Defensive Duelist",
+      "description": "Reaction: add proficiency bonus to AC against one melee attack when wielding a finesse weapon.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:dual-wielder",
+      "displayName": "Dual Wielder",
+      "description": "+1 AC while dual-wielding; use non-light weapons for two-weapon fighting; draw two weapons at once.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.165",
+      "type": "general"
+    },
+    {
+      "id": "feat:dungeon-delver",
+      "displayName": "Dungeon Delver",
+      "description": "Advantage on detecting secret doors and traps; resistance to trap damage; Search for traps at normal pace.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.166",
+      "type": "general"
+    },
+    {
+      "id": "feat:durable",
+      "displayName": "Durable",
+      "description": "+1 CON; when spending Hit Dice on a short rest, minimum roll equals twice your CON modifier.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.166",
+      "type": "general"
+    },
+    {
+      "id": "feat:elemental-adept",
+      "displayName": "Elemental Adept",
+      "description": "Spells ignore resistance to a chosen damage type; treat 1s as 2s on damage dice for that type.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.166",
+      "type": "general"
+    },
+    {
+      "id": "feat:grappler",
+      "displayName": "Grappler",
+      "description": "Advantage on attacks against grappled creatures; use action to pin a grappled creature, restraining both.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:great-weapon-master",
+      "displayName": "Great Weapon Master",
+      "description": "On critical hit or kill, bonus attack; trade -5 to hit for +10 damage with heavy weapons.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:healer",
+      "displayName": "Healer",
+      "description": "Stabilize with a healer's kit; use a kit to restore 1d6 + 4 + max HD hp once per short rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:heavily-armored",
+      "displayName": "Heavily Armored",
+      "description": "+1 STR; gain proficiency with heavy armor.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:heavy-armor-master",
+      "displayName": "Heavy Armor Master",
+      "description": "+1 STR; while in heavy armor, reduce bludgeoning/piercing/slashing from non-magical attacks by 3.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:inspiring-leader",
+      "displayName": "Inspiring Leader",
+      "description": "Spend 10 minutes inspiring up to 6 allies; each gains temp HP equal to your level + CHA modifier.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:keen-mind",
+      "displayName": "Keen Mind",
+      "description": "+1 INT; always know north, hours until sunrise/sunset, and recall anything from the past 30 days.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:lightly-armored",
+      "displayName": "Lightly Armored",
+      "description": "+1 STR or DEX; gain proficiency with light armor.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:linguist",
+      "displayName": "Linguist",
+      "description": "+1 INT; learn 3 languages; create written ciphers that require successful INT check to decode.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:lucky",
+      "displayName": "Lucky",
+      "description": "3 luck points per long rest to reroll attack, ability check, or save\u2014or force an enemy reroll.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.167",
+      "type": "general"
+    },
+    {
+      "id": "feat:mage-slayer",
+      "displayName": "Mage Slayer",
+      "description": "Reaction attack when a creature within 5 ft casts a spell; that creature has disadvantage on concentration.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:magic-initiate",
+      "displayName": "Magic Initiate",
+      "description": "Learn 2 cantrips and one 1st-level spell from a chosen class list, cast the spell once per long rest.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:martial-adept",
+      "displayName": "Martial Adept",
+      "description": "Learn 2 Battle Master maneuvers and gain 1 superiority die (d6).",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:medium-armor-master",
+      "displayName": "Medium Armor Master",
+      "description": "No disadvantage on Stealth in medium armor; DEX bonus to AC in medium armor increases to +3.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:mobile",
+      "displayName": "Mobile",
+      "description": "+10 ft speed; Dash through difficult terrain without penalty; no opportunity attacks when you move from a target.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:moderately-armored",
+      "displayName": "Moderately Armored",
+      "description": "+1 STR or DEX; gain proficiency with medium armor and shields.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:mounted-combatant",
+      "displayName": "Mounted Combatant",
+      "description": "Advantage on melee attacks against smaller unmounted creatures; redirect attacks from mount to you.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:observant",
+      "displayName": "Observant",
+      "description": "+1 INT or WIS; read lips; +5 bonus to passive Perception and passive Investigation.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:polearm-master",
+      "displayName": "Polearm Master",
+      "description": "Bonus attack with butt end of a polearm; opportunity attacks when enemies enter your reach.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:resilient",
+      "displayName": "Resilient",
+      "description": "+1 to chosen ability score; gain proficiency in that ability's saving throw.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.168",
+      "type": "general"
+    },
+    {
+      "id": "feat:ritual-caster",
+      "displayName": "Ritual Caster",
+      "description": "Acquire a ritual book with 2 rituals from a chosen class; copy more ritual spells found.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.169",
+      "type": "general"
+    },
+    {
+      "id": "feat:savage-attacker",
+      "displayName": "Savage Attacker",
+      "description": "Once per turn, reroll a melee weapon attack's damage dice and use either result.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.169",
+      "type": "general"
+    },
+    {
+      "id": "feat:sentinel",
+      "displayName": "Sentinel",
+      "description": "Opportunity attacks reduce speed to 0; attack even when enemy Disengages; react to attacks on allies.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.169",
+      "type": "general"
+    },
+    {
+      "id": "feat:sharpshooter",
+      "displayName": "Sharpshooter",
+      "description": "No disadvantage at long range; ignore half/three-quarters cover; trade -5 attack for +10 damage.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:shield-master",
+      "displayName": "Shield Master",
+      "description": "Bonus action shove after attacking; add shield bonus to DEX saves against targeted spells.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:skilled",
+      "displayName": "Skilled",
+      "description": "Gain proficiency in any combination of 3 skills or tools of your choice.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:skulker",
+      "displayName": "Skulker",
+      "description": "Hide when lightly obscured; missed attacks don't reveal position; no disadvantage in dim light.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:spell-sniper",
+      "displayName": "Spell Sniper",
+      "description": "Double the range of attack cantrips; ignore half/three-quarters cover; learn 1 attack cantrip.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:tavern-brawler",
+      "displayName": "Tavern Brawler",
+      "description": "+1 STR or CON; proficient with improvised weapons; unarmed strike deals 1d4; bonus grapple after unarmed hit.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:tough",
+      "displayName": "Tough",
+      "description": "HP maximum increases by 2 per character level (and 2 per future level gained).",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:war-caster",
+      "displayName": "War Caster",
+      "description": "Advantage on concentration saves; cast with weapons in hands; cast a spell as opportunity attack.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    },
+    {
+      "id": "feat:weapon-master",
+      "displayName": "Weapon Master",
+      "description": "+1 STR or DEX; gain proficiency with 4 weapons of your choice.",
+      "source": "SRD 5.1",
+      "srdReference": "SRD p.170",
+      "type": "general"
+    }
   ]
 }

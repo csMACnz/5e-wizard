@@ -18,6 +18,14 @@ public class FeatDefinition
 
     [JsonPropertyName("srdReference")]
     public string? SrdReference { get; set; }
+
+    /// <summary>
+    /// Categorises the feat for filtering and display.
+    /// One of: "asi" (sentinel), "class" (auto-granted class feature),
+    /// "background" (auto-granted background feature), "general" (player-selectable ASI alternative).
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
 }
 
 public class FeatsData

@@ -381,13 +381,180 @@ else
             </MudStack>
         }
 
-        @* ── Step 5: Background & Proficiencies ── *@
+        @* ── Step 5: Level Features ── *@
         @if (_activeStep == 4)
+        {
+            var featRace = _races.FirstOrDefault(r => r.Id == _selectedRaceId);
+            var featSelectedSubrace = featRace != null && !string.IsNullOrEmpty(_selectedSubraceId)
+                ? featRace.Subraces.FirstOrDefault(s => s.Id == _selectedSubraceId)
+                : null;
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 5 — Level Features</MudText>
+
+            @* Race traits *@
+            @if (featRace != null && (featRace.TraitIds.Count > 0 || (featSelectedSubrace != null && featSelectedSubrace.TraitIds.Count > 0)))
+            {
+                <MudCard Elevation="1" Class="mb-4">
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle1"><strong>Racial Traits — @(featRace.DisplayName)</strong></MudText>
+                        @foreach (var traitId in featRace.TraitIds)
+                        {
+                            <MudText Class="mt-1">• @FeatureDisplayName(traitId)</MudText>
+                        }
+                        @if (featSelectedSubrace != null && featSelectedSubrace.TraitIds.Count > 0)
+                        {
+                            <MudText Typo="Typo.subtitle2" Class="mt-2">@featSelectedSubrace.DisplayName traits:</MudText>
+                            @foreach (var traitId in featSelectedSubrace.TraitIds)
+                            {
+                                <MudText Class="mt-1">• @FeatureDisplayName(traitId)</MudText>
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            @* Per-class: automatic features + ASI choices *@
+            @foreach (var classEntry in _classEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)))
+            {
+                var clsDef = _classes.FirstOrDefault(c => c.Id == classEntry.ClassId);
+                if (clsDef == null) continue;
+
+                var autoFeats = new List<(int Lvl, string FeatId)>();
+                for (int lvlNum = 1; lvlNum <= classEntry.Level; lvlNum++)
+                {
+                    if (!clsDef.FeaturesByLevel.TryGetValue(lvlNum.ToString(), out var fIds)) continue;
+                    foreach (var fId in fIds)
+                        if (fId != "feat:asi")
+                            autoFeats.Add((lvlNum, fId));
+                }
+
+                var asiLevels = new List<int>();
+                for (int lvlNum = 1; lvlNum <= classEntry.Level; lvlNum++)
+                {
+                    if (clsDef.FeaturesByLevel.TryGetValue(lvlNum.ToString(), out var fIds) && fIds.Contains("feat:asi"))
+                        asiLevels.Add(lvlNum);
+                }
+
+                <MudCard Elevation="1" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.subtitle1">
+                                <strong>@clsDef.DisplayName</strong> — Level @classEntry.Level
+                            </MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+
+                        @* Automatic features (non-ASI) *@
+                        @if (autoFeats.Count > 0)
+                        {
+                            <MudText Typo="Typo.subtitle2" Class="mb-1">Automatic Features</MudText>
+                            @foreach (var (lvlNum, fId) in autoFeats)
+                            {
+                                var featDef = _feats.FirstOrDefault(f => f.Id == fId);
+                                <MudStack Row="false" Spacing="0" Class="mb-2">
+                                    <MudText>
+                                        <strong>Lvl @lvlNum — @(featDef?.DisplayName ?? fId)</strong>
+                                    </MudText>
+                                    @if (!string.IsNullOrEmpty(featDef?.Description))
+                                    {
+                                        <MudText Typo="Typo.caption" Color="Color.Secondary">@featDef.Description</MudText>
+                                    }
+                                </MudStack>
+                            }
+                        }
+
+                        @* ASI choice panels *@
+                        @foreach (var asiLevel in asiLevels)
+                        {
+                            string asiKey = $"{classEntry.ClassId}|{asiLevel}";
+                            _allAsiChoicesByKey.TryGetValue(asiKey, out var currentChoice);
+
+                            string radioVal = currentChoice?.Mode ?? string.Empty;
+
+                            <MudDivider Class="my-2" />
+                            <MudText Typo="Typo.subtitle2" Class="mb-1">
+                                Level @asiLevel — Ability Score Improvement or Feat
+                            </MudText>
+
+                            <MudRadioGroup T="string"
+                                           Value="@radioVal"
+                                           ValueChanged="@((string v) => OnAsiRadioChanged(classEntry.ClassId, asiLevel, v))">
+                                <MudStack Spacing="1">
+                                    <MudRadio Value="@("plus2")" Color="Color.Primary">+2 to one ability</MudRadio>
+                                    <MudRadio Value="@("split")" Color="Color.Primary">+1 / +1 to two abilities</MudRadio>
+                                    <MudRadio Value="@("feat")" Color="Color.Primary">Take a feat</MudRadio>
+                                </MudStack>
+                            </MudRadioGroup>
+
+                            @if (radioVal == "plus2")
+                            {
+                                <MudSelect T="string"
+                                           Label="Ability (+2)"
+                                           Value="@(currentChoice?.AbilityOne ?? string.Empty)"
+                                           ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, null))"
+                                           Variant="Variant.Outlined" Class="mt-2" Style="max-width:220px">
+                                    <MudSelectItem Value="@string.Empty">— select ability —</MudSelectItem>
+                                    @foreach (var ab in Abilities)
+                                    {
+                                        <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            }
+                            else if (radioVal == "split")
+                            {
+                                <MudStack Row="true" Spacing="2" Class="mt-2">
+                                    <MudSelect T="string"
+                                               Label="First ability (+1)"
+                                               Value="@(currentChoice?.AbilityOne ?? string.Empty)"
+                                               ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
+                                               Variant="Variant.Outlined" Style="max-width:200px">
+                                        <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
+                                        @foreach (var ab in Abilities)
+                                        {
+                                            <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                    <MudSelect T="string"
+                                               Label="Second ability (+1)"
+                                               Value="@(currentChoice?.AbilityTwo ?? string.Empty)"
+                                               ValueChanged="@((string v) => OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
+                                               Variant="Variant.Outlined" Style="max-width:200px">
+                                        <MudSelectItem Value="@string.Empty">— select —</MudSelectItem>
+                                        @foreach (var ab in Abilities)
+                                        {
+                                            <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudStack>
+                            }
+                            else if (radioVal == "feat")
+                            {
+                                var generalFeats = _feats.Where(f => f.Type == "general").ToList();
+                                <MudSelect T="string"
+                                           Label="Choose a feat"
+                                           Value="@(currentChoice?.FeatId ?? string.Empty)"
+                                           ValueChanged="@((string v) => OnAsiFeatChanged(classEntry.ClassId, asiLevel, v))"
+                                           Variant="Variant.Outlined" Class="mt-2" Style="max-width:340px">
+                                    <MudSelectItem Value="@string.Empty">— select feat —</MudSelectItem>
+                                    @foreach (var gf in generalFeats)
+                                    {
+                                        <MudSelectItem Value="@gf.Id">@gf.DisplayName</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+        }
+
+        @* ── Step 6: Background & Proficiencies ── *@
+        @if (_activeStep == 5)
         {
             var selectedBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
             var primaryClass = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
             var backgroundSkills = selectedBg?.SkillProficiencies ?? [];
-            <MudText Typo="Typo.h5" GutterBottom="true">Step 5 — Background &amp; Proficiencies</MudText>
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Background &amp; Proficiencies</MudText>
             <MudGrid>
                 <MudItem xs="12" sm="6">
                     <MudSelect T="string" Label="Background"
@@ -477,8 +644,8 @@ else
             }
         }
 
-        @* ── Step 6: Spells ── *@
-        @if (_activeStep == 5)
+        @* ── Step 7: Spells ── *@
+        @if (_activeStep == 6)
         {
             var casterEntries = _classEntries
                 .Where(e => !string.IsNullOrEmpty(e.ClassId))
@@ -486,7 +653,7 @@ else
                 .Where(x => x.Class?.Spellcasting != null)
                 .ToList();
 
-            <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Spells</MudText>
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Spells</MudText>
 
             @if (casterEntries.Count == 0)
             {
@@ -603,15 +770,15 @@ else
             }
         }
 
-        @* ── Step 7: Equipment ── *@
-        @if (_activeStep == 6)
+        @* ── Step 8: Equipment ── *@
+        @if (_activeStep == 7)
         {
             var bgForEquip = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
             var bgEquipIds = bgForEquip?.StartingEquipmentIds ?? [];
             var primaryClsForEquip = _classes.FirstOrDefault(c => c.Id == (_classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty));
             var classConfig = _classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == (primaryClsForEquip?.Id ?? string.Empty));
 
-            <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Equipment</MudText>
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 8 — Equipment</MudText>
 
             @* Background equipment (always shown, always granted) *@
             @if (bgForEquip != null && bgEquipIds.Count > 0)
@@ -832,13 +999,13 @@ else
             }
         }
 
-        @* ── Step 8: Review & Final Validation ── *@
-        @if (_activeStep == 7)
+        @* ── Step 9: Review & Final Validation ── *@
+        @if (_activeStep == 8)
         {
             var c = State.Character;
             var reviewRace = _races.FirstOrDefault(r => r.Id == c.RaceId);
             var reviewBg = _backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
-            <MudText Typo="Typo.h5" GutterBottom="true">Step 8 — Review &amp; Final Validation</MudText>
+            <MudText Typo="Typo.h5" GutterBottom="true">Step 9 — Review &amp; Final Validation</MudText>
             <MudGrid>
                 <MudItem xs="12" md="6">
                     <MudCard Elevation="1">
@@ -1104,7 +1271,7 @@ else
 
     private static readonly string[] _steps =
     [
-        "Meta", "Abilities", "Race", "Class", "Background", "Spells", "Equipment", "Review",
+        "Meta", "Abilities", "Race", "Class", "Features", "Background", "Spells", "Equipment", "Review",
     ];
 
     private static readonly Dictionary<int, int> _pbCosts = new()
@@ -1151,6 +1318,7 @@ else
     private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
     private IReadOnlyList<SpellDefinition> _spells = [];
     private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
+    private IReadOnlyList<FeatDefinition> _feats = [];
     private IReadOnlyList<string> _fullNames = [];
     private ValidationResult? _reviewValidation;
     private List<string> _stepErrors = [];
@@ -1195,7 +1363,12 @@ else
 
     private List<ClassEntry> _classEntries = [new ClassEntry()];
 
-    // ── Step 5 state ─────────────────────────────────────────────────────
+    // ── Step 5 (Features) shadow state ───────────────────────────────────
+    // Keyed as "classId|classLevel". Never filtered: retains choices even after level is lowered,
+    // so they are restored if the level is raised again in the same browser session.
+    private readonly Dictionary<string, AsiChoice> _allAsiChoicesByKey = [];
+
+    // ── Step 6 state ─────────────────────────────────────────────────────
     private string _selectedBackgroundId = string.Empty;
     private List<string> _classSkillOptionIds = [];
     private List<bool> _classSkillSelections = [];
@@ -1222,13 +1395,14 @@ else
         _backgrounds = await DataService.GetBackgroundsAsync();
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
+        _feats = await DataService.GetFeatsAsync();
         _classStartingEquipmentConfigs = await DataService.GetClassStartingEquipmentAsync();
         _fullNames = await DataService.GetFullNamesAsync();
         _loading = false;
 
         await InitialiseSessionAsync();
         RestoreFromState();
-        if (_activeStep == 7) RunReviewValidation();
+        if (_activeStep == 8) RunReviewValidation();
     }
 
     private async Task InitialiseSessionAsync()
@@ -1310,6 +1484,14 @@ else
                 .ToList();
         }
 
+        // Restore ASI choices into shadow state
+        _allAsiChoicesByKey.Clear();
+        foreach (var choice in c.AsiChoices)
+        {
+            string key = $"{choice.ClassId}|{choice.ClassLevel}";
+            _allAsiChoicesByKey[key] = choice;
+        }
+
         if (!string.IsNullOrEmpty(c.BackgroundId)) _selectedBackgroundId = c.BackgroundId;
 
         SyncClassSkillOptions();
@@ -1360,6 +1542,80 @@ else
     {
         var s = id.Replace("trait:", string.Empty).Replace("-", " ");
         return s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : id;
+    }
+
+    private string FeatureDisplayName(string id)
+    {
+        var featDef = _feats.FirstOrDefault(f => f.Id == id);
+        if (featDef != null) return featDef.DisplayName;
+        // Fall back to human-readable formatting for trait: IDs
+        return TraitName(id);
+    }
+
+    private IEnumerable<AsiChoice> GetExportableAsiChoices()
+    {
+        foreach (var (key, choice) in _allAsiChoicesByKey)
+        {
+            var entry = _classEntries.FirstOrDefault(e => e.ClassId == choice.ClassId);
+            if (entry != null && entry.Level >= choice.ClassLevel)
+                yield return choice;
+        }
+    }
+
+    private static void AddOtherBonus(AbilityScores scores, string ability, int amount)
+    {
+        switch (ability)
+        {
+            case "STR": scores.STR.OtherBonus += amount; break;
+            case "DEX": scores.DEX.OtherBonus += amount; break;
+            case "CON": scores.CON.OtherBonus += amount; break;
+            case "INT": scores.INT.OtherBonus += amount; break;
+            case "WIS": scores.WIS.OtherBonus += amount; break;
+            case "CHA": scores.CHA.OtherBonus += amount; break;
+        }
+    }
+
+    // ── ASI choice event handlers ─────────────────────────────────────────
+    private void OnAsiRadioChanged(string classId, int grantLevel, string radioValue)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        // Set the mode and clear incompatible fields
+        existing.Mode = radioValue;
+        existing.FeatId = null;
+        existing.AbilityOne = null;
+        existing.AbilityTwo = null;
+
+        _allAsiChoicesByKey[key] = existing;
+        ValidateAndShowStepErrors();
+    }
+
+    private void OnAsiAbilityChanged(string classId, int grantLevel, string? abilityOne, string? abilityTwo)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        existing.FeatId = null;
+        existing.AbilityOne = string.IsNullOrEmpty(abilityOne) ? null : abilityOne;
+        existing.AbilityTwo = string.IsNullOrEmpty(abilityTwo) ? null : abilityTwo;
+        _allAsiChoicesByKey[key] = existing;
+        ValidateAndShowStepErrors();
+    }
+
+    private void OnAsiFeatChanged(string classId, int grantLevel, string featId)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!_allAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        existing.AbilityOne = null;
+        existing.AbilityTwo = null;
+        existing.FeatId = string.IsNullOrEmpty(featId) ? null : featId;
+        _allAsiChoicesByKey[key] = existing;
+        ValidateAndShowStepErrors();
     }
 
     private int GetAbilityBase(string ability) =>
@@ -1616,7 +1872,72 @@ else
             .ToList();
         c.TotalLevel = c.Levels.Sum(l => l.Level);
 
-        // Step 5
+        // Step 5 — Features
+        // Populate exportable ASI choices (only those whose level is still active)
+        c.AsiChoices.Clear();
+        c.AsiChoices.AddRange(GetExportableAsiChoices());
+
+        // Populate Features list: race traits, subrace traits, background feature, class features
+        c.Features.Clear();
+        if (selectedRace != null)
+        {
+            foreach (var traitId in selectedRace.TraitIds)
+                c.Features.Add(new CharacterFeature { FeatureId = traitId, SourceId = selectedRace.Id });
+            if (!string.IsNullOrEmpty(c.SubraceId))
+            {
+                var sub = selectedRace.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
+                if (sub != null)
+                    foreach (var traitId in sub.TraitIds)
+                        c.Features.Add(new CharacterFeature { FeatureId = traitId, SourceId = sub.Id });
+            }
+        }
+
+        var bgForFeatures = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
+        if (bgForFeatures != null && !string.IsNullOrEmpty(bgForFeatures.FeatureId))
+            c.Features.Add(new CharacterFeature { FeatureId = bgForFeatures.FeatureId, SourceId = bgForFeatures.Id });
+
+        foreach (var lvl in c.Levels)
+        {
+            var clsDef = _classes.FirstOrDefault(cl => cl.Id == lvl.ClassId);
+            if (clsDef == null) continue;
+            for (int lvlNum = 1; lvlNum <= lvl.Level; lvlNum++)
+            {
+                if (!clsDef.FeaturesByLevel.TryGetValue(lvlNum.ToString(), out var featIds)) continue;
+                foreach (var featId in featIds)
+                {
+                    if (featId == "feat:asi") continue;
+                    c.Features.Add(new CharacterFeature { FeatureId = featId, SourceId = lvl.ClassId });
+                }
+            }
+        }
+
+        // General feats taken via ASI choice
+        foreach (var choice in c.AsiChoices)
+        {
+            if (choice.FeatId != null)
+                c.Features.Add(new CharacterFeature { FeatureId = choice.FeatId, SourceId = choice.ClassId });
+        }
+
+        // Apply ASI ability bumps from exportable choices (reset OtherBonus first)
+        c.AbilityScores.STR.OtherBonus = 0;
+        c.AbilityScores.DEX.OtherBonus = 0;
+        c.AbilityScores.CON.OtherBonus = 0;
+        c.AbilityScores.INT.OtherBonus = 0;
+        c.AbilityScores.WIS.OtherBonus = 0;
+        c.AbilityScores.CHA.OtherBonus = 0;
+        foreach (var choice in c.AsiChoices)
+        {
+            if (choice.FeatId != null) continue;
+            if (choice.AbilityOne != null)
+            {
+                int bonus = choice.Mode == "split" ? 1 : 2;
+                AddOtherBonus(c.AbilityScores, choice.AbilityOne, bonus);
+            }
+            if (choice.Mode == "split" && choice.AbilityTwo != null)
+                AddOtherBonus(c.AbilityScores, choice.AbilityTwo, 1);
+        }
+
+        // Step 6 — Background & Proficiencies
         c.BackgroundId = _selectedBackgroundId;
         c.Skills.Clear();
         var bg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
@@ -1627,7 +1948,7 @@ else
             if (_classSkillSelections[i] && !c.Skills.ContainsKey(_classSkillOptionIds[i]))
                 c.Skills[_classSkillOptionIds[i]] = "class";
 
-        // Step 6 — Spells
+        // Step 7 — Spells
         c.Spells.Clear();
         foreach (var (classId, spellIds) in _selectedSpells)
             foreach (var spellId in spellIds)
@@ -1641,7 +1962,7 @@ else
                 });
             }
 
-        // Step 7 — Equipment
+        // Step 8 — Equipment
         c.Equipment.Clear();
         c.StartingEquipmentChoices.Clear();
         c.ClassStartingWealthChosen = _classStartingWealthChosen;
@@ -1780,6 +2101,28 @@ else
                 break;
 
             case 4:
+                // Features step: warn for incomplete ASI choices (non-blocking)
+                {
+                    var levels = _classEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)).ToList();
+                    foreach (var entry in levels)
+                    {
+                        var clsDef = _classes.FirstOrDefault(c => c.Id == entry.ClassId);
+                        if (clsDef == null) continue;
+                        foreach (var (levelKey, featIds) in clsDef.FeaturesByLevel)
+                        {
+                            if (!int.TryParse(levelKey, out int grantLevel)) continue;
+                            if (grantLevel > entry.Level) continue;
+                            if (!featIds.Contains("feat:asi")) continue;
+                            string key = $"{entry.ClassId}|{grantLevel}";
+                            if (!_allAsiChoicesByKey.ContainsKey(key))
+                                result.Warnings.Add(
+                                    $"WARN_ASI_INCOMPLETE: ASI at {clsDef.DisplayName} level {grantLevel} has not been made.");
+                        }
+                    }
+                }
+                break;
+
+            case 5:
                 if (string.IsNullOrEmpty(_selectedBackgroundId))
                 {
                     result.Errors.Add("A background must be selected.");
@@ -1806,7 +2149,7 @@ else
                 result.Warnings.AddRange(profResult.Warnings);
                 break;
 
-            case 5:
+            case 6:
                 // Spell step: validate using SpellValidator
                 {
                     var spellTemp = new Character
@@ -1837,7 +2180,7 @@ else
                 }
                 break;
 
-            case 6:
+            case 7:
                 // Equipment step: validate choice groups
                 {
                     var primaryClsId6 = _classEntries.Count > 0 ? _classEntries[0].ClassId : string.Empty;
@@ -1911,7 +2254,7 @@ else
                 }
                 break;
 
-            case 7:
+            case 8:
                 // Review step is always passable
                 break;
         }
@@ -2169,8 +2512,8 @@ else
             State.ActiveStep = _activeStep;
             _stepErrors = [];
 
-            if (_activeStep == 4) SyncClassSkillOptions();
-            if (_activeStep == 7) RunReviewValidation();
+            if (_activeStep == 5) SyncClassSkillOptions();
+            if (_activeStep == 8) RunReviewValidation();
 
             await SaveSessionAsync();
         }
@@ -2183,7 +2526,7 @@ else
             _activeStep = idx;
             State.ActiveStep = _activeStep;
             _stepErrors = [];
-            if (_activeStep == 7) RunReviewValidation();
+            if (_activeStep == 8) RunReviewValidation();
             await SaveSessionAsync();
         }
     }
@@ -2192,7 +2535,7 @@ else
     {
         _reviewValidation = null;
         CommitAllToCharacter();
-        _reviewValidation = new CharacterValidator(_races, _classes, _backgrounds, _spells, _equipment)
+        _reviewValidation = new CharacterValidator(_races, _classes, _backgrounds, _spells, _equipment, _feats)
             .Validate(State.Character);
     }
 
@@ -2207,7 +2550,7 @@ else
     private async Task ExportFightClub5e()
     {
         CommitAllToCharacter();
-        var xml = new FightClub5eExporter(_races, _classes, _backgrounds, _spells, _equipment)
+        var xml = new FightClub5eExporter(_races, _classes, _backgrounds, _spells, _equipment, _feats)
             .Export(State.Character);
         var filename = $"{State.Character.Name}-level{State.Character.TotalLevel}.xml";
         await JS.InvokeVoidAsync("downloadFile", filename, "application/xml", xml);
