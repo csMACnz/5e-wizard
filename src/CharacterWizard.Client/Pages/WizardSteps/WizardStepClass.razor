@@ -1,0 +1,108 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 4 — Class &amp; Multiclass</MudText>
+
+@for (int ci = 0; ci < Ctx.ClassEntries.Count; ci++)
+{
+    int classIdx = ci;
+    var entry = Ctx.ClassEntries[classIdx];
+    <MudCard Class="mb-3" Elevation="1">
+        <MudCardContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudText Typo="Typo.subtitle1">
+                    @(classIdx == 0 ? "Primary Class" : $"Multiclass {classIdx + 1}")
+                </MudText>
+                @if (classIdx > 0)
+                {
+                    <MudSpacer />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                   Color="Color.Error" OnClick="@(async () => await RemoveClassEntry(classIdx))"
+                                   aria-label="Remove class" />
+                }
+            </MudStack>
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudSelect T="string" Label="Class"
+                               Value="@Ctx.ClassEntries[classIdx].ClassId"
+                               ValueChanged="@(async (string v) => { Ctx.ClassEntries[classIdx].ClassId = v; Ctx.ClassEntries[classIdx].SubclassId = string.Empty; await OnChanged.InvokeAsync(); })"
+                               Variant="Variant.Outlined" Required="true"
+                               Adornment="Adornment.End"
+                               AdornmentIcon="@Icons.Material.Filled.Casino"
+                               OnAdornmentClick="@(async () => { Randomizer.RandomizeClass(classIdx, Classes); await OnChanged.InvokeAsync(); })"
+                               AdornmentAriaLabel="Random class">
+                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                        @foreach (var cls in Classes)
+                        {
+                            <MudSelectItem Value="@cls.Id">
+                                @cls.DisplayName (d@(cls.HitDie), saves: @string.Join("/", cls.SavingThrows))
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudNumericField T="int" Label="Level"
+                                    Value="@Ctx.ClassEntries[classIdx].Level"
+                                    ValueChanged="@(async (int v) => { Ctx.ClassEntries[classIdx].Level = v; await OnChanged.InvokeAsync(); })"
+                                    Min="1" Max="20" Variant="Variant.Outlined" />
+                </MudItem>
+            </MudGrid>
+            @{
+                var clsDef = Classes.FirstOrDefault(cd => cd.Id == entry.ClassId);
+            }
+            @if (clsDef != null && clsDef.SubclassLevel > 0 && clsDef.SubclassOptions.Count > 0 && entry.Level >= clsDef.SubclassLevel)
+            {
+                <MudSelect T="string" Label="@clsDef.SubclassLabel"
+                           Value="@Ctx.ClassEntries[classIdx].SubclassId"
+                           ValueChanged="@(async (string v) => { Ctx.ClassEntries[classIdx].SubclassId = v; await OnChanged.InvokeAsync(); })"
+                           Variant="Variant.Outlined" Required="true" Class="mt-2"
+                           Adornment="Adornment.End"
+                           AdornmentIcon="@Icons.Material.Filled.Casino"
+                           OnAdornmentClick="@(async () => { Randomizer.RandomizeSubclass(classIdx, Classes); await OnChanged.InvokeAsync(); })"
+                           AdornmentAriaLabel="Random subclass">
+                    <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                    @foreach (var sub in clsDef.SubclassOptions)
+                    {
+                        <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else if (clsDef != null && clsDef.SubclassLevel > 0 && clsDef.SubclassOptions.Count > 0)
+            {
+                <MudText Typo="Typo.caption" Class="mt-2" Color="Color.Secondary">
+                    @clsDef.SubclassLabel selection unlocks at level @clsDef.SubclassLevel
+                </MudText>
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+               StartIcon="@Icons.Material.Filled.Add"
+               Disabled="@(Ctx.TotalClassLevel >= 20 || Ctx.ClassEntries.Count >= 12)"
+               OnClick="@AddClassEntry">
+        Add Multiclass
+    </MudButton>
+    <MudText Typo="Typo.caption">Total level: @Ctx.TotalClassLevel / 20</MudText>
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+
+    private async Task AddClassEntry()
+    {
+        Ctx.ClassEntries.Add(new ClassEntry());
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task RemoveClassEntry(int idx)
+    {
+        if (idx > 0 && idx < Ctx.ClassEntries.Count)
+            Ctx.ClassEntries.RemoveAt(idx);
+        await OnChanged.InvokeAsync();
+    }
+}

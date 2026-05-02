@@ -1,0 +1,323 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+@{
+    var featRace = Races.FirstOrDefault(r => r.Id == Ctx.SelectedRaceId);
+    var featSelectedSubrace = featRace != null && !string.IsNullOrEmpty(Ctx.SelectedSubraceId)
+        ? featRace.Subraces.FirstOrDefault(s => s.Id == Ctx.SelectedSubraceId)
+        : null;
+}
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 5 — Level Features</MudText>
+
+@* Race traits *@
+@if (featRace != null && (featRace.TraitIds.Count > 0 || (featSelectedSubrace != null && featSelectedSubrace.TraitIds.Count > 0)))
+{
+    <MudCard Elevation="1" Class="mb-4">
+        <MudCardContent>
+            <MudText Typo="Typo.subtitle1"><strong>Racial Traits — @(featRace.DisplayName)</strong></MudText>
+            @foreach (var traitId in featRace.TraitIds)
+            {
+                <MudText Class="mt-1">• @WizardContext.FeatureDisplayName(traitId, Feats)</MudText>
+            }
+            @if (featSelectedSubrace != null && featSelectedSubrace.TraitIds.Count > 0)
+            {
+                <MudText Typo="Typo.subtitle2" Class="mt-2">@featSelectedSubrace.DisplayName traits:</MudText>
+                @foreach (var traitId in featSelectedSubrace.TraitIds)
+                {
+                    <MudText Class="mt-1">• @WizardContext.FeatureDisplayName(traitId, Feats)</MudText>
+                }
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@* Per-class: automatic features + ASI choices *@
+@foreach (var classEntry in Ctx.ClassEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)))
+{
+    var clsDef = Classes.FirstOrDefault(c => c.Id == classEntry.ClassId);
+    if (clsDef == null) continue;
+
+    var autoFeats = new List<(int Lvl, string FeatId)>();
+    for (int lvlNum = 1; lvlNum <= classEntry.Level; lvlNum++)
+    {
+        if (!clsDef.FeaturesByLevel.TryGetValue(lvlNum.ToString(), out var fIds)) continue;
+        foreach (var fId in fIds)
+            if (fId != "feat:asi")
+                autoFeats.Add((lvlNum, fId));
+    }
+
+    var asiLevels = new List<int>();
+    for (int lvlNum = 1; lvlNum <= classEntry.Level; lvlNum++)
+    {
+        if (clsDef.FeaturesByLevel.TryGetValue(lvlNum.ToString(), out var fIds) && fIds.Contains("feat:asi"))
+            asiLevels.Add(lvlNum);
+    }
+
+    <MudCard Elevation="1" Class="mb-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.subtitle1">
+                    <strong>@clsDef.DisplayName</strong> — Level @classEntry.Level
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+
+            @* Automatic features (non-ASI) *@
+            @if (autoFeats.Count > 0)
+            {
+                <MudText Typo="Typo.subtitle2" Class="mb-1">Automatic Features</MudText>
+                @foreach (var (lvlNum, fId) in autoFeats)
+                {
+                    var featDef = Feats.FirstOrDefault(f => f.Id == fId);
+                    <MudStack Row="false" Spacing="0" Class="mb-2">
+                        <MudText>
+                            <strong>Lvl @lvlNum — @(featDef?.DisplayName ?? fId)</strong>
+                        </MudText>
+                        @if (!string.IsNullOrEmpty(featDef?.Description))
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">@featDef.Description</MudText>
+                        }
+                    </MudStack>
+                }
+            }
+
+            @* ASI choice panels *@
+            @foreach (var asiLevel in asiLevels)
+            {
+                string asiKey = $"{classEntry.ClassId}|{asiLevel}";
+                Ctx.AllAsiChoicesByKey.TryGetValue(asiKey, out var currentChoice);
+                string radioVal = currentChoice?.Mode ?? string.Empty;
+
+                <MudDivider Class="my-2" />
+                <MudText Typo="Typo.subtitle2" Class="mb-1">
+                    Level @asiLevel — Ability Score Improvement or Feat
+                </MudText>
+
+                <MudRadioGroup T="string"
+                               Value="@radioVal"
+                               ValueChanged="@(async (string v) => await OnAsiRadioChanged(classEntry.ClassId, asiLevel, v))">
+                    <MudStack Spacing="1">
+                        <MudRadio Value="@("plus2")" Color="Color.Primary">+2 to one ability</MudRadio>
+                        <MudRadio Value="@("split")" Color="Color.Primary">+1 / +1 to two abilities</MudRadio>
+                        <MudRadio Value="@("feat")" Color="Color.Primary">Take a feat</MudRadio>
+                    </MudStack>
+                </MudRadioGroup>
+
+                @if (radioVal == "plus2")
+                {
+                    <MudSelect T="string"
+                               Label="Ability (+2)"
+                               Value="@(currentChoice?.AbilityOne ?? string.Empty)"
+                               ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, null))"
+                               Variant="Variant.Outlined" Class="mt-2" Style="max-width:220px">
+                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                        @foreach (var ab in WizardContext.Abilities)
+                        {
+                            <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+                else if (radioVal == "split")
+                {
+                    <MudStack Row="true" Spacing="2" Class="mt-2">
+                        <MudSelect T="string"
+                                   Label="First ability (+1)"
+                                   Value="@(currentChoice?.AbilityOne ?? string.Empty)"
+                                   ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
+                                   Variant="Variant.Outlined" Style="max-width:200px">
+                            <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                            @foreach (var ab in WizardContext.Abilities)
+                            {
+                                <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                            }
+                        </MudSelect>
+                        <MudSelect T="string"
+                                   Label="Second ability (+1)"
+                                   Value="@(currentChoice?.AbilityTwo ?? string.Empty)"
+                                   ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
+                                   Variant="Variant.Outlined" Style="max-width:200px">
+                            <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                            @foreach (var ab in WizardContext.Abilities)
+                            {
+                                <MudSelectItem Value="@ab">@ab</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudStack>
+                }
+                else if (radioVal == "feat")
+                {
+                    var generalFeats = Feats.Where(f => f.Type == "general").ToList();
+                    <MudSelect T="string"
+                               Label="Choose a feat"
+                               Value="@(currentChoice?.FeatId ?? string.Empty)"
+                               ValueChanged="@(async (string v) => await OnAsiFeatChanged(classEntry.ClassId, asiLevel, v))"
+                               Variant="Variant.Outlined" Class="mt-2" Style="max-width:340px">
+                        <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                        @foreach (var gf in generalFeats)
+                        {
+                            <MudSelectItem Value="@gf.Id">@gf.DisplayName</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@* Hit Points panel *@
+@if (Ctx.ClassEntries.Any(e => !string.IsNullOrEmpty(e.ClassId)))
+{
+    <MudCard Elevation="1" Class="mb-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.subtitle1"><strong>Hit Points</strong></MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudAlert Severity="Severity.Info" Class="mb-3" Dense="true">
+                <MudText Typo="Typo.body2">
+                    <strong>Level 1:</strong> You always receive the maximum hit die value (e.g., a Fighter gets 10 from a d10).<br />
+                    <strong>Levels 2+:</strong> Take the <em>fixed average</em> (⌊hit die / 2⌋ + 1) or enter a <em>manual</em> roll in the range [1, hit die].<br />
+                    <strong>Total Max HP</strong> = sum of all per-level die values + (CON modifier × total level), minimum 1 per level.
+                </MudText>
+            </MudAlert>
+            @foreach (var hpEntry in Ctx.ClassEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)))
+            {
+                var hpClsDef = Classes.FirstOrDefault(c => c.Id == hpEntry.ClassId);
+                int hpHitDie = hpClsDef?.HitDie ?? 8;
+                int hpAverage = (hpHitDie / 2) + 1;
+                string hpClsDisplay = hpClsDef?.DisplayName ?? hpEntry.ClassId;
+
+                @for (int hpLvl = 1; hpLvl <= hpEntry.Level; hpLvl++)
+                {
+                    int capturedLvl = hpLvl;
+                    string capturedClassId = hpEntry.ClassId;
+                    int capturedHitDie = hpHitDie;
+                    int capturedAverage = hpAverage;
+                    string hpKey = $"{capturedClassId}|{capturedLvl}";
+
+                    if (capturedLvl == 1)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2">
+                            <MudText Style="min-width:180px">@hpClsDisplay level 1:</MudText>
+                            <MudChip T="string" Color="Color.Default" Size="Size.Small">
+                                @hpHitDie (max d@(hpHitDie))
+                            </MudChip>
+                        </MudStack>
+                    }
+                    else
+                    {
+                        Ctx.AllHpChoicesByKey.TryGetValue(hpKey, out var currentHp);
+                        string hpMethod = !string.IsNullOrEmpty(currentHp.Method) ? currentHp.Method : "average";
+                        int hpValue = hpMethod == "manual" && currentHp.DieRollValue >= 1
+                            ? currentHp.DieRollValue
+                            : capturedAverage;
+
+                        <MudDivider Class="my-1" />
+                        <MudStack Row="false" Spacing="1" Class="mb-2">
+                            <MudText Typo="Typo.body2"><strong>@hpClsDisplay level @capturedLvl</strong></MudText>
+                            <MudRadioGroup T="string"
+                                           Value="@hpMethod"
+                                           ValueChanged="@(async (string v) => await OnHpMethodChanged(capturedClassId, capturedLvl, v, capturedAverage))">
+                                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                    <MudRadio Value="@("average")" Color="Color.Primary">
+                                        Average (@capturedAverage)
+                                    </MudRadio>
+                                    <MudRadio Value="@("manual")" Color="Color.Primary">
+                                        Manual
+                                    </MudRadio>
+                                    @if (hpMethod == "manual")
+                                    {
+                                        <MudNumericField T="int"
+                                                         Value="@hpValue"
+                                                         ValueChanged="@(async (int v) => await OnHpValueChanged(capturedClassId, capturedLvl, v))"
+                                                         Label="@($"Roll (1–{capturedHitDie})")"
+                                                         Min="1" Max="@capturedHitDie"
+                                                         Immediate="true"
+                                                         Variant="Variant.Outlined"
+                                                         Style="max-width:130px" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Casino"
+                                                       Color="Color.Secondary"
+                                                       Size="Size.Small"
+                                                       OnClick="@(async () => { Randomizer.RollHp(capturedClassId, capturedLvl, capturedHitDie); await OnChanged.InvokeAsync(); })"
+                                                       aria-label="@($"Roll d{capturedHitDie} for {hpClsDisplay} level {capturedLvl}")" />
+                                    }
+                                </MudStack>
+                            </MudRadioGroup>
+                        </MudStack>
+                    }
+                }
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<RaceDefinition> Races { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<FeatDefinition> Feats { get; set; } = [];
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+
+    private async Task OnAsiRadioChanged(string classId, int grantLevel, string radioValue)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!Ctx.AllAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        existing.Mode = radioValue;
+        existing.FeatId = null;
+        existing.AbilityOne = null;
+        existing.AbilityTwo = null;
+
+        Ctx.AllAsiChoicesByKey[key] = existing;
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnAsiAbilityChanged(string classId, int grantLevel, string? abilityOne, string? abilityTwo)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!Ctx.AllAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        existing.FeatId = null;
+        existing.AbilityOne = string.IsNullOrEmpty(abilityOne) ? null : abilityOne;
+        existing.AbilityTwo = string.IsNullOrEmpty(abilityTwo) ? null : abilityTwo;
+        Ctx.AllAsiChoicesByKey[key] = existing;
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnAsiFeatChanged(string classId, int grantLevel, string featId)
+    {
+        string key = $"{classId}|{grantLevel}";
+        if (!Ctx.AllAsiChoicesByKey.TryGetValue(key, out var existing))
+            existing = new AsiChoice { ClassId = classId, ClassLevel = grantLevel };
+
+        existing.AbilityOne = null;
+        existing.AbilityTwo = null;
+        existing.FeatId = string.IsNullOrEmpty(featId) ? null : featId;
+        Ctx.AllAsiChoicesByKey[key] = existing;
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnHpMethodChanged(string classId, int classLevel, string method, int average)
+    {
+        string key = $"{classId}|{classLevel}";
+        int dieRollValue = method == "manual"
+            ? (Ctx.AllHpChoicesByKey.TryGetValue(key, out var prev) && prev.DieRollValue >= 1 ? prev.DieRollValue : average)
+            : average;
+        Ctx.AllHpChoicesByKey[key] = (method, dieRollValue);
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnHpValueChanged(string classId, int classLevel, int value)
+    {
+        string key = $"{classId}|{classLevel}";
+        string method = Ctx.AllHpChoicesByKey.TryGetValue(key, out var prev) ? prev.Method : "manual";
+        Ctx.AllHpChoicesByKey[key] = (method, value);
+        await OnChanged.InvokeAsync();
+    }
+}

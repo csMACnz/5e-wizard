@@ -1,0 +1,277 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Validation
+@inject WizardContext Ctx
+
+@{
+    var c = State.Character;
+    var reviewRace = Races.FirstOrDefault(r => r.Id == c.RaceId);
+    var reviewBg = Backgrounds.FirstOrDefault(b => b.Id == c.BackgroundId);
+}
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 9 — Review &amp; Final Validation</MudText>
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.subtitle1"><strong>Character</strong></MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>Name: <strong>@(string.IsNullOrEmpty(c.Name) ? "—" : c.Name)</strong></MudText>
+                @if (!string.IsNullOrEmpty(c.PlayerName))
+                {
+                    <MudText>Player: @c.PlayerName</MudText>
+                }
+                @if (!string.IsNullOrEmpty(c.Campaign))
+                {
+                    <MudText>Campaign: @c.Campaign</MudText>
+                }
+                <MudText>Generation: @c.GenerationMethod</MudText>
+                <MudText>Race: <strong>@(reviewRace?.DisplayName ?? c.RaceId)</strong></MudText>
+                @if (!string.IsNullOrEmpty(c.SubraceId))
+                {
+                    var sub = reviewRace?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
+                    <MudText>Subrace: @(sub?.DisplayName ?? c.SubraceId)</MudText>
+                }
+                <MudText>Background: <strong>@(reviewBg?.DisplayName ?? c.BackgroundId)</strong></MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.subtitle1"><strong>Ability Scores (Final)</strong></MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    @foreach (var ability in WizardContext.Abilities)
+                    {
+                        var block = GetAbilityBlock(c, ability);
+                        <MudItem xs="4">
+                            <MudPaper Elevation="0" Class="pa-2 text-center"
+                                      Style="border:1px solid #ccc;border-radius:4px;">
+                                <MudText Typo="Typo.caption">@ability</MudText>
+                                <MudText Typo="Typo.h6">@block.Final</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                    mod @WizardContext.Modifier(block.Final)
+                                </MudText>
+                                @if (block.RacialBonus != 0)
+                                {
+                                    <MudText Typo="Typo.caption">(+@block.RacialBonus racial)</MudText>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.subtitle1"><strong>Classes</strong></MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                @foreach (var lvl in c.Levels)
+                {
+                    var cls = Classes.FirstOrDefault(cl => cl.Id == lvl.ClassId);
+                    <MudText>@(cls?.DisplayName ?? lvl.ClassId) Level @lvl.Level (d@(cls?.HitDie ?? 0))</MudText>
+                }
+                <MudText Typo="Typo.caption" Class="mt-1">Total Level: @c.TotalLevel</MudText>
+                @{
+                    int reviewConMod = WizardContext.Modifier(c.AbilityScores.CON.Final);
+                    int reviewMaxHp;
+                    if (c.HitPointEntries.Count > 0)
+                    {
+                        reviewMaxHp = c.HitPointEntries.Sum(e => Math.Max(1, e.DieRollValue + reviewConMod));
+                    }
+                    else
+                    {
+                        reviewMaxHp = 0;
+                        foreach (var rl in c.Levels)
+                        {
+                            var rcl = Classes.FirstOrDefault(x => x.Id == rl.ClassId);
+                            int rhd = rcl?.HitDie ?? 8;
+                            int ravg = (rhd / 2) + 1;
+                            if (rl.Level >= 1) reviewMaxHp += Math.Max(1, rhd + reviewConMod);
+                            if (rl.Level > 1) reviewMaxHp += (rl.Level - 1) * Math.Max(1, ravg + reviewConMod);
+                        }
+                    }
+                }
+                <MudText Typo="Typo.caption" Class="mt-1">Max HP: <strong>@reviewMaxHp</strong></MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.subtitle1"><strong>Proficiencies</strong></MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                @if (c.Skills.Count > 0)
+                {
+                    <MudText Typo="Typo.subtitle2">Skills:</MudText>
+                    <MudChipSet T="string" Class="mt-1">
+                        @foreach (var (skill, source) in c.Skills)
+                        {
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                @WizardContext.SkillLabel(skill) (@source)
+                            </MudChip>
+                        }
+                    </MudChipSet>
+                }
+                else
+                {
+                    <MudText Typo="Typo.caption">No skills recorded.</MudText>
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    @if (c.Spells.Count > 0)
+    {
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="1">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.subtitle1"><strong>Spells</strong></MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    @foreach (var classSpellGroup in c.Spells.GroupBy(s => s.ClassId))
+                    {
+                        var reviewCls = Classes.FirstOrDefault(cl => cl.Id == classSpellGroup.Key);
+                        <MudText Typo="Typo.subtitle2">@(reviewCls?.DisplayName ?? classSpellGroup.Key)</MudText>
+                        <MudChipSet T="string" Class="mt-1 mb-2">
+                            @foreach (var cs in classSpellGroup)
+                            {
+                                var spellDef = Spells.FirstOrDefault(s => s.Id == cs.SpellId);
+                                <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                                    @(spellDef?.DisplayName ?? cs.SpellId)
+                                    @(spellDef?.Level == 0 ? " (cantrip)" : $" (lvl {spellDef?.Level})")
+                                </MudChip>
+                            }
+                        </MudChipSet>
+                    }
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+
+    @if (c.Equipment.Count > 0)
+    {
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="1">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.subtitle1"><strong>Equipment</strong></MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudChipSet T="string" Class="mt-1">
+                        @foreach (var eq in c.Equipment)
+                        {
+                            var equipDef = Equipment.FirstOrDefault(e => e.Id == eq.ItemId);
+                            <MudChip T="string" Color="Color.Default" Size="Size.Small">
+                                @(equipDef?.DisplayName ?? eq.ItemId) ×@eq.Quantity
+                            </MudChip>
+                        }
+                    </MudChipSet>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+
+<!-- Validation Report -->
+<MudText Typo="Typo.subtitle1" Class="mt-4 mb-2"><strong>Validation Report</strong></MudText>
+@if (ReviewValidation == null)
+{
+    <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+}
+else if (ReviewValidation.IsValid && ReviewValidation.Warnings.Count == 0)
+{
+    <MudAlert Severity="Severity.Success" Class="mb-2">
+        ✓ Character is valid — all checks passed.
+    </MudAlert>
+}
+else
+{
+    @if (ReviewValidation.Errors.Count > 0)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-2">
+            <MudText Typo="Typo.subtitle2">Errors</MudText>
+            <ul style="margin:0.25em 0;padding-left:1.4em;">
+                @foreach (var err in ReviewValidation.Errors)
+                {
+                    <li>@err</li>
+                }
+            </ul>
+        </MudAlert>
+    }
+    @if (ReviewValidation.Warnings.Count > 0)
+    {
+        <MudAlert Severity="Severity.Warning" Class="mb-2">
+            <MudText Typo="Typo.subtitle2">Warnings (non-blocking)</MudText>
+            <ul style="margin:0.25em 0;padding-left:1.4em;">
+                @foreach (var warn in ReviewValidation.Warnings)
+                {
+                    <li>@warn</li>
+                }
+            </ul>
+        </MudAlert>
+    }
+}
+
+<MudStack Row="true" Spacing="2" Class="mt-4">
+    <MudButton Variant="Variant.Filled" Color="Color.Success"
+               StartIcon="@Icons.Material.Filled.Download"
+               OnClick="@OnExportJson">
+        Export JSON
+    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Secondary"
+               StartIcon="@Icons.Material.Filled.MobileScreenShare"
+               OnClick="@OnExportFightClub5e">
+        Export FC5 XML
+    </MudButton>
+    <MudButton Variant="Variant.Outlined" Color="Color.Default"
+               StartIcon="@Icons.Material.Filled.Print"
+               OnClick="@OnPrintSheet">
+        Print Sheet
+    </MudButton>
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired] public CharacterWizardState State { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<RaceDefinition> Races { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<BackgroundDefinition> Backgrounds { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<SpellDefinition> Spells { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<EquipmentItemDefinition> Equipment { get; set; } = [];
+    [Parameter] public ValidationResult? ReviewValidation { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnExportJson { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnExportFightClub5e { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnPrintSheet { get; set; }
+
+    private static AbilityBlock GetAbilityBlock(Character c, string ability) => ability switch
+    {
+        "STR" => c.AbilityScores.STR,
+        "DEX" => c.AbilityScores.DEX,
+        "CON" => c.AbilityScores.CON,
+        "INT" => c.AbilityScores.INT,
+        "WIS" => c.AbilityScores.WIS,
+        "CHA" => c.AbilityScores.CHA,
+        _ => new AbilityBlock(),
+    };
+}

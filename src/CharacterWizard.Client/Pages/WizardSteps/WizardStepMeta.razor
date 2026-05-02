@@ -1,0 +1,62 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Validation
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 1 — Character Meta</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudTextField Value="@Ctx.CharacterName"
+                      ValueChanged="@(async (string v) => { Ctx.CharacterName = v; await OnChanged.InvokeAsync(); })"
+                      Label="Character Name" Required="true"
+                      Immediate="true"
+                      Variant="Variant.Outlined" HelperText="Required"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Filled.Casino"
+                      OnAdornmentClick="@(async () => { await Randomizer.RandomizeCharacterNameAsync(FullNames); await OnChanged.InvokeAsync(); })"
+                      AdornmentAriaLabel="Random character name"
+                      aria-required="true" />
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudTextField Value="@Ctx.PlayerName"
+                      ValueChanged="@(async (string v) => { Ctx.PlayerName = v; await OnChanged.InvokeAsync(); })"
+                      Label="Player Name"
+                      Immediate="true"
+                      Variant="Variant.Outlined" />
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudTextField Value="@Ctx.CampaignName"
+                      ValueChanged="@(async (string v) => { Ctx.CampaignName = v; await OnChanged.InvokeAsync(); })"
+                      Label="Campaign Name"
+                      Immediate="true"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Filled.Casino"
+                      OnAdornmentClick="@(async () => { Randomizer.RandomizeCampaignName(); await OnChanged.InvokeAsync(); })"
+                      AdornmentAriaLabel="Random campaign name" />
+    </MudItem>
+</MudGrid>
+<MudText Typo="Typo.subtitle1" Class="mt-4 mb-2">
+    <strong>Ability Score Generation Method</strong>
+</MudText>
+<MudRadioGroup @bind-Value="Ctx.GenerationMethodStr" T="string"
+               @bind-Value:after="OnChanged.InvokeAsync">
+    <MudStack Spacing="2">
+        <MudRadio Value="@nameof(GenerationMethod.StandardArray)" Color="Color.Primary">
+            <MudText><strong>Standard Array</strong> — Assign [@string.Join(", ", AbilitiesConfig.StandardArray)] to your abilities</MudText>
+        </MudRadio>
+        <MudRadio Value="@nameof(GenerationMethod.PointBuy)" Color="Color.Primary">
+            <MudText><strong>Point Buy</strong> — Spend @AbilitiesConfig.PointBuy.Budget points (scores @AbilitiesConfig.PointBuy.MinScore–@AbilitiesConfig.PointBuy.MaxScore)</MudText>
+        </MudRadio>
+        <MudRadio Value="@nameof(GenerationMethod.Roll)" Color="Color.Primary">
+            <MudText><strong>Rolled Scores</strong> — Enter @AbilitiesConfig.Roll.Method results (range @RollValidator.MinScore–@RollValidator.MaxScore)</MudText>
+        </MudRadio>
+    </MudStack>
+</MudRadioGroup>
+
+@code {
+    [Parameter, EditorRequired] public AbilitiesConfig AbilitiesConfig { get; set; } = new();
+    [Parameter, EditorRequired] public IReadOnlyList<string> FullNames { get; set; } = [];
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+}

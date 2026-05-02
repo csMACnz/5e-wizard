@@ -16,5 +16,9 @@ builder.Services.AddScoped<BuildInfoService>();
 builder.Services.AddScoped<RandomCharacterService>();
 builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddScoped<CharacterSessionService>();
+builder.Services.AddScoped<WizardContext>();
+builder.Services.AddScoped<WizardCommitService>();
+builder.Services.AddScoped<WizardStepValidator>();
+builder.Services.AddScoped<WizardRandomizerService>();
 
 await builder.Build().RunAsync();

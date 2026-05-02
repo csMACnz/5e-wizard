@@ -1,0 +1,266 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+@{
+    var bgForEquip = Backgrounds.FirstOrDefault(b => b.Id == Ctx.SelectedBackgroundId);
+    var bgEquipIds = bgForEquip?.StartingEquipmentIds ?? [];
+    var primaryClsForEquip = Classes.FirstOrDefault(c => c.Id == (Ctx.ClassEntries.Count > 0 ? Ctx.ClassEntries[0].ClassId : string.Empty));
+    var classConfig = ClassStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == (primaryClsForEquip?.Id ?? string.Empty));
+}
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 8 — Equipment</MudText>
+
+@* Background equipment (always shown, always granted) *@
+@if (bgForEquip != null && bgEquipIds.Count > 0)
+{
+    <MudCard Class="mb-4" Elevation="1">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.subtitle1">
+                    <strong>@bgForEquip.DisplayName</strong> Starting Equipment (automatic)
+                </MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudChipSet T="string" Class="mb-2">
+                @foreach (var itemId in bgEquipIds)
+                {
+                    var itemDef = Equipment.FirstOrDefault(e => e.Id == itemId);
+                    <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                        @(itemDef?.DisplayName ?? itemId)
+                    </MudChip>
+                }
+            </MudChipSet>
+            <MudText Typo="Typo.caption">
+                Background starting gold: @(bgForEquip.StartingGold) gp
+            </MudText>
+        </MudCardContent>
+    </MudCard>
+}
+
+@* Class starting equipment section *@
+@if (classConfig != null)
+{
+    <MudText Typo="Typo.subtitle1" Class="mb-3">
+        <strong>@(primaryClsForEquip?.DisplayName ?? "Class") Starting Equipment</strong>
+    </MudText>
+
+    @* Choose: class equipment OR starting wealth *@
+    <MudCard Class="mb-4" Elevation="1">
+        <MudCardContent>
+            <MudRadioGroup T="string"
+                           Value="@(Ctx.ClassStartingWealthChosen ? "wealth" : "equipment")"
+                           ValueChanged="@(async (string v) => await OnEquipmentOrWealthChanged(v))"
+                           Class="mb-2">
+                <MudStack Spacing="1">
+                    <MudRadio Value="@("equipment")" Color="Color.Primary">
+                        <MudText><strong>Standard starting equipment</strong> — choose equipment options below</MudText>
+                    </MudRadio>
+                    <MudRadio Value="@("wealth")" Color="Color.Primary">
+                        <MudText>
+                            <strong>Starting wealth</strong> — take <em>@classConfig.StartingWealthRoll gp</em> instead of equipment choices
+                        </MudText>
+                    </MudRadio>
+                </MudStack>
+            </MudRadioGroup>
+        </MudCardContent>
+    </MudCard>
+
+    @if (Ctx.ClassStartingWealthChosen)
+    {
+        <MudCard Class="mb-4" Elevation="1">
+            <MudCardContent>
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Roll or enter starting gold (@classConfig.StartingWealthRoll gp)</MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudNumericField T="int?"
+                                     Value="Ctx.ClassStartingGold"
+                                     ValueChanged="@(async (int? v) => { Ctx.ClassStartingGold = v; await OnChanged.InvokeAsync(); })"
+                                     Label="Starting Gold (gp)"
+                                     Variant="Variant.Outlined"
+                                     Min="0"
+                                     Style="width:180px" />
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               OnClick="@(async () => { Randomizer.RollStartingWealth(ClassStartingEquipmentConfigs); await OnChanged.InvokeAsync(); })"
+                               StartIcon="@Icons.Material.Filled.Casino">
+                        Roll @classConfig.StartingWealthRoll
+                    </MudButton>
+                </MudStack>
+                @if (Ctx.ClassStartingGold.HasValue)
+                {
+                    <MudText Typo="Typo.caption" Class="mt-1">
+                        Starting gold: @Ctx.ClassStartingGold gp
+                    </MudText>
+                }
+            </MudCardContent>
+        </MudCard>
+    }
+    else
+    {
+        @* Fixed items *@
+        @if (classConfig.FixedItems.Count > 0)
+        {
+            <MudCard Class="mb-3" Elevation="1">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.subtitle2">Fixed Starting Items (automatic)</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudChipSet T="string">
+                        @foreach (var fixedItem in classConfig.FixedItems)
+                        {
+                            var itemDef = Equipment.FirstOrDefault(e => e.Id == fixedItem.ItemId);
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small">
+                                @(itemDef?.DisplayName ?? fixedItem.ItemId)@(fixedItem.Quantity > 1 ? $" ×{fixedItem.Quantity}" : "")
+                            </MudChip>
+                        }
+                    </MudChipSet>
+                </MudCardContent>
+            </MudCard>
+        }
+
+        @* Choice groups *@
+        @foreach (var choiceGroup in classConfig.ChoiceGroups.Where(g => g.Required))
+        {
+            var groupId = choiceGroup.Id;
+            var currentChoice = Ctx.EquipmentChoices.TryGetValue(groupId, out var ch) ? ch : (null as (string, string?)?);
+
+            <MudCard Class="mb-3" Elevation="1">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.subtitle2">@choiceGroup.Description</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudRadioGroup T="string"
+                                   Value="@(currentChoice?.Item1)"
+                                   ValueChanged="@(async (string optId) => await OnEquipmentOptionChanged(groupId, optId))"
+                                   Class="mb-2">
+                        <MudStack Spacing="1">
+                            @foreach (var option in choiceGroup.Options)
+                            {
+                                <MudRadio Value="@option.Id" Color="Color.Primary">
+                                    <MudText>@option.Description</MudText>
+                                </MudRadio>
+                            }
+                        </MudStack>
+                    </MudRadioGroup>
+
+                    @if (currentChoice.HasValue)
+                    {
+                        var chosenOption = choiceGroup.Options.FirstOrDefault(o => o.Id == currentChoice.Value.Item1);
+                        @if (chosenOption?.PickOne == true)
+                        {
+                            <MudSelect T="string"
+                                       Value="@(currentChoice.Value.Item2)"
+                                       ValueChanged="@(async (string itemId) => await OnEquipmentItemPicked(groupId, itemId))"
+                                       Label="Choose an item"
+                                       Variant="Variant.Outlined"
+                                       Class="mt-2"
+                                       Style="max-width:300px">
+                                @foreach (var grant in chosenOption.GrantItems)
+                                {
+                                    var grantDef = Equipment.FirstOrDefault(e => e.Id == grant.ItemId);
+                                    <MudSelectItem Value="@grant.ItemId">
+                                        @(grantDef?.DisplayName ?? grant.ItemId)
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        }
+                    }
+                </MudCardContent>
+            </MudCard>
+        }
+    }
+}
+else
+{
+    @* Fallback: legacy flat checkbox list when no config is available *@
+    var classEquipIds = primaryClsForEquip?.StartingEquipmentIds ?? [];
+    var equipmentToShow = Ctx.StrictEquipment && classEquipIds.Count > 0
+        ? Equipment.Where(e => classEquipIds.Contains(e.Id)).ToList()
+        : (IReadOnlyList<EquipmentItemDefinition>)Equipment;
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+        <MudSwitch T="bool" Value="Ctx.StrictEquipment"
+                   ValueChanged="@(async (bool v) => { Ctx.SetStrictEquipment(v, Classes); await OnChanged.InvokeAsync(); })"
+                   Color="Color.Primary"
+                   Label="Strict mode: standard PHB starting equipment only" />
+        @if (!Ctx.StrictEquipment)
+        {
+            <MudText Typo="Typo.caption" Color="Color.Warning">
+                All items available — selections are not validated against class starting equipment.
+            </MudText>
+        }
+    </MudStack>
+
+    <MudText Typo="Typo.subtitle1" Class="mb-2">
+        <strong>Select @(primaryClsForEquip != null ? primaryClsForEquip.DisplayName + " " : string.Empty)Starting Equipment</strong>
+        @if (Ctx.StrictEquipment && classEquipIds.Count > 0)
+        {
+            <span class="mud-typography mud-typography-caption"> — showing standard PHB choices</span>
+        }
+        <span> (@Ctx.SelectedEquipmentIds.Count item(s) selected)</span>
+    </MudText>
+    @foreach (var group in equipmentToShow.GroupBy(e => e.Category).OrderBy(g => g.Key))
+    {
+        <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1" Style="text-transform:capitalize">
+            @group.Key
+        </MudText>
+        <MudGrid>
+            @foreach (var item in group.OrderBy(e => e.DisplayName))
+            {
+                string itemId = item.Id;
+                bool isSelected = Ctx.SelectedEquipmentIds.Contains(itemId);
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCheckBox T="bool"
+                                 Value="@isSelected"
+                                 ValueChanged="@(async (bool v) => await ToggleEquipment(itemId, v))"
+                                 Color="Color.Primary"
+                                 Label="@item.DisplayName" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<BackgroundDefinition> Backgrounds { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<EquipmentItemDefinition> Equipment { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ClassStartingEquipmentEntry> ClassStartingEquipmentConfigs { get; set; } = [];
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+
+    private async Task ToggleEquipment(string itemId, bool selected)
+    {
+        if (selected)
+            Ctx.SelectedEquipmentIds.Add(itemId);
+        else
+            Ctx.SelectedEquipmentIds.Remove(itemId);
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnEquipmentOrWealthChanged(string value)
+    {
+        Ctx.ClassStartingWealthChosen = value == "wealth";
+        if (!Ctx.ClassStartingWealthChosen)
+            Ctx.ClassStartingGold = null;
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnEquipmentOptionChanged(string groupId, string optionId)
+    {
+        Ctx.EquipmentChoices[groupId] = (optionId, null);
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task OnEquipmentItemPicked(string groupId, string itemId)
+    {
+        if (Ctx.EquipmentChoices.TryGetValue(groupId, out var current))
+            Ctx.EquipmentChoices[groupId] = (current.OptionId, itemId);
+        await OnChanged.InvokeAsync();
+    }
+}
