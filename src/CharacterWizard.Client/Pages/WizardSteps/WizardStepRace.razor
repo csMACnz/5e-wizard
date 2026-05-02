@@ -1,0 +1,116 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+@{
+    var currentRace = Races.FirstOrDefault(r => r.Id == Ctx.SelectedRaceId);
+}
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 3 — Race &amp; Subrace</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudSelect T="string" Label="Race"
+                   Value="Ctx.SelectedRaceId"
+                   ValueChanged="@(async (string v) => { Ctx.SelectedRaceId = v; Ctx.SelectedSubraceId = string.Empty; await OnChanged.InvokeAsync(); })"
+                   Variant="Variant.Outlined" Required="true"
+                   Adornment="Adornment.End"
+                   AdornmentIcon="@Icons.Material.Filled.Casino"
+                   OnAdornmentClick="@(async () => { Randomizer.RandomizeRace(Races); await OnChanged.InvokeAsync(); })"
+                   AdornmentAriaLabel="Random race">
+            <MudSelectItem Value="@string.Empty"></MudSelectItem>
+            @foreach (var race in Races)
+            {
+                <MudSelectItem Value="@race.Id">@race.DisplayName</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    @if (currentRace?.Subraces.Count > 0)
+    {
+        <MudItem xs="12" sm="6">
+            <MudSelect T="string" Label="Subrace"
+                       Value="Ctx.SelectedSubraceId"
+                       ValueChanged="@(async (string v) => { Ctx.SelectedSubraceId = v; await OnChanged.InvokeAsync(); })"
+                       Variant="Variant.Outlined" Required="true"
+                       Adornment="Adornment.End"
+                       AdornmentIcon="@Icons.Material.Filled.Casino"
+                       OnAdornmentClick="@(async () => { Randomizer.RandomizeSubrace(Races); await OnChanged.InvokeAsync(); })"
+                       AdornmentAriaLabel="Random subrace">
+                <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                @foreach (var sub in currentRace.Subraces)
+                {
+                    <MudSelectItem Value="@sub.Id">@sub.DisplayName</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+    }
+</MudGrid>
+
+@if (currentRace != null)
+{
+    var raceBonuses = WizardContext.GetCombinedRacialBonuses(currentRace, Ctx.SelectedSubraceId);
+    <MudCard Class="mt-4" Elevation="1">
+        <MudCardContent>
+            <MudText Typo="Typo.subtitle1">
+                <strong>@currentRace.DisplayName</strong> Racial Bonuses
+            </MudText>
+            <MudChipSet T="string" Class="mt-2">
+                @foreach (var (ab, bonus) in raceBonuses)
+                {
+                    <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                        @ab +@bonus
+                    </MudChip>
+                }
+            </MudChipSet>
+            @if (currentRace.TraitIds.Count > 0)
+            {
+                <MudText Typo="Typo.subtitle2" Class="mt-2">Traits</MudText>
+                <MudChipSet T="string" Class="mt-1">
+                    @foreach (var trait in currentRace.TraitIds)
+                    {
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">
+                            @WizardContext.TraitName(trait)
+                        </MudChip>
+                    }
+                </MudChipSet>
+            }
+            <MudText Typo="Typo.subtitle2" Class="mt-3">
+                Preview: Final Ability Scores (base + racial bonuses)
+            </MudText>
+            <MudGrid Class="mt-1">
+                @foreach (var ability in WizardContext.Abilities)
+                {
+                    int baseVal = GetAbilityBase(ability);
+                    int racial = raceBonuses.TryGetValue(ability, out int rb) ? rb : 0;
+                    int final = baseVal + racial;
+                    <MudItem xs="4" sm="2">
+                        <MudPaper Elevation="0" Class="pa-2 text-center"
+                                  Style="border:1px solid #ccc;border-radius:4px">
+                            <MudText Typo="Typo.caption">@ability</MudText>
+                            <MudText Typo="Typo.h6">@final</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                mod @WizardContext.Modifier(final)
+                            </MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<RaceDefinition> Races { get; set; } = [];
+    [Parameter, EditorRequired] public AbilitiesConfig AbilitiesConfig { get; set; } = new();
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+    [Parameter, EditorRequired] public CharacterWizardState State { get; set; } = default!;
+
+    private int GetAbilityBase(string ability) =>
+        State.Character.GenerationMethod switch
+        {
+            GenerationMethod.StandardArray => Ctx.AbilitySelections.GetValueOrDefault(ability, 0),
+            GenerationMethod.PointBuy => Ctx.PointBuyValues.GetValueOrDefault(ability, AbilitiesConfig.PointBuy.MinScore),
+            GenerationMethod.Roll => Ctx.RollValues.GetValueOrDefault(ability, CharacterWizard.Shared.Validation.RollValidator.MinScore),
+            _ => 0,
+        };
+}

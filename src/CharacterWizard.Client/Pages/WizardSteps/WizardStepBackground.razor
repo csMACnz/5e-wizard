@@ -1,0 +1,115 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+
+@{
+    var selectedBg = Backgrounds.FirstOrDefault(b => b.Id == Ctx.SelectedBackgroundId);
+    var primaryClass = Classes.FirstOrDefault(c => c.Id == (Ctx.ClassEntries.Count > 0 ? Ctx.ClassEntries[0].ClassId : string.Empty));
+    var backgroundSkills = selectedBg?.SkillProficiencies ?? [];
+}
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Background &amp; Proficiencies</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudSelect T="string" Label="Background"
+                   Value="@Ctx.SelectedBackgroundId"
+                   ValueChanged="@(async (string v) => { Ctx.SetBackground(v, Backgrounds); await OnChanged.InvokeAsync(); })"
+                   Variant="Variant.Outlined" Required="true"
+                   Adornment="Adornment.End"
+                   AdornmentIcon="@Icons.Material.Filled.Casino"
+                   OnAdornmentClick="@(async () => { Randomizer.RandomizeBackground(Backgrounds); await OnChanged.InvokeAsync(); })"
+                   AdornmentAriaLabel="Random background">
+            <MudSelectItem Value="@string.Empty"></MudSelectItem>
+            @foreach (var bg in Backgrounds)
+            {
+                <MudSelectItem Value="@bg.Id">@bg.DisplayName</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+</MudGrid>
+
+@if (selectedBg != null)
+{
+    <MudCard Class="mt-3 mb-4" Elevation="1">
+        <MudCardContent>
+            <MudText Typo="Typo.subtitle1"><strong>@selectedBg.DisplayName</strong></MudText>
+            <MudText Typo="Typo.subtitle2" Class="mt-1">Granted Skill Proficiencies:</MudText>
+            <MudChipSet T="string" Class="mt-1">
+                @foreach (var sk in selectedBg.SkillProficiencies)
+                {
+                    <MudChip T="string" Color="Color.Secondary" Size="Size.Small">
+                        @WizardContext.SkillLabel(sk)
+                    </MudChip>
+                }
+            </MudChipSet>
+            @if (!string.IsNullOrEmpty(selectedBg.FeatureId))
+            {
+                <MudText Typo="Typo.caption" Class="mt-2">
+                    Background Feature: @selectedBg.FeatureId
+                </MudText>
+            }
+        </MudCardContent>
+    </MudCard>
+}
+
+@if (primaryClass != null && Ctx.ClassSkillOptionIds.Count > 0)
+{
+    int chosen = Ctx.ClassSkillSelections.Count(s => s);
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-3 mb-1">
+        <MudText Typo="Typo.subtitle1">
+            <strong>Class Skill Proficiencies</strong> — Choose @primaryClass.SkillChoices.Count
+            from @primaryClass.DisplayName's allowed list (@chosen / @primaryClass.SkillChoices.Count selected)
+        </MudText>
+        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Casino"
+                   OnClick="@(async () => { Randomizer.RandomizeSkills(Classes, Backgrounds); await OnChanged.InvokeAsync(); })">
+            Random Skills
+        </MudButton>
+    </MudStack>
+    <MudGrid>
+        @for (int si = 0; si < Ctx.ClassSkillOptionIds.Count; si++)
+        {
+            int skillIdx = si;
+            bool isGrantedByBackground = backgroundSkills.Contains(Ctx.ClassSkillOptionIds[skillIdx]);
+            bool alreadyMaxed = !Ctx.ClassSkillSelections[skillIdx]
+                && Ctx.ClassSkillSelections.Count(s => s) >= primaryClass.SkillChoices.Count;
+            bool skillDisabled = isGrantedByBackground || alreadyMaxed;
+            <MudItem xs="12" sm="6" md="4">
+                <MudCheckBox T="bool" Value="Ctx.ClassSkillSelections[skillIdx]"
+                             ValueChanged="@(async (bool v) => { Ctx.ClassSkillSelections[skillIdx] = v; await OnChanged.InvokeAsync(); })"
+                             Disabled="@skillDisabled"
+                             Color="Color.Primary"
+                             Label="@(WizardContext.SkillLabel(Ctx.ClassSkillOptionIds[skillIdx]) + (isGrantedByBackground ? " (from background)" : string.Empty))" />
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@if (selectedBg != null || Ctx.ClassSkillSelections.Any(s => s))
+{
+    var allSkillIds = GetAllSkillIds(selectedBg);
+    <MudText Typo="Typo.subtitle1" Class="mt-4 mb-1"><strong>All Skill Proficiencies</strong></MudText>
+    <MudChipSet T="string" Class="mt-1">
+        @foreach (var sk in allSkillIds)
+        {
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small">@WizardContext.SkillLabel(sk)</MudChip>
+        }
+    </MudChipSet>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<BackgroundDefinition> Backgrounds { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+
+    private List<string> GetAllSkillIds(BackgroundDefinition? bg)
+    {
+        var result = new HashSet<string>();
+        if (bg != null)
+            foreach (var s in bg.SkillProficiencies) result.Add(s);
+        for (int i = 0; i < Ctx.ClassSkillOptionIds.Count; i++)
+            if (Ctx.ClassSkillSelections[i]) result.Add(Ctx.ClassSkillOptionIds[i]);
+        return [.. result];
+    }
+}

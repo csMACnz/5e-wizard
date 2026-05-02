@@ -1,0 +1,136 @@
+@using CharacterWizard.Client.Services
+@using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Validation
+@inject WizardContext Ctx
+@inject WizardRandomizerService Randomizer
+@inject CharacterWizardState State
+
+<MudText Typo="Typo.h5" GutterBottom="true">Step 2 — Ability Scores</MudText>
+
+@if (State.Character.GenerationMethod == GenerationMethod.StandardArray)
+{
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+        <MudText>Assign each value from [@string.Join(", ", AbilitiesConfig.StandardArray)] to an ability. Each value must be used exactly once.</MudText>
+        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Casino"
+                   OnClick="@(async () => { Randomizer.RandomlyAssignStandardArray(AbilitiesConfig); await OnChanged.InvokeAsync(); })">
+            Random Assign
+        </MudButton>
+    </MudStack>
+    <MudGrid>
+        @foreach (var ability in WizardContext.Abilities)
+        {
+            string ab = ability;
+            <MudItem xs="12" sm="6" md="4">
+                <MudSelect T="int" Label="@ab"
+                           Value="@Ctx.AbilitySelections[ab]"
+                           ValueChanged="@(async (int v) => { Ctx.AbilitySelections[ab] = v; await OnChanged.InvokeAsync(); })"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem Value="0"></MudSelectItem>
+                    @foreach (int v in AbilitiesConfig.StandardArray)
+                    {
+                        <MudSelectItem Value="@v">@v (mod @WizardContext.Modifier(v))</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        }
+    </MudGrid>
+}
+else if (State.Character.GenerationMethod == GenerationMethod.PointBuy)
+{
+    int pbSpent = WizardContext.Abilities.Sum(a => PointBuyCost(Ctx.PointBuyValues[a]));
+    int pbRemaining = AbilitiesConfig.PointBuy.Budget - pbSpent;
+    <MudText Class="mb-2">Use +/− to allocate scores between @AbilitiesConfig.PointBuy.MinScore and @AbilitiesConfig.PointBuy.MaxScore. Budget: @AbilitiesConfig.PointBuy.Budget points.</MudText>
+    <MudAlert Severity="@(pbRemaining < 0 ? Severity.Error : Severity.Info)" Class="mb-3">
+        Points remaining: <strong>@pbRemaining</strong>
+    </MudAlert>
+    <MudGrid>
+        @foreach (var ability in WizardContext.Abilities)
+        {
+            string ab = ability;
+            int baseScore = Ctx.PointBuyValues[ab];
+            int nextExtra = baseScore < AbilitiesConfig.PointBuy.MaxScore ? PointBuyCost(baseScore + 1) - PointBuyCost(baseScore) : int.MaxValue;
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="1" Class="pa-3">
+                    <MudText Typo="Typo.subtitle2">@ab</MudText>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-1">
+                        <MudIconButton Icon="@Icons.Material.Filled.Remove" Size="Size.Small"
+                                       Color="Color.Primary" Disabled="@(baseScore <= AbilitiesConfig.PointBuy.MinScore)"
+                                       OnClick="@(async () => await DecrementAbility(ab))"
+                                       aria-label="@($"Decrease {ab}")" />
+                        <MudText Typo="Typo.h6" Style="min-width:2em;text-align:center">@baseScore</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small"
+                                       Color="Color.Primary"
+                                       Disabled="@(baseScore >= AbilitiesConfig.PointBuy.MaxScore || pbSpent + nextExtra > AbilitiesConfig.PointBuy.Budget)"
+                                       OnClick="@(async () => await IncrementAbility(ab))"
+                                       aria-label="@($"Increase {ab}")" />
+                        <MudText Color="Color.Secondary">mod @WizardContext.Modifier(baseScore)</MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.caption">Cost: @PointBuyCost(baseScore)</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+}
+else if (State.Character.GenerationMethod == GenerationMethod.Roll)
+{
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+        <MudText>Enter the @AbilitiesConfig.Roll.Count rolled values (@AbilitiesConfig.Roll.Method, range @RollValidator.MinScore–@RollValidator.MaxScore).</MudText>
+        <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Secondary"
+                   StartIcon="@Icons.Material.Filled.Casino"
+                   OnClick="@(async () => { Randomizer.RollAllAbilities(); await OnChanged.InvokeAsync(); })">
+            Roll All
+        </MudButton>
+    </MudStack>
+    <MudGrid>
+        @foreach (var ability in WizardContext.Abilities)
+        {
+            string ab = ability;
+            <MudItem xs="12" sm="6" md="4">
+                <MudNumericField T="int" Label="@ab"
+                                Value="@Ctx.RollValues[ab]"
+                                ValueChanged="@(async (int v) => { Ctx.RollValues[ab] = v; await OnChanged.InvokeAsync(); })"
+                                Min="@RollValidator.MinScore" Max="@RollValidator.MaxScore" Variant="Variant.Outlined"
+                                HelperText="@($"mod {WizardContext.Modifier(Ctx.RollValues[ab])}")"
+                                Adornment="Adornment.End"
+                                AdornmentIcon="@Icons.Material.Filled.Casino"
+                                OnAdornmentClick="@(async () => { Randomizer.RerollAbility(ab); await OnChanged.InvokeAsync(); })"
+                                AdornmentAriaLabel="@($"Reroll {ab}")" />
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@code {
+    [Parameter, EditorRequired] public AbilitiesConfig AbilitiesConfig { get; set; } = new();
+    [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
+
+    private int PointBuyCost(int score)
+    {
+        foreach (var entry in AbilitiesConfig.PointBuy.Costs)
+            if (entry.Score == score) return entry.Cost;
+        return 0;
+    }
+
+    private async Task IncrementAbility(string ability)
+    {
+        int minScore = AbilitiesConfig.PointBuy.MinScore;
+        int maxScore = AbilitiesConfig.PointBuy.MaxScore;
+        int budget = AbilitiesConfig.PointBuy.Budget;
+        int current = Ctx.PointBuyValues.GetValueOrDefault(ability, minScore);
+        if (current >= maxScore) return;
+        int spent = WizardContext.Abilities.Sum(a => PointBuyCost(Ctx.PointBuyValues.GetValueOrDefault(a, minScore)));
+        int nextCost = PointBuyCost(current + 1) - PointBuyCost(current);
+        if (spent + nextCost <= budget)
+            Ctx.PointBuyValues[ability] = current + 1;
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task DecrementAbility(string ability)
+    {
+        int minScore = AbilitiesConfig.PointBuy.MinScore;
+        int current = Ctx.PointBuyValues.GetValueOrDefault(ability, minScore);
+        if (current > minScore) Ctx.PointBuyValues[ability] = current - 1;
+        await OnChanged.InvokeAsync();
+    }
+}
