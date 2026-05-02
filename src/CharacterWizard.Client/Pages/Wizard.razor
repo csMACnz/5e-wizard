@@ -1220,14 +1220,11 @@ else
         _classStartingEquipmentConfigs = await DataService.GetClassStartingEquipmentAsync();
         _fullNames = await DataService.GetFullNamesAsync();
 
-        // Initialise point-buy and roll defaults from config (min score for point buy)
+        // Initialise point-buy defaults from config (roll values keep their hardcoded 8 default which is in valid range)
         if (_abilitiesConfig.PointBuy.MinScore != 0)
         {
             foreach (var ab in Abilities)
-            {
                 _pointBuyValues[ab] = _abilitiesConfig.PointBuy.MinScore;
-                _rollValues[ab] = _abilitiesConfig.PointBuy.MinScore;
-            }
         }
 
         _loading = false;
@@ -1377,7 +1374,7 @@ else
         {
             GenerationMethod.StandardArray => _abilitySelections.GetValueOrDefault(ability, 0),
             GenerationMethod.PointBuy => _pointBuyValues.GetValueOrDefault(ability, _abilitiesConfig.PointBuy.MinScore),
-            GenerationMethod.Roll => _rollValues.GetValueOrDefault(ability, _abilitiesConfig.PointBuy.MinScore),
+            GenerationMethod.Roll => _rollValues.GetValueOrDefault(ability, RollValidator.MinScore),
             _ => 0,
         };
 
