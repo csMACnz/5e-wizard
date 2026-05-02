@@ -19,44 +19,20 @@
     <ProjectReference Include="..\CharacterWizard.Shared\CharacterWizard.Shared.csproj" />
   </ItemGroup>
 
-  <!-- Include SRD data files as static web assets served from /data/ -->
-  <ItemGroup>
-    <Content Include="..\..\data\races.json">
-      <Link>wwwroot\data\races.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\classes.json">
-      <Link>wwwroot\data\classes.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\backgrounds.json">
-      <Link>wwwroot\data\backgrounds.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\spells.json">
-      <Link>wwwroot\data\spells.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\equipment.json">
-      <Link>wwwroot\data\equipment.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\names.json">
-      <Link>wwwroot\data\names.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="..\..\data\class-starting-equipment.json">
-      <Link>wwwroot\data\class-starting-equipment.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+  <!-- Copy SRD data files into wwwroot/data/ so the Blazor static web assets
+       system can serve them from /data/* in both dev and publish modes.
+       The single source of truth is the repo-root data/ folder. -->
+  <Target Name="CopyDataFilesToWwwroot" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <_DataSourceDir>$(MSBuildProjectDirectory)/../../data</_DataSourceDir>
+      <_DataDestDir>$(MSBuildProjectDirectory)/wwwroot/data</_DataDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(_DataDestDir)" />
+    <Copy
+      SourceFiles="$(_DataSourceDir)/races.json;$(_DataSourceDir)/classes.json;$(_DataSourceDir)/backgrounds.json;$(_DataSourceDir)/spells.json;$(_DataSourceDir)/equipment.json;$(_DataSourceDir)/names.json;$(_DataSourceDir)/class-starting-equipment.json;$(_DataSourceDir)/feats.json"
+      DestinationFolder="$(_DataDestDir)"
+      SkipUnchangedFiles="true" />
+  </Target>
 
   <!-- Replace __BASE_HREF__ placeholder in published index.html -->
   <Target Name="SetBaseHref" AfterTargets="Publish">

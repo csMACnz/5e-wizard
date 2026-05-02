@@ -2,4 +2,5 @@
   <Project Path="CharacterWizard.Client/CharacterWizard.Client.csproj" />
   <Project Path="CharacterWizard.Shared/CharacterWizard.Shared.csproj" />
   <Project Path="CharacterWizard.Tests/CharacterWizard.Tests.csproj" />
+  <Project Path="CharacterWizard.E2ETests/CharacterWizard.E2ETests.csproj" />
 </Solution>

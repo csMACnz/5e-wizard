@@ -58,6 +58,7 @@ else
                     <MudTextField Value="@_characterName"
                                   ValueChanged="@((string v) => { _characterName = v; ValidateAndShowStepErrors(); })"
                                   Label="Character Name" Required="true"
+                                  Immediate="true"
                                   Variant="Variant.Outlined" HelperText="Required"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.Casino"

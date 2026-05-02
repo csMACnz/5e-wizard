@@ -20,10 +20,15 @@ else if (_sessions.Count == 0)
         <MudIcon Icon="@Icons.Material.Filled.PersonOff" Size="Size.Large" Class="mb-2" Color="Color.Default" />
         <MudText Typo="Typo.h6" Class="mb-2">No saved characters yet.</MudText>
         <MudText Class="mb-4">Start the wizard to create your first character!</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AutoStories"
-                   OnClick="@StartNew">
-            Start New Character
-        </MudButton>
+        <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.AutoStories"
+                       OnClick="@StartNew">
+                Start New Character
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Href="@Nav.BaseUri">
+                Back to Home
+            </MudButton>
+        </MudStack>
     </MudPaper>
 }
 else
@@ -76,7 +81,7 @@ else
                    OnClick="@StartNew">
             Start New Character
         </MudButton>
-        <MudButton Variant="Variant.Outlined" Href="/">
+        <MudButton Variant="Variant.Outlined" Href="@Nav.BaseUri">
             Back to Home
         </MudButton>
     </MudStack>
