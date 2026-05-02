@@ -27,7 +27,13 @@ jobs:
         run: dotnet build src/CharacterWizard.slnx -c Release --no-restore
 
       - name: Test (includes schema + data validation)
-        run: dotnet test src/CharacterWizard.slnx -c Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage-results
+        run: dotnet test src/CharacterWizard.Tests/CharacterWizard.Tests.csproj -c Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage-results
+
+      - name: Install Playwright browsers
+        run: pwsh src/CharacterWizard.E2ETests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+
+      - name: E2E Tests
+        run: dotnet test src/CharacterWizard.E2ETests/CharacterWizard.E2ETests.csproj -c Release --no-build --results-directory ./e2e-results
 
       - name: Format check
         run: dotnet format src/CharacterWizard.slnx --verify-no-changes

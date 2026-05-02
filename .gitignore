@@ -19,3 +19,6 @@ TestResults/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated data copies (produced by CopyDataFilesToWwwroot MSBuild target)
+src/CharacterWizard.Client/wwwroot/data/
