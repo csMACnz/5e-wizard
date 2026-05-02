@@ -85,13 +85,13 @@ else
                            @bind-Value:after="ValidateAndShowStepErrors">
                 <MudStack Spacing="2">
                     <MudRadio Value="@nameof(GenerationMethod.StandardArray)" Color="Color.Primary">
-                        <MudText><strong>Standard Array</strong> — Assign [15, 14, 13, 12, 10, 8] to your abilities</MudText>
+                        <MudText><strong>Standard Array</strong> — Assign [@string.Join(", ", _abilitiesConfig.StandardArray)] to your abilities</MudText>
                     </MudRadio>
                     <MudRadio Value="@nameof(GenerationMethod.PointBuy)" Color="Color.Primary">
-                        <MudText><strong>Point Buy</strong> — Spend 27 points (scores 8–15)</MudText>
+                        <MudText><strong>Point Buy</strong> — Spend @_abilitiesConfig.PointBuy.Budget points (scores @_abilitiesConfig.PointBuy.MinScore–@_abilitiesConfig.PointBuy.MaxScore)</MudText>
                     </MudRadio>
                     <MudRadio Value="@nameof(GenerationMethod.Roll)" Color="Color.Primary">
-                        <MudText><strong>Rolled Scores</strong> — Enter 4d6 drop lowest results (range 3–18)</MudText>
+                        <MudText><strong>Rolled Scores</strong> — Enter @_abilitiesConfig.Roll.Method results (range @RollValidator.MinScore–@RollValidator.MaxScore)</MudText>
                     </MudRadio>
                 </MudStack>
             </MudRadioGroup>
@@ -104,7 +104,7 @@ else
             @if (State.Character.GenerationMethod == GenerationMethod.StandardArray)
             {
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
-                    <MudText>Assign each value from [15, 14, 13, 12, 10, 8] to an ability. Each value must be used exactly once.</MudText>
+                    <MudText>Assign each value from [@string.Join(", ", _abilitiesConfig.StandardArray)] to an ability. Each value must be used exactly once.</MudText>
                     <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
                                StartIcon="@Icons.Material.Filled.Casino"
                                OnClick="@RandomlyAssignStandardArray">
@@ -121,7 +121,7 @@ else
                                        ValueChanged="@((int v) => { _abilitySelections[ab] = v; ValidateAndShowStepErrors(); })"
                                        Variant="Variant.Outlined">
                                 <MudSelectItem Value="0">— select —</MudSelectItem>
-                                @foreach (int v in _standardArray)
+                                @foreach (int v in _abilitiesConfig.StandardArray)
                                 {
                                     <MudSelectItem Value="@v">@v (mod @Modifier(v))</MudSelectItem>
                                 }
@@ -133,8 +133,8 @@ else
             else if (State.Character.GenerationMethod == GenerationMethod.PointBuy)
             {
                 int pbSpent = Abilities.Sum(a => PointBuyCost(_pointBuyValues[a]));
-                int pbRemaining = 27 - pbSpent;
-                <MudText Class="mb-2">Use +/− to allocate scores between 8 and 15. Budget: 27 points.</MudText>
+                int pbRemaining = _abilitiesConfig.PointBuy.Budget - pbSpent;
+                <MudText Class="mb-2">Use +/− to allocate scores between @_abilitiesConfig.PointBuy.MinScore and @_abilitiesConfig.PointBuy.MaxScore. Budget: @_abilitiesConfig.PointBuy.Budget points.</MudText>
                 <MudAlert Severity="@(pbRemaining < 0 ? Severity.Error : Severity.Info)" Class="mb-3">
                     Points remaining: <strong>@pbRemaining</strong>
                 </MudAlert>
@@ -143,19 +143,19 @@ else
                     {
                         string ab = ability;
                         int baseScore = _pointBuyValues[ab];
-                        int nextExtra = baseScore < 15 ? PointBuyCost(baseScore + 1) - PointBuyCost(baseScore) : int.MaxValue;
+                        int nextExtra = baseScore < _abilitiesConfig.PointBuy.MaxScore ? PointBuyCost(baseScore + 1) - PointBuyCost(baseScore) : int.MaxValue;
                         <MudItem xs="12" sm="6" md="4">
                             <MudPaper Elevation="1" Class="pa-3">
                                 <MudText Typo="Typo.subtitle2">@ab</MudText>
                                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-1">
                                     <MudIconButton Icon="@Icons.Material.Filled.Remove" Size="Size.Small"
-                                                   Color="Color.Primary" Disabled="@(baseScore <= 8)"
+                                                   Color="Color.Primary" Disabled="@(baseScore <= _abilitiesConfig.PointBuy.MinScore)"
                                                    OnClick="@(() => DecrementAbility(ab))"
                                                    aria-label="@($"Decrease {ab}")" />
                                     <MudText Typo="Typo.h6" Style="min-width:2em;text-align:center">@baseScore</MudText>
                                     <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small"
                                                    Color="Color.Primary"
-                                                   Disabled="@(baseScore >= 15 || pbSpent + nextExtra > 27)"
+                                                   Disabled="@(baseScore >= _abilitiesConfig.PointBuy.MaxScore || pbSpent + nextExtra > _abilitiesConfig.PointBuy.Budget)"
                                                    OnClick="@(() => IncrementAbility(ab))"
                                                    aria-label="@($"Increase {ab}")" />
                                     <MudText Color="Color.Secondary">mod @Modifier(baseScore)</MudText>
@@ -169,7 +169,7 @@ else
             else if (State.Character.GenerationMethod == GenerationMethod.Roll)
             {
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
-                    <MudText>Enter the 6 rolled values (4d6 drop lowest, range 3–18).</MudText>
+                    <MudText>Enter the @_abilitiesConfig.Roll.Count rolled values (@_abilitiesConfig.Roll.Method, range @RollValidator.MinScore–@RollValidator.MaxScore).</MudText>
                     <MudButton Variant="Variant.Filled" Size="Size.Small" Color="Color.Secondary"
                                StartIcon="@Icons.Material.Filled.Casino"
                                OnClick="@RollAllAbilities">
@@ -184,7 +184,7 @@ else
                             <MudNumericField T="int" Label="@ab"
                                             Value="@_rollValues[ab]"
                                             ValueChanged="@((int v) => { _rollValues[ab] = v; ValidateAndShowStepErrors(); })"
-                                            Min="3" Max="18" Variant="Variant.Outlined"
+                                            Min="@RollValidator.MinScore" Max="@RollValidator.MaxScore" Variant="Variant.Outlined"
                                             HelperText="@($"mod {Modifier(_rollValues[ab])}")"
                                             Adornment="Adornment.End"
                                             AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -1267,17 +1267,10 @@ else
     // ── Constants ────────────────────────────────────────────────────────
     internal static readonly string[] Abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
 
-    private static readonly int[] _standardArray = [15, 14, 13, 12, 10, 8];
-
     private static readonly string[] _steps =
     [
         "Meta", "Abilities", "Race", "Class", "Features", "Background", "Spells", "Equipment", "Review",
     ];
-
-    private static readonly Dictionary<int, int> _pbCosts = new()
-    {
-        { 8, 0 }, { 9, 1 }, { 10, 2 }, { 11, 3 }, { 12, 4 }, { 13, 5 }, { 14, 7 }, { 15, 9 },
-    };
 
     private static readonly Dictionary<string, string> _skillNames = new()
     {
@@ -1313,6 +1306,7 @@ else
     // ── Loaded data ──────────────────────────────────────────────────────
     private bool _loading = true;
     private int _activeStep = 0;
+    private AbilitiesConfig _abilitiesConfig = new();
     private IReadOnlyList<RaceDefinition> _races = [];
     private IReadOnlyList<ClassDefinition> _classes = [];
     private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
@@ -1390,6 +1384,7 @@ else
     // ── Lifecycle ─────────────────────────────────────────────────────────
     protected override async Task OnInitializedAsync()
     {
+        _abilitiesConfig = await DataService.GetAbilitiesConfigAsync();
         _races = await DataService.GetRacesAsync();
         _classes = await DataService.GetClassesAsync();
         _backgrounds = await DataService.GetBackgroundsAsync();
@@ -1398,6 +1393,14 @@ else
         _feats = await DataService.GetFeatsAsync();
         _classStartingEquipmentConfigs = await DataService.GetClassStartingEquipmentAsync();
         _fullNames = await DataService.GetFullNamesAsync();
+
+        // Initialise point-buy defaults from config (roll values keep their hardcoded 8 default which is in valid range)
+        if (_abilitiesConfig.PointBuy.MinScore != 0)
+        {
+            foreach (var ab in Abilities)
+                _pointBuyValues[ab] = _abilitiesConfig.PointBuy.MinScore;
+        }
+
         _loading = false;
 
         await InitialiseSessionAsync();
@@ -1532,8 +1535,12 @@ else
     // ── Pure helpers ──────────────────────────────────────────────────────
     internal static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
 
-    private static int PointBuyCost(int score) =>
-        _pbCosts.TryGetValue(score, out int cost) ? cost : 0;
+    private int PointBuyCost(int score)
+    {
+        foreach (var entry in _abilitiesConfig.PointBuy.Costs)
+            if (entry.Score == score) return entry.Cost;
+        return 0;
+    }
 
     internal static string SkillLabel(string id) =>
         _skillNames.TryGetValue(id, out string? name) ? name : id;
@@ -1622,8 +1629,8 @@ else
         State.Character.GenerationMethod switch
         {
             GenerationMethod.StandardArray => _abilitySelections.GetValueOrDefault(ability, 0),
-            GenerationMethod.PointBuy => _pointBuyValues.GetValueOrDefault(ability, 8),
-            GenerationMethod.Roll => _rollValues.GetValueOrDefault(ability, 8),
+            GenerationMethod.PointBuy => _pointBuyValues.GetValueOrDefault(ability, _abilitiesConfig.PointBuy.MinScore),
+            GenerationMethod.Roll => _rollValues.GetValueOrDefault(ability, RollValidator.MinScore),
             _ => 0,
         };
 
@@ -1760,19 +1767,23 @@ else
     // ── Point buy helpers ─────────────────────────────────────────────────
     private void IncrementAbility(string ability)
     {
-        int current = _pointBuyValues.GetValueOrDefault(ability, 8);
-        if (current >= 15) return;
-        int spent = Abilities.Sum(a => PointBuyCost(_pointBuyValues.GetValueOrDefault(a, 8)));
+        int minScore = _abilitiesConfig.PointBuy.MinScore;
+        int maxScore = _abilitiesConfig.PointBuy.MaxScore;
+        int budget = _abilitiesConfig.PointBuy.Budget;
+        int current = _pointBuyValues.GetValueOrDefault(ability, minScore);
+        if (current >= maxScore) return;
+        int spent = Abilities.Sum(a => PointBuyCost(_pointBuyValues.GetValueOrDefault(a, minScore)));
         int nextCost = PointBuyCost(current + 1) - PointBuyCost(current);
-        if (spent + nextCost <= 27)
+        if (spent + nextCost <= budget)
             _pointBuyValues[ability] = current + 1;
         ValidateAndShowStepErrors();
     }
 
     private void DecrementAbility(string ability)
     {
-        int current = _pointBuyValues.GetValueOrDefault(ability, 8);
-        if (current > 8) _pointBuyValues[ability] = current - 1;
+        int minScore = _abilitiesConfig.PointBuy.MinScore;
+        int current = _pointBuyValues.GetValueOrDefault(ability, minScore);
+        if (current > minScore) _pointBuyValues[ability] = current - 1;
         ValidateAndShowStepErrors();
     }
 
@@ -2057,9 +2068,9 @@ else
                 ];
                 var abilityResult = State.Character.GenerationMethod switch
                 {
-                    GenerationMethod.StandardArray => StandardArrayValidator.Validate(bases),
-                    GenerationMethod.PointBuy => PointBuyValidator.Validate(bases),
-                    GenerationMethod.Roll => RollValidator.Validate(bases),
+                    GenerationMethod.StandardArray => StandardArrayValidator.Validate(bases, _abilitiesConfig.StandardArray.Count > 0 ? _abilitiesConfig.StandardArray : null),
+                    GenerationMethod.PointBuy => PointBuyValidator.Validate(bases, _abilitiesConfig.PointBuy),
+                    GenerationMethod.Roll => RollValidator.Validate(bases, _abilitiesConfig.Roll.Count > 0 ? _abilitiesConfig.Roll.Count : RollValidator.RequiredCount),
                     _ => new ValidationResult(),
                 };
                 result.Errors.AddRange(abilityResult.Errors);
@@ -2362,7 +2373,7 @@ else
 
     private void RandomlyAssignStandardArray()
     {
-        var shuffled = _standardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
+        var shuffled = _abilitiesConfig.StandardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
         for (int i = 0; i < Abilities.Length; i++)
             _abilitySelections[Abilities[i]] = shuffled[i];
         ValidateAndShowStepErrors();

@@ -24,6 +24,7 @@ public sealed class RandomCharacterService(IDataService dataService)
 
     public async Task<Character> GenerateAsync()
     {
+        var abilitiesConfig = await dataService.GetAbilitiesConfigAsync();
         var races = await dataService.GetRacesAsync();
         var classes = await dataService.GetClassesAsync();
         var backgrounds = await dataService.GetBackgroundsAsync();
@@ -41,13 +42,12 @@ public sealed class RandomCharacterService(IDataService dataService)
         c.Name = namePool[rng.Next(namePool.Count)];
         c.GenerationMethod = GenerationMethod.Roll;
 
-        // Step 2 — Ability Scores (4d6 drop lowest)
-        c.AbilityScores.STR.Base = RollAbilityScore();
-        c.AbilityScores.DEX.Base = RollAbilityScore();
-        c.AbilityScores.CON.Base = RollAbilityScore();
-        c.AbilityScores.INT.Base = RollAbilityScore();
-        c.AbilityScores.WIS.Base = RollAbilityScore();
-        c.AbilityScores.CHA.Base = RollAbilityScore();
+        // Step 2 — Ability Scores (method from config: 4d6 drop lowest)
+        string[] abilityNames = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+        int rollCount = abilitiesConfig.Roll.Count > 0 ? abilitiesConfig.Roll.Count : abilityNames.Length;
+        var rolledScores = Enumerable.Range(0, rollCount).Select(_ => RollAbilityScore()).ToArray();
+        for (int i = 0; i < Math.Min(rollCount, abilityNames.Length); i++)
+            GetAbilityScoreBlock(c, abilityNames[i]).Base = rolledScores[i];
 
         // Step 3 — Race
         var race = races[rng.Next(races.Count)];
@@ -164,6 +164,17 @@ public sealed class RandomCharacterService(IDataService dataService)
         int r4 = rng.Next(1, 7);
         return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
     }
+
+    private static AbilityBlock GetAbilityScoreBlock(Character c, string ability) => ability switch
+    {
+        "STR" => c.AbilityScores.STR,
+        "DEX" => c.AbilityScores.DEX,
+        "CON" => c.AbilityScores.CON,
+        "INT" => c.AbilityScores.INT,
+        "WIS" => c.AbilityScores.WIS,
+        "CHA" => c.AbilityScores.CHA,
+        _ => throw new ArgumentOutOfRangeException(nameof(ability), ability, null),
+    };
 
     private static Dictionary<string, int> GetCombinedRacialBonuses(RaceDefinition race, string subraceId)
     {
