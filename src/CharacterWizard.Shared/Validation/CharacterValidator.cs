@@ -99,6 +99,14 @@ public class CharacterValidator
             result.Warnings.AddRange(featResult.Warnings);
         }
 
+        // Hit point entry validation
+        if (character.HitPointEntries.Count > 0)
+        {
+            var hpResult = new HitPointValidator(_classes).Validate(character);
+            result.Errors.AddRange(hpResult.Errors);
+            result.Warnings.AddRange(hpResult.Warnings);
+        }
+
         return result;
     }
 }

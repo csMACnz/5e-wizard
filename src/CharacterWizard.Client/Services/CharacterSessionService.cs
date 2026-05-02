@@ -22,8 +22,9 @@ public sealed class CharacterSessionService(LocalStorageService localStorage)
     /// Supported versions:
     ///   1 — initial session shape.
     ///   2 — added <see cref="CharacterWizard.Shared.Models.Character.AsiChoices"/> for by-level ASI/feat choices.
+    ///   3 — added <see cref="CharacterWizard.Shared.Models.Character.HitPointEntries"/> for per-level HP assignment.
     /// </summary>
-    public const int SupportedSchemaVersion = 2;
+    public const int SupportedSchemaVersion = 3;
 
     private static readonly JsonSerializerOptions SerializerOptions = new()
     {

@@ -575,9 +575,10 @@ public class FightClub5eExporterTests
     // ── HP ────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Export_MaxHp_CalculatedUsingMaxDiePerLevel()
+    public void Export_MaxHp_FallbackLevel1_UsesMaxDieValue()
     {
-        // Fighter 1, CON 14 (mod +2): max HP = 1 × max(1, 10 + 2) = 12
+        // Fighter 1 (no HitPointEntries — fallback algorithm). Level 1 always uses max die.
+        // CON 14 (mod +2): HP = max(1, 10 + 2) = 12
         var character = new Character
         {
             Name = "Aric",
@@ -599,10 +600,36 @@ public class FightClub5eExporterTests
     }
 
     [Fact]
+    public void Export_MaxHp_FallbackLevels2Plus_UsesFixedAverage()
+    {
+        // Fighter 3 (no HitPointEntries — fallback algorithm). CON 10 (mod 0).
+        // lvl1 = max die = 10; lvls 2-3 = 2 × (floor(10/2)+1) = 2×6 = 12 → total = 22
+        var character = new Character
+        {
+            Name = "Aric",
+            TotalLevel = 3,
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3 }],
+            AbilityScores = new AbilityScores
+            {
+                CON = new AbilityBlock { Base = 10 },
+                DEX = new AbilityBlock { Base = 10 },
+                WIS = new AbilityBlock { Base = 10 },
+            },
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        Assert.Equal("22", c.Element("hpMax")!.Value);
+    }
+
+    [Fact]
     public void Export_MaxHp_MulticlassIsCorrect()
     {
-        // Fighter 3 (d10), Wizard 2 (d6), CON 16 (mod +3)
-        // HP = 3 × max(1, 10+3) + 2 × max(1, 6+3) = 3×13 + 2×9 = 39 + 18 = 57
+        // Fighter 3 (d10), Wizard 2 (d6), CON 16 (mod +3) — no HitPointEntries, uses fixed-average fallback
+        // Fighter avg = floor(10/2)+1 = 6; lvl1=max(1,10+3)=13; lvls2-3=2×max(1,6+3)=2×9=18 → 31
+        // Wizard  avg = floor(6/2)+1  = 4; lvl1=max(1,6+3)=9;   lvl2  =max(1,4+3)=7        → 16
+        // Total = 31+16 = 47
         var character = new Character
         {
             Name = "Myra",
@@ -623,7 +650,93 @@ public class FightClub5eExporterTests
         var xml = CreateExporter().Export(character);
         var c = ParseCharacter(xml);
 
-        Assert.Equal("57", c.Element("hpMax")!.Value);
+        Assert.Equal("47", c.Element("hpMax")!.Value);
+    }
+
+    [Fact]
+    public void Export_MaxHp_UsesHitPointEntriesWithManualAndAverageRolls()
+    {
+        // Fighter 3 (d10), CON 14 (mod +2).
+        // HitPointEntries: lvl1=10, lvl2=6 (average), lvl3=9 (manual)
+        // Max HP = max(1,10+2) + max(1,6+2) + max(1,9+2) = 12 + 8 + 11 = 31
+        var character = new Character
+        {
+            Name = "Aric",
+            TotalLevel = 3,
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3 }],
+            AbilityScores = new AbilityScores
+            {
+                CON = new AbilityBlock { Base = 14 },
+                DEX = new AbilityBlock { Base = 10 },
+                WIS = new AbilityBlock { Base = 10 },
+            },
+            HitPointEntries =
+            [
+                new HitPointEntry { ClassId = "class:fighter", ClassLevel = 1, Method = "average", DieRollValue = 10 },
+                new HitPointEntry { ClassId = "class:fighter", ClassLevel = 2, Method = "average", DieRollValue = 6 },
+                new HitPointEntry { ClassId = "class:fighter", ClassLevel = 3, Method = "manual",  DieRollValue = 9 },
+            ],
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        Assert.Equal("31", c.Element("hpMax")!.Value);
+        Assert.Equal("31", c.Element("hpCurrent")!.Value);
+    }
+
+    [Fact]
+    public void Export_MaxHp_FallsBackToAverageAlgorithmWhenNoEntries()
+    {
+        // Fighter 1 only — level 1 always uses max die under the fixed-average algorithm.
+        // CON 14 (mod +2): max HP = max(1, 10+2) = 12
+        var character = new Character
+        {
+            Name = "Aric",
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
+            AbilityScores = new AbilityScores
+            {
+                CON = new AbilityBlock { Base = 14 },
+                DEX = new AbilityBlock { Base = 10 },
+                WIS = new AbilityBlock { Base = 10 },
+            },
+            HitPointEntries = [], // no entries
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        Assert.Equal("12", c.Element("hpMax")!.Value);
+    }
+
+    [Fact]
+    public void Export_MaxHp_WithEntriesAppliesConModPerEntry()
+    {
+        // Wizard 2 (d6), CON 8 (mod -1).
+        // lvl1=6, lvl2=3 → max(1,6-1) + max(1,3-1) = 5 + 2 = 7
+        var character = new Character
+        {
+            Name = "Zara",
+            TotalLevel = 2,
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 2 }],
+            AbilityScores = new AbilityScores
+            {
+                CON = new AbilityBlock { Base = 8 },
+                DEX = new AbilityBlock { Base = 10 },
+                WIS = new AbilityBlock { Base = 14 },
+            },
+            HitPointEntries =
+            [
+                new HitPointEntry { ClassId = "class:wizard", ClassLevel = 1, Method = "average", DieRollValue = 6 },
+                new HitPointEntry { ClassId = "class:wizard", ClassLevel = 2, Method = "manual",  DieRollValue = 3 },
+            ],
+        };
+
+        var xml = CreateExporter().Export(character);
+        var c = ParseCharacter(xml);
+
+        Assert.Equal("7", c.Element("hpMax")!.Value);
     }
 
     [Fact]
