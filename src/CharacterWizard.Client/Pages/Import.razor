@@ -1,14 +1,312 @@
 ﻿@page "/import"
+@using CharacterWizard.Shared.Export
+@using CharacterWizard.Shared.Models
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Forms
+@inject IDataService DataService
+@inject CharacterWizardState State
+@inject CharacterSessionService SessionService
+@inject NavigationManager Navigation
 
-<PageTitle>Import Character</PageTitle>
+<PageTitle>Import Character — 5e Wizard</PageTitle>
 
 <MudText Typo="Typo.h4" GutterBottom="true">Import Character</MudText>
-<MudAlert Severity="Severity.Info" Class="mb-4">
-    Character import from JSON is coming in a future milestone.
-</MudAlert>
 <MudText Class="mb-4">
-    You will be able to paste or upload a previously exported character JSON file here.
+    Import a previously exported character to continue editing it in the wizard.
+    Supported formats: <strong>Character JSON</strong> (from "Export JSON") and
+    <strong>FightClub 5e XML</strong> (from "Export FC5 XML").
 </MudText>
-<MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="" StartIcon="@Icons.Material.Filled.Home">
-    Back to Home
-</MudButton>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mb-4" />
+    <MudText>Importing character…</MudText>
+}
+else if (_importedCharacter != null)
+{
+    <!-- ── Success preview ── -->
+    <MudAlert Severity="Severity.Success" Class="mb-4" Icon="@Icons.Material.Filled.CheckCircle">
+        Character imported successfully!
+    </MudAlert>
+
+    <MudCard Elevation="2" Class="mb-4">
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Character Name</MudText>
+                    <MudText Typo="Typo.h6">
+                        @(string.IsNullOrWhiteSpace(_importedCharacter.Name) ? "(unnamed)" : _importedCharacter.Name)
+                    </MudText>
+                </MudItem>
+                @if (!string.IsNullOrWhiteSpace(_importedCharacter.PlayerName))
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Player</MudText>
+                        <MudText>@_importedCharacter.PlayerName</MudText>
+                    </MudItem>
+                }
+                @if (_importedCharacter.Levels.Count > 0)
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Class / Level</MudText>
+                        <MudText>
+                            @string.Join(", ", _importedCharacter.Levels.Select(l => $"{StripPrefix(l.ClassId)} {l.Level}"))
+                            (Total: @_importedCharacter.TotalLevel)
+                        </MudText>
+                    </MudItem>
+                }
+                @if (!string.IsNullOrWhiteSpace(_importedCharacter.RaceId))
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Race</MudText>
+                        <MudText>
+                            @StripPrefix(_importedCharacter.RaceId)
+                            @if (!string.IsNullOrWhiteSpace(_importedCharacter.SubraceId))
+                            {
+                                <span> / @StripPrefix(_importedCharacter.SubraceId)</span>
+                            }
+                        </MudText>
+                    </MudItem>
+                }
+                @if (!string.IsNullOrWhiteSpace(_importedCharacter.BackgroundId))
+                {
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Secondary">Background</MudText>
+                        <MudText>@StripPrefix(_importedCharacter.BackgroundId)</MudText>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+
+    <MudStack Row="true" Spacing="3">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.AutoStories"
+                   OnClick="@OpenInWizardAsync">
+            Open in Wizard
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.Refresh"
+                   OnClick="@ResetState">
+            Import Another
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Default"
+                   StartIcon="@Icons.Material.Filled.Home"
+                   Href="">
+            Back to Home
+        </MudButton>
+    </MudStack>
+}
+else
+{
+    <!-- ── Import UI ── -->
+    @if (_error != null)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4" Dense="true">@_error</MudAlert>
+    }
+
+    <MudTabs Elevation="1" Rounded="true" ApplyEffectsToContainer="true" Class="mb-4">
+
+        <!-- Tab 1: File upload -->
+        <MudTabPanel Text="Upload File" Icon="@Icons.Material.Filled.UploadFile">
+            <MudStack Spacing="3" Class="pa-4">
+                <MudText>
+                    Select a <strong>.json</strong> (Character JSON) or <strong>.xml</strong>
+                    (FightClub 5e) file from your device.
+                </MudText>
+                <InputFile id="fileInput" OnChange="@OnFileSelectedAsync" accept=".json,.xml"
+                           style="display:none" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.UploadFile"
+                           HtmlTag="label"
+                           for="fileInput">
+                    Choose File
+                </MudButton>
+                @if (!string.IsNullOrEmpty(_selectedFileName))
+                {
+                    <MudText Typo="Typo.caption">Selected: @_selectedFileName</MudText>
+                }
+            </MudStack>
+        </MudTabPanel>
+
+        <!-- Tab 2: Paste text -->
+        <MudTabPanel Text="Paste Text" Icon="@Icons.Material.Filled.ContentPaste">
+            <MudStack Spacing="3" Class="pa-4">
+                <MudText>
+                    Paste the contents of a Character JSON or FightClub 5e XML file below.
+                </MudText>
+                <MudTextField T="string"
+                              @bind-Value="_pasteText"
+                              Lines="12"
+                              Variant="Variant.Outlined"
+                              Placeholder="Paste character JSON or FightClub 5e XML here…"
+                              aria-label="Paste character JSON or XML" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.ImportExport"
+                           Disabled="@string.IsNullOrWhiteSpace(_pasteText)"
+                           OnClick="@ImportFromPaste">
+                    Import
+                </MudButton>
+            </MudStack>
+        </MudTabPanel>
+
+    </MudTabs>
+
+    <MudButton Variant="Variant.Outlined" Color="Color.Default"
+               StartIcon="@Icons.Material.Filled.Home"
+               Href="">
+        Back to Home
+    </MudButton>
+}
+
+@code {
+    private bool _loading;
+    private Character? _importedCharacter;
+    private string? _error;
+    private string _pasteText = string.Empty;
+    private string _selectedFileName = string.Empty;
+
+    // Reference data (needed by the FC5e XML importer)
+    private IReadOnlyList<RaceDefinition> _races = [];
+    private IReadOnlyList<ClassDefinition> _classes = [];
+    private IReadOnlyList<BackgroundDefinition> _backgrounds = [];
+    private IReadOnlyList<SpellDefinition> _spells = [];
+    private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
+    private IReadOnlyList<FeatDefinition> _feats = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _races = await DataService.GetRacesAsync();
+        _classes = await DataService.GetClassesAsync();
+        _backgrounds = await DataService.GetBackgroundsAsync();
+        _spells = await DataService.GetSpellsAsync();
+        _equipment = await DataService.GetEquipmentAsync();
+        _feats = await DataService.GetFeatsAsync();
+    }
+
+    // ── File upload ───────────────────────────────────────────────────────────
+
+    private async Task OnFileSelectedAsync(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        _error = null;
+        _selectedFileName = file.Name;
+        _loading = true;
+        StateHasChanged();
+
+        try
+        {
+            // Limit to 2 MB; character files are typically a few KB at most.
+            using var reader = new System.IO.StreamReader(
+                file.OpenReadStream(maxAllowedSize: 2 * 1024 * 1024));
+            var content = await reader.ReadToEndAsync();
+            ImportFromText(content, file.Name);
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to read file: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    // ── Paste ─────────────────────────────────────────────────────────────────
+
+    private void ImportFromPaste()
+    {
+        _error = null;
+        ImportFromText(_pasteText, filename: null);
+    }
+
+    // ── Core import logic ─────────────────────────────────────────────────────
+
+    private void ImportFromText(string content, string? filename)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            _error = "The file or pasted text is empty.";
+            return;
+        }
+
+        bool isXml = filename?.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) == true
+                     || content.TrimStart().StartsWith('<');
+
+        Character character;
+
+        if (isXml)
+        {
+            var importer = new FightClub5eImporter(_races, _classes, _backgrounds, _spells, _equipment, _feats);
+            try
+            {
+                character = importer.Import(content);
+            }
+            catch (Exception ex)
+            {
+                _error = $"Failed to parse FightClub 5e XML: {ex.Message}";
+                return;
+            }
+        }
+        else
+        {
+            var imported = new CharacterJsonImporter().Import(content);
+            if (imported == null)
+            {
+                _error = "Failed to parse character JSON. Make sure the file was exported from this wizard or is a valid character JSON file.";
+                return;
+            }
+
+            character = imported;
+        }
+
+        _importedCharacter = character;
+    }
+
+    // ── Navigate to wizard ────────────────────────────────────────────────────
+
+    private async Task OpenInWizardAsync()
+    {
+        if (_importedCharacter == null) return;
+
+        if (string.IsNullOrEmpty(_importedCharacter.Id))
+            _importedCharacter.Id = Guid.NewGuid().ToString();
+
+        var sessionId = Guid.NewGuid().ToString("N");
+        var session = new CharacterSession
+        {
+            SessionId = sessionId,
+            CharacterName = string.IsNullOrWhiteSpace(_importedCharacter.Name)
+                ? string.Empty
+                : _importedCharacter.Name,
+            CreatedAt = DateTime.UtcNow,
+            LastModifiedAt = DateTime.UtcNow,
+            ActiveStep = 0,
+            Character = _importedCharacter,
+        };
+
+        State.SessionId = sessionId;
+        State.Character = _importedCharacter;
+        State.ActiveStep = 0;
+
+        await SessionService.SaveSessionAsync(session);
+        Navigation.NavigateTo($"wizard?session={sessionId}");
+    }
+
+    // ── Reset ─────────────────────────────────────────────────────────────────
+
+    private void ResetState()
+    {
+        _importedCharacter = null;
+        _error = null;
+        _pasteText = string.Empty;
+        _selectedFileName = string.Empty;
+    }
+
+    // ── Display helpers ───────────────────────────────────────────────────────
+
+    private static string StripPrefix(string id) =>
+        id.Contains(':') ? id[(id.IndexOf(':') + 1)..] : id;
+}
