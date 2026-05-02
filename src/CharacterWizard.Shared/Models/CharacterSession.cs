@@ -11,9 +11,10 @@ public class CharacterSession
     /// Supported versions:
     ///   1 — initial session shape.
     ///   2 — added <see cref="Character.AsiChoices"/> for by-level ASI/feat choices.
+    ///   3 — added <see cref="Character.HitPointEntries"/> for per-level HP assignment.
     /// </summary>
     [JsonPropertyName("schemaVersion")]
-    public int SchemaVersion { get; set; } = 2;
+    public int SchemaVersion { get; set; } = 3;
 
     [JsonPropertyName("sessionId")]
     public string SessionId { get; set; } = string.Empty;

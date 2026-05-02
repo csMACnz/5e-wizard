@@ -10,8 +10,10 @@ namespace CharacterWizard.Shared.Export;
 /// </summary>
 /// <remarks>
 /// The export is best-effort: fields with no direct mapping (e.g. alignment, personality traits)
-/// are emitted as empty or default values. HP is calculated using the maximum hit die value on
-/// every level (not average), which produces the theoretical maximum HP.
+/// are emitted as empty or default values. HP is calculated from the character's HitPointEntries
+/// when present (respecting the player's per-level method/roll choices), or falls back to the
+/// maximum hit die value on every level when no entries are recorded.
+/// Since current HP is not tracked by this application, hpCurrent is emitted equal to hpMax.
 /// </remarks>
 public class FightClub5eExporter
 {
@@ -275,20 +277,31 @@ public class FightClub5eExporter
     }
 
     /// <summary>
-    /// Calculates max HP using the maximum hit die value on every level (no averaging).
-    /// Per-level contribution: max(1, hitDie + CON modifier).
+    /// Calculates max HP from the character's HitPointEntries when present,
+    /// otherwise falls back to using the maximum hit die value on every level (no averaging).
+    /// Per-level CON contribution: max(1, dieRollValue + CON modifier) for each entry,
+    /// or max(1, hitDie + CON modifier) × level for the fallback path.
     /// </summary>
     private int CalculateMaxHp(Character c, int conMod)
     {
-        int total = 0;
+        if (c.HitPointEntries.Count > 0)
+        {
+            int total = 0;
+            foreach (var entry in c.HitPointEntries)
+                total += Math.Max(1, entry.DieRollValue + conMod);
+            return total;
+        }
+
+        // Fallback: use maximum hit die value per level (legacy / no-entries path)
+        int fallback = 0;
         foreach (var classLevel in c.Levels)
         {
             var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
             int hitDie = cls?.HitDie ?? 8;
             int perLevel = Math.Max(1, hitDie + conMod);
-            total += classLevel.Level * perLevel;
+            fallback += classLevel.Level * perLevel;
         }
-        return total;
+        return fallback;
     }
 
     private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);

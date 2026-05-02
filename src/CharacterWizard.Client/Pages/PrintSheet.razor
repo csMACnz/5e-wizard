@@ -628,14 +628,24 @@ else
     private int CalculateMaxHp(Character c)
     {
         int conMod = Modifier(c.AbilityScores.CON.Final);
-        int total = 0;
+
+        if (c.HitPointEntries.Count > 0)
+        {
+            int total = 0;
+            foreach (var entry in c.HitPointEntries)
+                total += Math.Max(1, entry.DieRollValue + conMod);
+            return total;
+        }
+
+        // Fallback: use maximum hit die per level when no entries are recorded
+        int fallback = 0;
         foreach (var classLevel in c.Levels)
         {
             var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
             int hd = cls?.HitDie ?? 8;
-            total += classLevel.Level * Math.Max(1, hd + conMod);
+            fallback += classLevel.Level * Math.Max(1, hd + conMod);
         }
-        return total;
+        return fallback;
     }
 
     private int PassivePerception(Character c, int profBonus)

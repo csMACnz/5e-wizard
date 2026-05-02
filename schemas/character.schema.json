@@ -66,10 +66,24 @@
     "hitPoints": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Maximum HP only. Current and temporary HP are gameplay mechanics outside the scope of this application.",
       "properties": {
-        "maximum": { "type": "integer" },
-        "current": { "type": "integer" },
-        "temporary": { "type": "integer" }
+        "maximum": { "type": "integer", "description": "Computed total max HP: sum of per-level die-roll values + CON modifier × total level." }
+      }
+    },
+    "hitPointEntries": {
+      "type": "array",
+      "description": "Per-level HP die-roll entries. Each entry records the class level, class, assignment method, and die-roll value (CON modifier excluded).",
+      "items": {
+        "type": "object",
+        "required": ["classLevel", "classId", "method", "dieRollValue"],
+        "additionalProperties": false,
+        "properties": {
+          "classLevel": { "type": "integer", "minimum": 1, "maximum": 20, "description": "The class-level number (1-based within the class)." },
+          "classId": { "type": "string" },
+          "method": { "type": "string", "enum": ["average", "manual"] },
+          "dieRollValue": { "type": "integer", "minimum": 1, "description": "Die-roll value in the range [1, hitDie]. Does not include CON modifier." }
+        }
       }
     },
     "features": {

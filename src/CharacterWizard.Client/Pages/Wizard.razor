@@ -553,9 +553,89 @@ else
                     </MudCardContent>
                 </MudCard>
             }
-        }
 
-        @* ── Step 6: Background & Proficiencies ── *@
+            @* Hit Points panel — appears after ASI choices *@
+            @if (_classEntries.Any(e => !string.IsNullOrEmpty(e.ClassId)))
+            {
+                <MudCard Elevation="1" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.subtitle1"><strong>Hit Points</strong></MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @foreach (var hpEntry in _classEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)))
+                        {
+                            var hpClsDef = _classes.FirstOrDefault(c => c.Id == hpEntry.ClassId);
+                            int hpHitDie = hpClsDef?.HitDie ?? 8;
+                            int hpAverage = (hpHitDie / 2) + 1;
+                            string hpClsDisplay = hpClsDef?.DisplayName ?? hpEntry.ClassId;
+
+                            @for (int hpLvl = 1; hpLvl <= hpEntry.Level; hpLvl++)
+                            {
+                                int capturedLvl = hpLvl;
+                                string capturedClassId = hpEntry.ClassId;
+                                int capturedHitDie = hpHitDie;
+                                int capturedAverage = hpAverage;
+                                string hpKey = $"{capturedClassId}|{capturedLvl}";
+
+                                if (capturedLvl == 1)
+                                {
+                                    // Level 1 is always fixed at the hit die maximum
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2">
+                                        <MudText Style="min-width:180px">@hpClsDisplay level 1:</MudText>
+                                        <MudChip T="string" Color="Color.Default" Size="Size.Small">
+                                            @hpHitDie (max d@(hpHitDie))
+                                        </MudChip>
+                                    </MudStack>
+                                }
+                                else
+                                {
+                                    _allHpChoicesByKey.TryGetValue(hpKey, out var currentHp);
+                                    string hpMethod = !string.IsNullOrEmpty(currentHp.Method) ? currentHp.Method : "average";
+                                    int hpValue = hpMethod == "manual" && currentHp.DieRollValue >= 1
+                                        ? currentHp.DieRollValue
+                                        : capturedAverage;
+
+                                    <MudDivider Class="my-1" />
+                                    <MudStack Row="false" Spacing="1" Class="mb-2">
+                                        <MudText Typo="Typo.body2"><strong>@hpClsDisplay level @capturedLvl</strong></MudText>
+                                        <MudRadioGroup T="string"
+                                                       Value="@hpMethod"
+                                                       ValueChanged="@(async (string v) => await OnHpMethodChanged(capturedClassId, capturedLvl, v, capturedAverage))">
+                                            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                                <MudRadio Value="@("average")" Color="Color.Primary">
+                                                    Average (@capturedAverage)
+                                                </MudRadio>
+                                                <MudRadio Value="@("manual")" Color="Color.Primary">
+                                                    Manual
+                                                </MudRadio>
+                                                @if (hpMethod == "manual")
+                                                {
+                                                    <MudNumericField T="int"
+                                                                     Value="@hpValue"
+                                                                     ValueChanged="@(async (int v) => await OnHpValueChanged(capturedClassId, capturedLvl, v))"
+                                                                     Label="@($"Roll (1–{capturedHitDie})")"
+                                                                     Min="1" Max="@capturedHitDie"
+                                                                     Immediate="true"
+                                                                     Variant="Variant.Outlined"
+                                                                     Style="max-width:130px" />
+                                                    <MudIconButton Icon="@Icons.Material.Filled.Casino"
+                                                                   Color="Color.Secondary"
+                                                                   Size="Size.Small"
+                                                                   OnClick="@(async () => await RollHp(capturedClassId, capturedLvl, capturedHitDie))"
+                                                                   aria-label="@($"Roll d{capturedHitDie} for {hpClsDisplay} level {capturedLvl}")" />
+                                                }
+                                            </MudStack>
+                                        </MudRadioGroup>
+                                    </MudStack>
+                                }
+                            }
+                        }
+                    </MudCardContent>
+                </MudCard>
+            }
+        }
         @if (_activeStep == 5)
         {
             var selectedBg = _backgrounds.FirstOrDefault(b => b.Id == _selectedBackgroundId);
@@ -1089,6 +1169,13 @@ else
                                 <MudText>@(cls?.DisplayName ?? lvl.ClassId) Level @lvl.Level (d@(cls?.HitDie ?? 0))</MudText>
                             }
                             <MudText Typo="Typo.caption" Class="mt-1">Total Level: @c.TotalLevel</MudText>
+                            @{
+                                int reviewConMod = Modifier(c.AbilityScores.CON.Final);
+                                int reviewMaxHp = c.HitPointEntries.Count > 0
+                                    ? c.HitPointEntries.Sum(e => Math.Max(1, e.DieRollValue + reviewConMod))
+                                    : c.Levels.Sum(l => { var cl = _classes.FirstOrDefault(x => x.Id == l.ClassId); int hd = cl?.HitDie ?? 8; return l.Level * Math.Max(1, hd + reviewConMod); });
+                            }
+                            <MudText Typo="Typo.caption" Class="mt-1">Max HP: <strong>@reviewMaxHp</strong></MudText>
                         </MudCardContent>
                     </MudCard>
                 </MudItem>
@@ -1369,6 +1456,12 @@ else
     // so they are restored if the level is raised again in the same browser session.
     private readonly Dictionary<string, AsiChoice> _allAsiChoicesByKey = [];
 
+    // HP shadow state: keyed as "classId|classLevel" (classLevel is 1-based within the class).
+    // Stores (method, dieRollValue) for each class level's HP entry.
+    // Retains entries even if the class level is subsequently lowered, for the same
+    // restore-on-raise behaviour as ASI choices.
+    private readonly Dictionary<string, (string Method, int DieRollValue)> _allHpChoicesByKey = [];
+
     // ── Step 6 state ─────────────────────────────────────────────────────
     private string _selectedBackgroundId = string.Empty;
     private List<string> _classSkillOptionIds = [];
@@ -1502,6 +1595,14 @@ else
             _allAsiChoicesByKey[key] = choice;
         }
 
+        // Restore HP entries into shadow state
+        _allHpChoicesByKey.Clear();
+        foreach (var entry in c.HitPointEntries)
+        {
+            string key = $"{entry.ClassId}|{entry.ClassLevel}";
+            _allHpChoicesByKey[key] = (entry.Method, entry.DieRollValue);
+        }
+
         if (!string.IsNullOrEmpty(c.BackgroundId)) _selectedBackgroundId = c.BackgroundId;
 
         SyncClassSkillOptions();
@@ -1629,6 +1730,34 @@ else
         existing.AbilityTwo = null;
         existing.FeatId = string.IsNullOrEmpty(featId) ? null : featId;
         _allAsiChoicesByKey[key] = existing;
+        await ValidateAndAutoSaveAsync();
+    }
+
+    // ── HP event handlers ──────────────────────────────────────────────────
+
+    private async Task OnHpMethodChanged(string classId, int classLevel, string method, int average)
+    {
+        string key = $"{classId}|{classLevel}";
+        int dieRollValue = method == "manual"
+            ? (_allHpChoicesByKey.TryGetValue(key, out var prev) && prev.DieRollValue >= 1 ? prev.DieRollValue : average)
+            : average;
+        _allHpChoicesByKey[key] = (method, dieRollValue);
+        await ValidateAndAutoSaveAsync();
+    }
+
+    private async Task OnHpValueChanged(string classId, int classLevel, int value)
+    {
+        string key = $"{classId}|{classLevel}";
+        string method = _allHpChoicesByKey.TryGetValue(key, out var prev) ? prev.Method : "manual";
+        _allHpChoicesByKey[key] = (method, value);
+        await ValidateAndAutoSaveAsync();
+    }
+
+    private async Task RollHp(string classId, int classLevel, int hitDie)
+    {
+        int rolled = Random.Shared.Next(1, hitDie + 1);
+        string key = $"{classId}|{classLevel}";
+        _allHpChoicesByKey[key] = ("manual", rolled);
         await ValidateAndAutoSaveAsync();
     }
 
@@ -1960,6 +2089,46 @@ else
                 AddOtherBonus(c.AbilityScores, choice.AbilityTwo, 1);
         }
 
+        // Populate HP entries from shadow state (only exportable entries — levels still active)
+        c.HitPointEntries.Clear();
+        foreach (var classLevel in c.Levels)
+        {
+            var clsDef = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            int hitDie = clsDef?.HitDie ?? 8;
+            int average = (hitDie / 2) + 1;
+            for (int lvlNum = 1; lvlNum <= classLevel.Level; lvlNum++)
+            {
+                string key = $"{classLevel.ClassId}|{lvlNum}";
+                string method;
+                int dieRollValue;
+                if (lvlNum == 1)
+                {
+                    // Level 1 is always the maximum hit die value
+                    method = "average";
+                    dieRollValue = hitDie;
+                }
+                else if (_allHpChoicesByKey.TryGetValue(key, out var saved))
+                {
+                    method = saved.Method;
+                    dieRollValue = saved.DieRollValue;
+                }
+                else
+                {
+                    // Default: average
+                    method = "average";
+                    dieRollValue = average;
+                }
+
+                c.HitPointEntries.Add(new HitPointEntry
+                {
+                    ClassLevel = lvlNum,
+                    ClassId = classLevel.ClassId,
+                    Method = method,
+                    DieRollValue = dieRollValue,
+                });
+            }
+        }
+
         // Step 6 — Background & Proficiencies
         c.BackgroundId = _selectedBackgroundId;
         c.Skills.Clear();
@@ -2140,6 +2309,25 @@ else
                             if (!_allAsiChoicesByKey.ContainsKey(key))
                                 result.Warnings.Add(
                                     $"WARN_ASI_INCOMPLETE: ASI at {clsDef.DisplayName} level {grantLevel} has not been made.");
+                        }
+                    }
+
+                    // Validate HP die-roll values for any manually-set entries
+                    foreach (var classEntry in levels)
+                    {
+                        var clsDef = _classes.FirstOrDefault(c => c.Id == classEntry.ClassId);
+                        int hitDie = clsDef?.HitDie ?? 8;
+                        string clsDisplay = clsDef?.DisplayName ?? classEntry.ClassId;
+                        for (int lvlNum = 2; lvlNum <= classEntry.Level; lvlNum++)
+                        {
+                            string key = $"{classEntry.ClassId}|{lvlNum}";
+                            if (_allHpChoicesByKey.TryGetValue(key, out var saved) && saved.Method == "manual")
+                            {
+                                if (saved.DieRollValue < 1 || saved.DieRollValue > hitDie)
+                                    result.Errors.Add(
+                                        $"ERR_HP_ROLL_OUT_OF_RANGE: HP for {clsDisplay} level {lvlNum} " +
+                                        $"must be between 1 and {hitDie} (got {saved.DieRollValue}).");
+                            }
                         }
                     }
                 }

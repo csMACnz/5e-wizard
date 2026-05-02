@@ -93,6 +93,30 @@ public class CharacterEquipmentItem
     public int Quantity { get; set; }
 }
 
+/// <summary>
+/// Records the player's HP die-roll value for a single class level.
+/// For level 1 the value is always the class's hit die maximum and the method is "average".
+/// For levels 2+ the method is either "average" (floor(hitDie/2)+1) or "manual" (player-entered).
+/// The CON modifier is excluded from this value; max HP = sum(DieRollValue) + CON_mod * totalLevel.
+/// </summary>
+public class HitPointEntry
+{
+    /// <summary>The class-level number this entry applies to (1-based within the class).</summary>
+    public int ClassLevel { get; set; }
+
+    /// <summary>The class this level belongs to.</summary>
+    public string ClassId { get; set; } = string.Empty;
+
+    /// <summary>How the HP was assigned: "average" or "manual".</summary>
+    public string Method { get; set; } = "average";
+
+    /// <summary>
+    /// The die-roll value chosen for this level, in the range [1, hitDie].
+    /// Does not include the CON modifier.
+    /// </summary>
+    public int DieRollValue { get; set; }
+}
+
 public class ValidationEntry
 {
     public string Severity { get; set; } = string.Empty;
@@ -128,6 +152,13 @@ public class Character
     /// and session saves when the level that grants them is no longer active.
     /// </summary>
     public List<AsiChoice> AsiChoices { get; set; } = [];
+
+    /// <summary>
+    /// Per-level hit point entries recording how HP was assigned at each class level.
+    /// Maximum HP = sum(DieRollValue across all entries) + (CON modifier * total level),
+    /// with each level's contribution floored at 1 after CON is applied.
+    /// </summary>
+    public List<HitPointEntry> HitPointEntries { get; set; } = [];
 
     /// <summary>
     /// If true, the player chose to take class starting wealth (rolled gold) instead of class
