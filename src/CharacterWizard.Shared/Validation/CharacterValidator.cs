@@ -38,6 +38,11 @@ public class CharacterValidator
     {
         var result = new ValidationResult();
 
+        // Meta field validation
+        var metaResult = MetaValidator.Validate(character.Name, character.PlayerName, character.Campaign);
+        result.Errors.AddRange(metaResult.Errors);
+        result.Warnings.AddRange(metaResult.Warnings);
+
         // Ability generation validation — dispatch based on method
         int[] baseScores =
         [
