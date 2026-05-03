@@ -50,8 +50,8 @@ public class SchemaValidationTests
     [Fact]
     public async Task ClassesJson_ValidatesAgainstClassSchema()
     {
-        var schema = await LoadSchemaAsync("class.schema.json");
-        var data = LoadDataFile("class.json");
+        var schema = await LoadSchemaAsync("classes.schema.json");
+        var data = LoadDataFile("classes.json");
 
         var errors = schema.Validate(data);
         Assert.True(errors.Count == 0,
@@ -151,7 +151,7 @@ public class SchemaValidationTests
             "data/data-version.json",
             "data/abilities.json",
             "data/races.json",
-            "data/class.json",
+            "data/classes.json",
             "data/backgrounds.json",
             "data/spells.json",
             "data/equipment.json",

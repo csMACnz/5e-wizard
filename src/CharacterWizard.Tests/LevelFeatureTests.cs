@@ -89,7 +89,7 @@ public class LevelFeatureTests
     [Fact]
     public void Feats_Json_ClassFeatIdsArePresentInClassFeaturesByLevel()
     {
-        var clsData = DeserializeFile<ClassesData>("class.json");
+        var clsData = DeserializeFile<ClassesData>("classes.json");
         var classFeatureIds = new HashSet<string>();
         foreach (var cls in clsData.Classes)
             foreach (var (_, ids) in cls.FeaturesByLevel)
@@ -107,7 +107,7 @@ public class LevelFeatureTests
     [Fact]
     public void Feats_Json_GeneralFeatsNotReferencedByClassOrBackground()
     {
-        var clsData = DeserializeFile<ClassesData>("class.json");
+        var clsData = DeserializeFile<ClassesData>("classes.json");
         var classFeatureIds = new HashSet<string>();
         foreach (var cls in clsData.Classes)
             foreach (var (_, ids) in cls.FeaturesByLevel)
@@ -138,7 +138,7 @@ public class LevelFeatureTests
         var featData = DeserializeFile<FeatsData>("feats.json");
         var validFeatIds = featData.Feats.Select(f => f.Id).ToHashSet();
 
-        var clsData = DeserializeFile<ClassesData>("class.json");
+        var clsData = DeserializeFile<ClassesData>("classes.json");
         foreach (var cls in clsData.Classes)
             foreach (var (level, ids) in cls.FeaturesByLevel)
                 foreach (var id in ids)

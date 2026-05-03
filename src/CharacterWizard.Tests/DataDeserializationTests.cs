@@ -63,7 +63,7 @@ public class DataDeserializationTests
     [Fact]
     public void Classes_Json_DeserializesCorrectly()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
 
         Assert.NotEmpty(data.Classes);
 
@@ -163,7 +163,7 @@ public class DataDeserializationTests
     [Fact]
     public void Classes_Json_SpellcastingInfoDeserializes()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
 
         var wizard = data.Classes.FirstOrDefault(c => c.Id == "class:wizard");
         Assert.NotNull(wizard);
@@ -222,7 +222,7 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_DeserializesCorrectly()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
 
         Assert.NotEmpty(data.Classes);
 
@@ -260,7 +260,7 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_AllSrdClassesPresent()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         var expectedClassIds = new[]
         {
             "class:barbarian", "class:bard", "class:cleric", "class:druid",
@@ -275,7 +275,7 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_StartingWealthRollFormat()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         // Validate that each roll expression matches pattern: {n}d{sides} or {n}d{sides}*{mult}
         var rollPattern = new System.Text.RegularExpressions.Regex(@"^\d+d\d+(\*\d+)?$");
         foreach (var cls in data.Classes)
@@ -290,7 +290,7 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_FighterHasChoiceGroups()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         var fighter = data.Classes.FirstOrDefault(c => c.Id == "class:fighter");
         Assert.NotNull(fighter);
         Assert.NotNull(fighter!.StartingEquipment);
@@ -302,7 +302,7 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_MonkHasNoMultiplierInWealthRoll()
     {
-        var data = DeserializeFile<ClassesData>("class.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         var monk = data.Classes.FirstOrDefault(c => c.Id == "class:monk");
         Assert.NotNull(monk);
         Assert.NotNull(monk!.StartingEquipment);
@@ -316,7 +316,7 @@ public class DataDeserializationTests
         var equipData = DeserializeFile<EquipmentData>("equipment.json");
         var validItemIds = equipData.Equipment.Select(e => e.Id).ToHashSet();
 
-        var classData = DeserializeFile<ClassesData>("class.json");
+        var classData = DeserializeFile<ClassesData>("classes.json");
         foreach (var cls in classData.Classes)
         {
             var entry = cls.StartingEquipment;

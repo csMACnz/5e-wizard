@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://csMACnz.github.io/5e-wizard/schemas/class.schema.json",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/classes.schema.json",
   "title": "ClassDataFile",
   "description": "Collection of SRD classes with mechanical fields, starting gold, and starting equipment choices.",
   "type": "object",

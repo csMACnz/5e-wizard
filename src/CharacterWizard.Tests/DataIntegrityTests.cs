@@ -25,7 +25,7 @@ public class DataIntegrityTests
     [Fact]
     public void Spells_Json_ClassIdsReferenceKnownClasses()
     {
-        var classData = DeserializeFile<ClassesData>("class.json");
+        var classData = DeserializeFile<ClassesData>("classes.json");
         var validClassIds = classData.Classes.Select(c => c.Id).ToHashSet();
 
         var spellData = DeserializeFile<SpellsData>("spells.json");
@@ -46,7 +46,7 @@ public class DataIntegrityTests
         var equipData = DeserializeFile<EquipmentData>("equipment.json");
         var validItemIds = equipData.Equipment.Select(e => e.Id).ToHashSet();
 
-        var classData = DeserializeFile<ClassesData>("class.json");
+        var classData = DeserializeFile<ClassesData>("classes.json");
 
         foreach (var cls in classData.Classes)
         {
@@ -82,7 +82,7 @@ public class DataIntegrityTests
         var equipData = DeserializeFile<EquipmentData>("equipment.json");
         var validItemIds = equipData.Equipment.Select(e => e.Id).ToHashSet();
 
-        var classData = DeserializeFile<ClassesData>("class.json");
+        var classData = DeserializeFile<ClassesData>("classes.json");
 
         foreach (var cls in classData.Classes)
         {
@@ -122,7 +122,7 @@ public class DataIntegrityTests
         var featData = DeserializeFile<FeatsData>("feats.json");
         var validFeatIds = featData.Feats.Select(f => f.Id).ToHashSet();
 
-        var classData = DeserializeFile<ClassesData>("class.json");
+        var classData = DeserializeFile<ClassesData>("classes.json");
 
         foreach (var cls in classData.Classes)
         {

@@ -36,7 +36,7 @@ public sealed class DataService : IDataService
     {
         if (_classes is null)
         {
-            var data = await _http.GetFromJsonAsync<ClassesData>("data/class.json");
+            var data = await _http.GetFromJsonAsync<ClassesData>("data/classes.json");
             _classes = data?.Classes ?? [];
         }
 
