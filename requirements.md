@@ -186,7 +186,19 @@ FR7 — Session Management and Local Storage
   - FR7.4.1: The landing page shall display a "My Characters" button/link when one or more saved sessions exist in local storage, navigating to `/characters`.
   - FR7.4.2: The "Start New Character" button on the landing page shall always create a new session (a fresh UUID), ensuring an existing in-progress session is not overwritten.
 
-Non-functional Requirements (NFR)
+FR8 — Progressive Web App (PWA) / Offline Installability
+- FR8.1: The application shall include a Web App Manifest (`manifest.json`) that declares the app name, short name, icons (192 × 192 and 512 × 512), theme colour, background colour, and `display: standalone` so that browsers can offer an "Add to Home Screen" / "Install" prompt.
+  - FR8.1.1: The manifest's `start_url` and `scope` shall be set to the deployment base path so the installed app opens to the correct URL on GitHub Pages.
+  - FR8.1.2: The manifest's `theme_color` and `background_color` shall match the application's D&D colour scheme (dark red `#8b1a1a` and near-black `#1a0a00` respectively).
+- FR8.2: The application shall register a service worker that pre-caches all published static assets on install so the app works fully offline after the first visit.
+  - FR8.2.1: During development the service worker shall be a no-op pass-through that does not interfere with hot-reload or dev-server asset serving.
+  - FR8.2.2: In the published (production) build, the service worker shall use the Blazor-generated `service-worker-assets.js` asset manifest to cache every WASM, JS, CSS, JSON data file, and image required by the app. A cache-first strategy shall be used for all GET requests.
+  - FR8.2.3: On service worker activation, stale caches from previous versions shall be deleted so users always run the current version.
+  - FR8.2.4: Navigation requests (mode = `navigate`) shall be served the cached `index.html` to support Blazor client-side routing while offline.
+- FR8.3: The published `index.html` shall include a `<link rel="manifest">` element pointing to `manifest.json`, a `<meta name="theme-color">` element, and a `<link rel="apple-touch-icon">` element for iOS home-screen support.
+- FR8.4: The `manifest.json` `__BASE_HREF__` placeholder shall be replaced at publish time (by the same MSBuild `SetBaseHref` target used for `index.html`) so that `start_url` and `scope` are correct for both the local dev (`/`) and GitHub Pages (`/5e-wizard/`) deployments.
+
+
 - NFR1: Client-only operation (works offline after initial page load).
 - NFR2: Fast: typical step response < 300 ms on common desktops.
 - NFR3: Secure: treat imported JSON as untrusted; validate before using any values.

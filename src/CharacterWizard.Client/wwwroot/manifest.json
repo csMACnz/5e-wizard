@@ -1,0 +1,25 @@
+{
+  "name": "5e Character Wizard",
+  "short_name": "5e Wizard",
+  "description": "Build and validate D&D 5e SRD characters offline",
+  "start_url": "__BASE_HREF__",
+  "scope": "__BASE_HREF__",
+  "display": "standalone",
+  "background_color": "#1a0a00",
+  "theme_color": "#8b1a1a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
