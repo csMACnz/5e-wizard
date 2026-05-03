@@ -232,24 +232,25 @@ else
                     @* Wizard spellbook section *@
                     @if (entry.ClassId == "class:wizard" && !isSubclassSpellcasting)
                     {
-                        var wizardLevel1Spells = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level == 1).ToList();
+                        int requiredSpellbookCount = 6 + 2 * (level - 1);
+                        var wizardBookSpells = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level >= 1 && s.Level <= highestSlot).ToList();
                         int spellbookCount = Ctx.WizardSpellbookIds.Count;
                         <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">
-                            Spellbook (Starting Spells) — @spellbookCount / 6 selected
+                            Spellbook (Starting Spells) — @spellbookCount / @requiredSpellbookCount selected
                         </MudText>
                         <MudGrid>
-                            @foreach (var spell in wizardLevel1Spells)
+                            @foreach (var spell in wizardBookSpells)
                             {
                                 string spellId = spell.Id;
                                 bool inBook = Ctx.WizardSpellbookIds.Contains(spellId);
-                                bool disableBookAdd = !inBook && spellbookCount >= 6;
+                                bool disableBookAdd = !inBook && spellbookCount >= requiredSpellbookCount;
                                 <MudItem xs="12" sm="6" md="4">
                                     <MudCheckBox T="bool"
                                                  Value="@inBook"
                                                  ValueChanged="@(async (bool v) => await ToggleSpellbook(spellId, v))"
                                                  Disabled="@disableBookAdd"
                                                  Color="Color.Info"
-                                                 Label="@spell.DisplayName" />
+                                                 Label="@($"{spell.DisplayName} (L{spell.Level})")" />
                                 </MudItem>
                             }
                         </MudGrid>

@@ -192,8 +192,12 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
 
                     // Wizard spellbook warning
                     var wizardEntry = ctx.ClassEntries.FirstOrDefault(e => e.ClassId == "class:wizard");
-                    if (wizardEntry != null && wizardEntry.Level >= 1 && ctx.WizardSpellbookIds.Count < 6)
-                        result.Warnings.Add($"WARN_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard spellbook should have 6 starting spells ({ctx.WizardSpellbookIds.Count} selected).");
+                    if (wizardEntry != null && wizardEntry.Level >= 1)
+                    {
+                        int requiredSpellbookCount = 6 + 2 * (wizardEntry.Level - 1);
+                        if (ctx.WizardSpellbookIds.Count < requiredSpellbookCount)
+                            result.Warnings.Add($"WARN_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard spellbook should have {requiredSpellbookCount} starting spells ({ctx.WizardSpellbookIds.Count} selected).");
+                    }
 
                     // Racial cantrip warning
                     if (string.IsNullOrEmpty(ctx.SelectedRacialCantripId))
