@@ -12,6 +12,7 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 ## Features
 
 - 🎲 **9-step guided wizard** — Walk through character name/meta, ability scores, race, class, level features, background, spells, equipment, and a full review with validation report
+- 🎰 **Roll Random Character** — Generate a fully randomized SRD character in one click
 - ⚔️ **Three ability-score methods** — Standard Array, Point Buy, and Manual Roll, each with live validation
 - 🧝 **Full SRD race/subrace support** — All SRD races with subrace selection (e.g. High Elf, Mountain Dwarf)
 - 🛡️ **Multiclass support** — Add multiple class/level combinations with prerequisite checks
@@ -19,7 +20,9 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 - ✨ **Spell selection** — Per-class spell and cantrip selection for caster classes
 - 🎒 **Equipment selection** — Starter package equipment picker
 - ✅ **Full validation** — Final character review with detailed error and warning messages
-- 💾 **JSON export** — Download your character as a standards-compliant JSON file
+- 💾 **Export** — Download your character as a JSON file or as a FightClub 5e XML file
+- 📂 **Import** — Load a previously exported Character JSON or FightClub 5e XML file to continue editing
+- 📋 **Saved sessions** — Characters are automatically saved in browser storage; resume any session from the My Characters page
 - 🖨️ **Print sheet** — Printer-friendly character sheet view
 - ♿ **Accessible** — ARIA labels, skip-navigation, and keyboard-navigable throughout
 
@@ -31,9 +34,10 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 ├── data/                  # SRD seed JSON data files
 ├── schemas/               # JSON Schemas for character and canonical data
 ├── src/
-│   ├── CharacterWizard.Client/   # Blazor WASM project
-│   ├── CharacterWizard.Shared/   # Models and validation engine
-│   └── CharacterWizard.Tests/    # xUnit test project
+│   ├── CharacterWizard.Client/    # Blazor WASM project
+│   ├── CharacterWizard.Shared/    # Models and validation engine
+│   ├── CharacterWizard.Tests/     # xUnit unit test project
+│   └── CharacterWizard.E2ETests/  # Playwright end-to-end test project
 ├── LICENSE                # MIT
 ├── README.md
 └── requirements.md        # Authoritative project spec
@@ -42,7 +46,7 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 ## Usage
 
 1. **Visit the live app** at [https://csmacnz.github.io/5e-wizard/](https://csmacnz.github.io/5e-wizard/)
-2. Click **Start New Character** on the home page
+2. Click **Start New Character** on the home page (or **Roll Random Character** for a fully randomized character, or **Import Character** to load an existing export)
 3. Step through the 9-step wizard:
    - **Step 1 — Meta**: Enter character name, player name, campaign, and choose an ability-score generation method
    - **Step 2 — Abilities**: Assign ability scores using Standard Array, Point Buy, or Manual Roll
@@ -52,9 +56,10 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
    - **Step 6 — Background**: Pick a background and assign skill proficiencies
    - **Step 7 — Spells**: Choose spells/cantrips for caster classes (skipped for non-casters)
    - **Step 8 — Equipment**: Select starting gear
-   - **Step 9 — Review**: Full validation report; export as JSON or view the print sheet
-4. Use the **Export JSON** button to save your character
+   - **Step 9 — Review**: Full validation report; export as JSON or FC5 XML, or view the print sheet
+4. Use the **Export JSON** or **Export FC5 XML** button to save your character
 5. Use the **Print Sheet** button to open a printer-friendly view
+6. Return to the home page to access **My Characters** and resume any previously saved session
 
 > All navigation is keyboard-accessible. Use **Tab** to move between controls and **Enter/Space** to activate buttons.
 
@@ -71,8 +76,12 @@ dotnet restore src/CharacterWizard.slnx
 # Build solution
 dotnet build src/CharacterWizard.slnx -c Release
 
-# Run tests (includes schema and data validation)
-dotnet test src/CharacterWizard.slnx -c Release
+# Run unit tests (includes schema and data validation)
+dotnet test src/CharacterWizard.Tests/CharacterWizard.Tests.csproj -c Release
+
+# Run end-to-end tests (requires Playwright browsers installed first)
+pwsh src/CharacterWizard.E2ETests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
+dotnet test src/CharacterWizard.E2ETests/CharacterWizard.E2ETests.csproj -c Release
 
 # Check code formatting (must pass in CI)
 dotnet format src/CharacterWizard.slnx --verify-no-changes
