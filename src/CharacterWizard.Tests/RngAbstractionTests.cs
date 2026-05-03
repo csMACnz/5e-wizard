@@ -14,7 +14,7 @@ public class RngAbstractionTests
     /// Deterministic IRng that returns values from a fixed sequence,
     /// cycling when exhausted. Suitable for injection in unit tests.
     /// </summary>
-    private sealed class SequenceRng(params int[] values) : IRng
+    private sealed class FixedSequenceRng(params int[] values) : IRng
     {
         private int _index;
 
@@ -34,7 +34,7 @@ public class RngAbstractionTests
         }
     }
 
-    private sealed class FixedRngFactory(IRng rng) : IRngFactory
+    private sealed class SingletonRngFactory(IRng rng) : IRngFactory
     {
         public IRng Create() => rng;
     }
@@ -44,7 +44,7 @@ public class RngAbstractionTests
     [Fact]
     public void SequenceRng_Next_ReturnsExpectedValues()
     {
-        IRng rng = new SequenceRng(3, 7, 1);
+        IRng rng = new FixedSequenceRng(3, 7, 1);
 
         Assert.Equal(3, rng.Next(10));
         Assert.Equal(7, rng.Next(10));
@@ -56,7 +56,7 @@ public class RngAbstractionTests
     [Fact]
     public void SequenceRng_NextRange_ReturnsBoundedValues()
     {
-        IRng rng = new SequenceRng(0, 5, 2);
+        IRng rng = new FixedSequenceRng(0, 5, 2);
 
         int v1 = rng.Next(1, 7);
         int v2 = rng.Next(1, 7);
@@ -70,10 +70,10 @@ public class RngAbstractionTests
     // ── IRngFactory contract ──────────────────────────────────────────────
 
     [Fact]
-    public void FixedRngFactory_Create_ReturnsSameInstance()
+    public void SingletonRngFactory_Create_ReturnsSameInstance()
     {
-        IRng rng = new SequenceRng(1, 2, 3);
-        IRngFactory factory = new FixedRngFactory(rng);
+        IRng rng = new FixedSequenceRng(1, 2, 3);
+        IRngFactory factory = new SingletonRngFactory(rng);
 
         var a = factory.Create();
         var b = factory.Create();
@@ -87,9 +87,9 @@ public class RngAbstractionTests
     public void TwoFactoryCreations_WithIndependentInstances_ProduceIndependentSequences()
     {
         // Each Create() call returns a distinct IRng backed by its own Random instance.
-        // Simulate this with two separate SequenceRngs via two factories.
-        IRng rng1 = new SequenceRng(0);  // always picks index 0
-        IRng rng2 = new SequenceRng(4);  // always picks index 4
+        // Simulate this with two separate FixedSequenceRngs via two factories.
+        IRng rng1 = new FixedSequenceRng(0);  // always picks index 0
+        IRng rng2 = new FixedSequenceRng(4);  // always picks index 4
 
         string[] options = ["A", "B", "C", "D", "E", "F"];
 
