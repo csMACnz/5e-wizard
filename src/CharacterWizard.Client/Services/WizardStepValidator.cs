@@ -23,10 +23,15 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
         switch (step)
         {
             case 0:
-                if (string.IsNullOrWhiteSpace(ctx.CharacterName))
-                    result.Errors.Add("Character name is required.");
-                if (!Enum.TryParse<GenerationMethod>(ctx.GenerationMethodStr, out _))
-                    result.Errors.Add("A generation method must be selected.");
+                {
+                    var metaResult = MetaValidator.Validate(
+                        ctx.CharacterName,
+                        string.IsNullOrWhiteSpace(ctx.PlayerName) ? null : ctx.PlayerName,
+                        string.IsNullOrWhiteSpace(ctx.CampaignName) ? null : ctx.CampaignName);
+                    result.Errors.AddRange(metaResult.Errors);
+                    if (!Enum.TryParse<GenerationMethod>(ctx.GenerationMethodStr, out _))
+                        result.Errors.Add("A generation method must be selected.");
+                }
                 break;
 
             case 1:

@@ -11,6 +11,7 @@
                       ValueChanged="@(async (string v) => { Ctx.CharacterName = v; await OnChanged.InvokeAsync(); })"
                       Label="Character Name" Required="true"
                       Immediate="true"
+                      MaxLength="@MetaValidator.MaxNameLength"
                       Variant="Variant.Outlined" HelperText="Required"
                       Adornment="Adornment.End"
                       AdornmentIcon="@Icons.Material.Filled.Casino"
@@ -23,6 +24,7 @@
                       ValueChanged="@(async (string v) => { Ctx.PlayerName = v; await OnChanged.InvokeAsync(); })"
                       Label="Player Name"
                       Immediate="true"
+                      MaxLength="@MetaValidator.MaxPlayerNameLength"
                       Variant="Variant.Outlined" />
     </MudItem>
     <MudItem xs="12" sm="6">
@@ -30,6 +32,7 @@
                       ValueChanged="@(async (string v) => { Ctx.CampaignName = v; await OnChanged.InvokeAsync(); })"
                       Label="Campaign Name"
                       Immediate="true"
+                      MaxLength="@MetaValidator.MaxCampaignNameLength"
                       Variant="Variant.Outlined"
                       Adornment="Adornment.End"
                       AdornmentIcon="@Icons.Material.Filled.Casino"
