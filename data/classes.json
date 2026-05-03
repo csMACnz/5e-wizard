@@ -260,7 +260,7 @@
       "subclassOptions": [
         { "id": "subclass:fighter:champion", "displayName": "Champion" },
         { "id": "subclass:fighter:battle-master", "displayName": "Battle Master" },
-        { "id": "subclass:fighter:eldritch-knight", "displayName": "Eldritch Knight" }
+        { "id": "subclass:fighter:eldritch-knight", "displayName": "Eldritch Knight", "spellcasting": { "castingType": "third", "spellcastingAbility": "INT", "prepareSpells": false, "spellListId": "spelllist:wizard", "cantripsKnownByLevel": [0,0,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,4], "spellsKnownByLevel": [0,0,3,4,4,4,5,6,6,7,8,8,9,10,10,11,11,11,12,13], "ritualCasting": false } }
       ],
       "startingEquipmentIds": ["item:chain-mail", "item:leather-armor", "item:longsword", "item:shortsword", "item:handaxe", "item:greataxe", "item:light-crossbow", "item:shield", "item:dungeoneer-pack", "item:explorers-pack", "item:dagger"],
       "source": "SRD 5.1",
@@ -471,7 +471,7 @@
       "subclassOptions": [
         { "id": "subclass:rogue:thief", "displayName": "Thief" },
         { "id": "subclass:rogue:assassin", "displayName": "Assassin" },
-        { "id": "subclass:rogue:arcane-trickster", "displayName": "Arcane Trickster" }
+        { "id": "subclass:rogue:arcane-trickster", "displayName": "Arcane Trickster", "spellcasting": { "castingType": "third", "spellcastingAbility": "INT", "prepareSpells": false, "spellListId": "spelllist:wizard", "cantripsKnownByLevel": [0,0,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4], "spellsKnownByLevel": [0,0,3,4,4,4,5,6,6,7,8,8,9,10,10,11,11,11,12,13], "ritualCasting": false } }
       ],
       "startingEquipmentIds": ["item:shortsword", "item:dagger", "item:leather-armor", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
       "source": "SRD 5.1",

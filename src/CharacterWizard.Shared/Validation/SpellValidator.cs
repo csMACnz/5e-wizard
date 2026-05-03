@@ -85,6 +85,18 @@ public class SpellValidator
                     result.Errors.Add($"ERR_SPELL_KNOWN_COUNT: Class '{classLevel.ClassId}' at level {level} allows {maxKnown} leveled spell(s) but {leveled.Count} selected.");
                 }
             }
+
+            // Wizard spellbook check: level-1 wizard spells (ClassId = "class:wizard", level > 0)
+            if (classLevel.ClassId == "class:wizard" && level >= 1)
+            {
+                var wizardLevel1Spells = character.Spells
+                    .Where(s => s.ClassId == "class:wizard" && spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level == 1)
+                    .ToList();
+                if (wizardLevel1Spells.Count < 6)
+                {
+                    result.Errors.Add($"ERR_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard must have at least 6 level-1 spells in the spellbook but only {wizardLevel1Spells.Count} selected.");
+                }
+            }
         }
 
         return result;

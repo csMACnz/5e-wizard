@@ -190,6 +190,45 @@ public sealed class WizardCommitService(WizardContext ctx, CharacterWizardState 
                 });
             }
 
+        // Auto-apply subclass bonus spells
+        foreach (var classLevel in c.Levels)
+        {
+            if (classLevel.SubclassId == null) continue;
+            var clsDef = classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
+            var subclassDef = clsDef?.SubclassOptions.FirstOrDefault(s => s.Id == classLevel.SubclassId);
+            if (subclassDef?.BonusSpells == null) continue;
+            foreach (var bonus in subclassDef.BonusSpells)
+            {
+                if (classLevel.Level < bonus.GrantLevel) continue;
+                if (c.Spells.Any(s => s.SpellId == bonus.SpellId)) continue;
+                c.Spells.Add(new CharacterSpell { SpellId = bonus.SpellId, ClassId = classLevel.ClassId, Prepared = true });
+            }
+        }
+
+        // Racial cantrip
+        if (!string.IsNullOrEmpty(ctx.SelectedRacialCantripId))
+        {
+            string racialSourceId = !string.IsNullOrEmpty(ctx.SelectedSubraceId) ? ctx.SelectedSubraceId : ctx.SelectedRaceId;
+            if (!c.Spells.Any(s => s.SpellId == ctx.SelectedRacialCantripId))
+                c.Spells.Add(new CharacterSpell { SpellId = ctx.SelectedRacialCantripId, ClassId = racialSourceId, Prepared = false });
+        }
+
+        // Wizard spellbook
+        foreach (var spellId in ctx.WizardSpellbookIds)
+            if (!c.Spells.Any(s => s.SpellId == spellId && s.ClassId == "class:wizard"))
+                c.Spells.Add(new CharacterSpell { SpellId = spellId, ClassId = "class:wizard", Prepared = false });
+
+        // Magical secrets
+        foreach (var (_, spellIds) in ctx.MagicalSecretsSelections)
+            foreach (var spellId in spellIds)
+                if (!string.IsNullOrEmpty(spellId) && !c.Spells.Any(s => s.SpellId == spellId))
+                    c.Spells.Add(new CharacterSpell { SpellId = spellId, ClassId = "class:bard", Prepared = true });
+
+        // Mystic arcanum
+        foreach (var (_, spellId) in ctx.MysticArcanumSelections)
+            if (!string.IsNullOrEmpty(spellId) && !c.Spells.Any(s => s.SpellId == spellId))
+                c.Spells.Add(new CharacterSpell { SpellId = spellId, ClassId = "class:warlock", Prepared = false });
+
         // Step 8 — Equipment
         c.Equipment.Clear();
         c.StartingEquipmentChoices.Clear();
