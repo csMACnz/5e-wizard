@@ -191,7 +191,7 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                         result.Warnings.Add($"WARN_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard spellbook should have 6 starting spells ({ctx.WizardSpellbookIds.Count} selected).");
 
                     // Racial cantrip warning
-                    if (!string.IsNullOrEmpty(ctx.SelectedRacialCantripId) == false)
+                    if (string.IsNullOrEmpty(ctx.SelectedRacialCantripId))
                     {
                         // Only warn if race/subrace has trait:cantrip
                         var race = races.FirstOrDefault(r => r.Id == ctx.SelectedRaceId);
