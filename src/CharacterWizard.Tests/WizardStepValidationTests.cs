@@ -535,4 +535,170 @@ public class WizardStepValidationTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_EQUIPMENT_UNKNOWN"));
     }
+
+    // ── FR2.1.1 Regression: errors visible immediately after any field change ──
+    // These tests verify that when the user changes a field in a wizard step,
+    // the step validator (which ValidateAndAutoSaveAsync calls via OnChanged)
+    // immediately surfaces errors—not only on the "Next" click.
+
+    [Fact]
+    public void FR2_1_1_Step0_AfterClearingCharacterName_ValidatorSurfacesError()
+    {
+        // Before: user had a valid name — no errors.
+        var beforeResult = MetaValidator.Validate("Aric Stonehammer", null, null);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user clears the name field (field change event fires OnChanged).
+        var afterResult = MetaValidator.Validate(string.Empty, null, null);
+
+        // The validator must surface an error immediately, without a Next click.
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_META_NAME_REQUIRED"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step0_AfterEnteringNameThatIsTooLong_ValidatorSurfacesError()
+    {
+        string tooLong = new('A', MetaValidator.MaxNameLength + 1);
+
+        // Before: valid name
+        var beforeResult = MetaValidator.Validate("Aric", null, null);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user pastes a name that exceeds the max length (field change).
+        var afterResult = MetaValidator.Validate(tooLong, null, null);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_META_NAME_TOO_LONG"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step1_StandardArray_AfterChangingAbilityToZero_ValidatorSurfacesError()
+    {
+        // Before: fully valid standard array assignment.
+        int[] validScores = [15, 14, 13, 12, 10, 8];
+        var beforeResult = StandardArrayValidator.Validate(validScores);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user clears one ability selection (sets it back to the unassigned 0 placeholder).
+        int[] afterScores = [15, 14, 13, 12, 10, 0];
+        var afterResult = StandardArrayValidator.Validate(afterScores);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_STDARRAY_INVALID"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step1_PointBuy_AfterRaisingScoreBeyondBudget_ValidatorSurfacesError()
+    {
+        // Before: exactly at budget.
+        int[] validScores = [15, 15, 8, 8, 8, 8]; // 13 points
+        var beforeResult = PointBuyValidator.Validate(validScores);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user increments a score and exceeds the budget (field change).
+        int[] overBudgetScores = [15, 15, 15, 15, 15, 15]; // 9*6 = 54 > 27
+        var afterResult = PointBuyValidator.Validate(overBudgetScores);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_POINTBUY_BUDGET"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step2_AfterClearingRaceSelection_ValidatorSurfacesError()
+    {
+        // Before: valid race selection.
+        var beforeChar = new Character
+        {
+            RaceId = "race:human",
+            AbilityScores = new AbilityScores
+            {
+                STR = new AbilityBlock { Base = 15, RacialBonus = 1 },
+                DEX = new AbilityBlock { Base = 14, RacialBonus = 1 },
+                CON = new AbilityBlock { Base = 13, RacialBonus = 1 },
+                INT = new AbilityBlock { Base = 12, RacialBonus = 1 },
+                WIS = new AbilityBlock { Base = 10, RacialBonus = 1 },
+                CHA = new AbilityBlock { Base = 8, RacialBonus = 1 },
+            },
+        };
+        var beforeResult = new RaceValidator(TestRaces).Validate(beforeChar);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user clears the race dropdown (field change).
+        var afterChar = new Character
+        {
+            RaceId = string.Empty,
+            AbilityScores = new AbilityScores(),
+        };
+        var afterResult = new RaceValidator(TestRaces).Validate(afterChar);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_RACE"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step3_AfterChangingClassToUnknownId_ValidatorSurfacesError()
+    {
+        // Before: valid class selection.
+        var beforeChar = new Character
+        {
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
+            AbilityScores = new AbilityScores { STR = new AbilityBlock { Base = 15 } },
+        };
+        var beforeResult = new ClassValidator(TestClasses).Validate(beforeChar);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user edits the class field to an unrecognised value (field change).
+        var afterChar = new Character
+        {
+            TotalLevel = 1,
+            Levels = [new ClassLevel { ClassId = "class:unknown-class", Level = 1 }],
+            AbilityScores = new AbilityScores(),
+        };
+        var afterResult = new ClassValidator(TestClasses).Validate(afterChar);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_CLASS_UNKNOWN"));
+    }
+
+    [Fact]
+    public void FR2_1_1_Step5_AfterPickingTooManyClassSkills_ValidatorSurfacesError()
+    {
+        // Before: Fighter with exactly 2 class skills chosen — valid.
+        var beforeChar = new Character
+        {
+            BackgroundId = "background:soldier",
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
+            Skills = new Dictionary<string, string>
+            {
+                ["skill:perception"] = "class",
+                ["skill:survival"] = "class",
+                ["skill:athletics"] = "background",
+                ["skill:intimidation"] = "background",
+            },
+        };
+        var beforeResult = new ProficiencyValidator(TestClasses, TestBackgrounds).Validate(beforeChar);
+        Assert.True(beforeResult.IsValid);
+
+        // After: user picks a third class skill — one more than the Fighter's allowance of 2
+        // (field change fires OnChanged → validator must surface error immediately).
+        var afterChar = new Character
+        {
+            BackgroundId = "background:soldier",
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
+            Skills = new Dictionary<string, string>
+            {
+                ["skill:perception"] = "class",
+                ["skill:survival"] = "class",
+                ["skill:history"] = "class",   // one too many class skills
+                ["skill:athletics"] = "background",
+                ["skill:intimidation"] = "background",
+            },
+        };
+        var afterResult = new ProficiencyValidator(TestClasses, TestBackgrounds).Validate(afterChar);
+
+        Assert.False(afterResult.IsValid);
+        Assert.Contains(afterResult.Errors, e => e.Contains("ERR_SKILL_COUNT"));
+    }
 }

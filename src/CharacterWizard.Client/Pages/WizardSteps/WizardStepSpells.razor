@@ -44,7 +44,8 @@
 else
 {
     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
-        <MudCheckBox T="bool" @bind-Value="Ctx.ShowAllSpellLevels" Color="Color.Primary"
+        <MudCheckBox T="bool" @bind-Value="Ctx.ShowAllSpellLevels" @bind-Value:after="OnChanged.InvokeAsync"
+                     Color="Color.Primary"
                      Label="Show all spell levels (including levels beyond current slots)" />
     </MudStack>
 
