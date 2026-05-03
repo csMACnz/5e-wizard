@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://csMACnz.github.io/5e-wizard/schemas/class.schema.json",
+  "$id": "https://csMACnz.github.io/5e-wizard/schemas/classes.schema.json",
   "title": "ClassDataFile",
-  "description": "Collection of SRD classes with mechanical fields.",
+  "description": "Collection of SRD classes with mechanical fields, starting gold, and starting equipment choices.",
   "type": "object",
   "required": ["schemaVersion", "source", "classes"],
   "additionalProperties": false,
@@ -74,8 +74,72 @@
           "type": "array",
           "items": { "type": "string" }
         },
+        "startingEquipment": { "$ref": "#/definitions/ClassStartingEquipmentInfo" },
         "source": { "type": "string" },
         "srdReference": { "type": "string" }
+      }
+    },
+    "ClassStartingEquipmentInfo": {
+      "type": "object",
+      "required": ["startingWealthRoll", "fixedItems", "choiceGroups"],
+      "additionalProperties": false,
+      "properties": {
+        "startingWealthRoll": {
+          "type": "string",
+          "description": "Dice roll formula for the starting wealth alternative (e.g. '2d4*10')."
+        },
+        "fixedItems": {
+          "type": "array",
+          "description": "Items granted to all characters of this class with no choice required.",
+          "items": { "$ref": "#/definitions/EquipmentGrantItem" }
+        },
+        "choiceGroups": {
+          "type": "array",
+          "description": "Mutually exclusive choice groups; the player picks one option per group.",
+          "items": { "$ref": "#/definitions/EquipmentChoiceGroup" }
+        }
+      }
+    },
+    "EquipmentGrantItem": {
+      "type": "object",
+      "required": ["itemId", "quantity"],
+      "additionalProperties": false,
+      "properties": {
+        "itemId": { "type": "string", "description": "Equipment item identifier." },
+        "quantity": { "type": "integer", "minimum": 1, "description": "Number of this item granted." }
+      }
+    },
+    "EquipmentChoiceGroup": {
+      "type": "object",
+      "required": ["id", "description", "required", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for this choice group." },
+        "description": { "type": "string", "description": "Human-readable description of the choice." },
+        "required": { "type": "boolean", "description": "Whether the player must make a selection from this group." },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EquipmentChoiceOption" },
+          "minItems": 1
+        }
+      }
+    },
+    "EquipmentChoiceOption": {
+      "type": "object",
+      "required": ["id", "description", "grantItems", "pickOne"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for this option within its group." },
+        "description": { "type": "string", "description": "Human-readable description of this option." },
+        "grantItems": {
+          "type": "array",
+          "description": "Items granted when this option is selected.",
+          "items": { "$ref": "#/definitions/EquipmentGrantItem" }
+        },
+        "pickOne": {
+          "type": "boolean",
+          "description": "If true, the player must pick exactly one item from grantItems; if false, all items are granted."
+        }
       }
     },
     "Spellcasting": {

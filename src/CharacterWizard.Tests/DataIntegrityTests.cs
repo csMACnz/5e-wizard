@@ -77,17 +77,27 @@ public class DataIntegrityTests
     }
 
     [Fact]
-    public void ClassStartingEquipment_Json_ClassIdReferencesKnownClass()
+    public void Classes_Json_StartingEquipmentItemIdsReferenceKnownEquipment()
     {
+        var equipData = DeserializeFile<EquipmentData>("equipment.json");
+        var validItemIds = equipData.Equipment.Select(e => e.Id).ToHashSet();
+
         var classData = DeserializeFile<ClassesData>("classes.json");
-        var validClassIds = classData.Classes.Select(c => c.Id).ToHashSet();
 
-        var cseData = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
-
-        foreach (var entry in cseData.Entries)
+        foreach (var cls in classData.Classes)
         {
-            Assert.True(validClassIds.Contains(entry.ClassId),
-                $"class-starting-equipment.json entry has unknown classId '{entry.ClassId}'");
+            var entry = cls.StartingEquipment;
+            if (entry == null) continue;
+
+            foreach (var fixedItem in entry.FixedItems)
+                Assert.True(validItemIds.Contains(fixedItem.ItemId),
+                    $"Class '{cls.Id}' startingEquipment fixedItem references unknown item '{fixedItem.ItemId}'");
+
+            foreach (var group in entry.ChoiceGroups)
+                foreach (var option in group.Options)
+                    foreach (var grant in option.GrantItems)
+                        Assert.True(validItemIds.Contains(grant.ItemId),
+                            $"Class '{cls.Id}' startingEquipment choice option references unknown item '{grant.ItemId}'");
         }
     }
 
