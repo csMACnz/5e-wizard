@@ -73,7 +73,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         c.Levels.Add(new ClassLevel { ClassId = cls.Id, Level = level, SubclassId = subclassId });
         c.TotalLevel = level;
 
-        // Step 5 — Background + Skill Proficiencies
+        // Step 6 — Background + Skill Proficiencies
         var bg = backgrounds[rng.Next(backgrounds.Count)];
         c.BackgroundId = bg.Id;
         foreach (var sk in bg.SkillProficiencies)
@@ -90,7 +90,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         for (int i = 0; i < classSkillCount; i++)
             c.Skills[availableClassSkills[i]] = "class";
 
-        // Step 6 — Spells (if spellcaster)
+        // Step 7 — Spells (if spellcaster)
         if (cls.Spellcasting != null)
         {
             var sc = cls.Spellcasting;
@@ -109,7 +109,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
                 c.Spells.Add(new CharacterSpell { SpellId = spell.Id, ClassId = cls.Id, Prepared = true });
         }
 
-        // Step 7 — Equipment (class starting equipment via choice groups)
+        // Step 8 — Equipment (class starting equipment via choice groups)
         var classEquipConfig = classStartingEquipment.FirstOrDefault(e => e.ClassId == cls.Id);
         if (classEquipConfig != null)
         {
