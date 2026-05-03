@@ -334,4 +334,205 @@ public class WizardStepValidationTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_SKILL_DUPLICATE") || e.Contains("ERR_SKILL_COUNT"));
     }
+
+    // ── Step 7: Equipment (classConfig path) ─────────────────────────────
+
+    private static ClassStartingEquipmentEntry BuildFighterEquipmentConfig() => new()
+    {
+        ClassId = "class:fighter",
+        StartingWealthRoll = "5d4*10",
+        FixedItems = [new EquipmentGrantItem { ItemId = "item:chain-mail", Quantity = 1 }],
+        ChoiceGroups =
+        [
+            new EquipmentChoiceGroup
+            {
+                Id = "weapon-group",
+                Description = "Choose a weapon",
+                Required = true,
+                Options =
+                [
+                    new EquipmentChoiceOption
+                    {
+                        Id = "sword-shield",
+                        Description = "Longsword and shield",
+                        PickOne = false,
+                        GrantItems =
+                        [
+                            new EquipmentGrantItem { ItemId = "item:longsword", Quantity = 1 },
+                            new EquipmentGrantItem { ItemId = "item:shield", Quantity = 1 },
+                        ],
+                    },
+                    new EquipmentChoiceOption
+                    {
+                        Id = "martial-pick",
+                        Description = "Any martial melee weapon",
+                        PickOne = true,
+                        GrantItems =
+                        [
+                            new EquipmentGrantItem { ItemId = "item:longsword", Quantity = 1 },
+                            new EquipmentGrantItem { ItemId = "item:greataxe", Quantity = 1 },
+                        ],
+                    },
+                ],
+            },
+        ],
+    };
+
+    private static readonly List<EquipmentItemDefinition> TestEquipmentItems =
+    [
+        new EquipmentItemDefinition { Id = "item:longsword", DisplayName = "Longsword", Category = "weapon", Subcategory = "martial-melee" },
+        new EquipmentItemDefinition { Id = "item:greataxe", DisplayName = "Greataxe", Category = "weapon", Subcategory = "martial-melee" },
+        new EquipmentItemDefinition { Id = "item:dagger", DisplayName = "Dagger", Category = "weapon", Subcategory = "simple-melee" },
+        new EquipmentItemDefinition { Id = "item:shield", DisplayName = "Shield", Category = "armor", Subcategory = "shield" },
+        new EquipmentItemDefinition { Id = "item:chain-mail", DisplayName = "Chain Mail", Category = "armor", Subcategory = "heavy" },
+        new EquipmentItemDefinition { Id = "item:leather-armor", DisplayName = "Leather Armor", Category = "armor", Subcategory = "light" },
+    ];
+
+    [Fact]
+    public void Step7_ClassConfig_AllRequiredChoicesMade_IsValid()
+    {
+        var config = BuildFighterEquipmentConfig();
+        var character = new Character
+        {
+            StartingEquipmentChoices = [new EquipmentGroupChoice { GroupId = "weapon-group", ChosenOptionId = "sword-shield" }],
+            Equipment =
+            [
+                new CharacterEquipmentItem { ItemId = "item:longsword", Quantity = 1 },
+                new CharacterEquipmentItem { ItemId = "item:shield", Quantity = 1 },
+                new CharacterEquipmentItem { ItemId = "item:chain-mail", Quantity = 1 },
+            ],
+        };
+
+        var result = new StartingEquipmentChoiceValidator(config).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Step7_ClassConfig_RequiredChoiceMissing_IsInvalid()
+    {
+        var config = BuildFighterEquipmentConfig();
+        var character = new Character
+        {
+            // No StartingEquipmentChoices recorded
+            Equipment =
+            [
+                new CharacterEquipmentItem { ItemId = "item:longsword", Quantity = 1 },
+            ],
+        };
+
+        var result = new StartingEquipmentChoiceValidator(config).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_CHOICE_MISSING") && e.Contains("weapon-group"));
+    }
+
+    [Fact]
+    public void Step7_ClassConfig_PickOneOption_ValidItemChosen_IsValid()
+    {
+        var config = BuildFighterEquipmentConfig();
+        var character = new Character
+        {
+            StartingEquipmentChoices =
+            [
+                new EquipmentGroupChoice
+                {
+                    GroupId = "weapon-group",
+                    ChosenOptionId = "martial-pick",
+                    PickedItemId = "item:greataxe",
+                },
+            ],
+            Equipment = [new CharacterEquipmentItem { ItemId = "item:greataxe", Quantity = 1 }],
+        };
+
+        var result = new StartingEquipmentChoiceValidator(config).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Step7_ClassConfig_StartingWealth_WithGold_IsValid()
+    {
+        var config = BuildFighterEquipmentConfig();
+        var character = new Character
+        {
+            ClassStartingWealthChosen = true,
+            ClassStartingGold = 100,
+        };
+
+        var result = new StartingEquipmentChoiceValidator(config).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+        Assert.Empty(result.Warnings);
+    }
+
+    [Fact]
+    public void Step7_ClassConfig_StartingWealth_NoGold_IsValidWithWarning()
+    {
+        var config = BuildFighterEquipmentConfig();
+        var character = new Character
+        {
+            ClassStartingWealthChosen = true,
+            ClassStartingGold = null,
+        };
+
+        var result = new StartingEquipmentChoiceValidator(config).Validate(character);
+        Assert.True(result.IsValid);
+        Assert.Contains(result.Warnings, w => w.Contains("WARN_WEALTH_NO_GOLD"));
+    }
+
+    // ── Step 7: Equipment (legacy path — strict toggle) ───────────────────
+
+    [Fact]
+    public void Step7_LegacyPath_StrictMode_ItemInAllowedList_IsValid()
+    {
+        // Strict mode: only class-allowed items should be selectable.
+        var allowedIds = new List<string> { "item:longsword", "item:chain-mail" };
+        var character = new Character
+        {
+            Equipment = [new CharacterEquipmentItem { ItemId = "item:longsword", Quantity = 1 }],
+        };
+
+        var result = new EquipmentValidator(TestEquipmentItems).Validate(character, allowedIds);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Step7_LegacyPath_StrictMode_ItemOutsideAllowedList_IsInvalid()
+    {
+        // Strict mode rejects items not on the class's starting equipment list.
+        var allowedIds = new List<string> { "item:longsword", "item:chain-mail" };
+        var character = new Character
+        {
+            Equipment = [new CharacterEquipmentItem { ItemId = "item:dagger", Quantity = 1 }],
+        };
+
+        var result = new EquipmentValidator(TestEquipmentItems).Validate(character, allowedIds);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_EQUIPMENT_NOT_ALLOWED"));
+    }
+
+    [Fact]
+    public void Step7_LegacyPath_NonStrictMode_AnyValidItem_IsValid()
+    {
+        // Non-strict mode: no allowed list passed → any valid equipment item is accepted.
+        var character = new Character
+        {
+            Equipment = [new CharacterEquipmentItem { ItemId = "item:dagger", Quantity = 1 }],
+        };
+
+        // allowedIds = null means non-strict mode
+        var result = new EquipmentValidator(TestEquipmentItems).Validate(character, null);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Step7_LegacyPath_NonStrictMode_UnknownItem_IsInvalid()
+    {
+        // Non-strict mode still rejects items not in the equipment data at all.
+        var character = new Character
+        {
+            Equipment = [new CharacterEquipmentItem { ItemId = "item:does-not-exist", Quantity = 1 }],
+        };
+
+        var result = new EquipmentValidator(TestEquipmentItems).Validate(character, null);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_EQUIPMENT_UNKNOWN"));
+    }
 }
