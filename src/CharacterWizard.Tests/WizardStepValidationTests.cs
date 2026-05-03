@@ -269,10 +269,10 @@ public class WizardStepValidationTests
         Assert.Contains(result.Errors, e => e.Contains("ERR_CLASS_TOTAL_LEVEL"));
     }
 
-    // ── Step 5: Background & Proficiencies ───────────────────────────────
+    // ── Step 6: Background & Proficiencies ───────────────────────────────
 
     [Fact]
-    public void Step5_ValidSkillSelection_IsValid()
+    public void Step6_ValidSkillSelection_IsValid()
     {
         var character = new Character
         {
@@ -292,7 +292,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step5_WrongClassSkillCount_IsInvalid()
+    public void Step6_WrongClassSkillCount_IsInvalid()
     {
         var character = new Character
         {
@@ -312,7 +312,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step5_ClassSkillDuplicatesBackgroundSkill_IsInvalid()
+    public void Step6_ClassSkillDuplicatesBackgroundSkill_IsInvalid()
     {
         // Soldier background grants skill:athletics.
         // If the player also picks skill:athletics as a class skill, that's a duplicate.
@@ -335,7 +335,7 @@ public class WizardStepValidationTests
         Assert.Contains(result.Errors, e => e.Contains("ERR_SKILL_DUPLICATE") || e.Contains("ERR_SKILL_COUNT"));
     }
 
-    // ── Step 7: Equipment (classConfig path) ─────────────────────────────
+    // ── Step 8: Equipment (classConfig path) ─────────────────────────────
 
     private static ClassStartingEquipmentEntry BuildFighterEquipmentConfig() => new()
     {
@@ -389,7 +389,7 @@ public class WizardStepValidationTests
     ];
 
     [Fact]
-    public void Step7_ClassConfig_AllRequiredChoicesMade_IsValid()
+    public void Step8_ClassConfig_AllRequiredChoicesMade_IsValid()
     {
         var config = BuildFighterEquipmentConfig();
         var character = new Character
@@ -408,7 +408,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_ClassConfig_RequiredChoiceMissing_IsInvalid()
+    public void Step8_ClassConfig_RequiredChoiceMissing_IsInvalid()
     {
         var config = BuildFighterEquipmentConfig();
         var character = new Character
@@ -426,7 +426,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_ClassConfig_PickOneOption_ValidItemChosen_IsValid()
+    public void Step8_ClassConfig_PickOneOption_ValidItemChosen_IsValid()
     {
         var config = BuildFighterEquipmentConfig();
         var character = new Character
@@ -448,7 +448,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_ClassConfig_StartingWealth_WithGold_IsValid()
+    public void Step8_ClassConfig_StartingWealth_WithGold_IsValid()
     {
         var config = BuildFighterEquipmentConfig();
         var character = new Character
@@ -463,7 +463,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_ClassConfig_StartingWealth_NoGold_IsValidWithWarning()
+    public void Step8_ClassConfig_StartingWealth_NoGold_IsValidWithWarning()
     {
         var config = BuildFighterEquipmentConfig();
         var character = new Character
@@ -477,10 +477,10 @@ public class WizardStepValidationTests
         Assert.Contains(result.Warnings, w => w.Contains("WARN_WEALTH_NO_GOLD"));
     }
 
-    // ── Step 7: Equipment (legacy path — strict toggle) ───────────────────
+    // ── Step 8: Equipment (legacy path — strict toggle) ───────────────────
 
     [Fact]
-    public void Step7_LegacyPath_StrictMode_ItemInAllowedList_IsValid()
+    public void Step8_LegacyPath_StrictMode_ItemInAllowedList_IsValid()
     {
         // Strict mode: only class-allowed items should be selectable.
         var allowedIds = new List<string> { "item:longsword", "item:chain-mail" };
@@ -494,7 +494,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_LegacyPath_StrictMode_ItemOutsideAllowedList_IsInvalid()
+    public void Step8_LegacyPath_StrictMode_ItemOutsideAllowedList_IsInvalid()
     {
         // Strict mode rejects items not on the class's starting equipment list.
         var allowedIds = new List<string> { "item:longsword", "item:chain-mail" };
@@ -509,7 +509,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_LegacyPath_NonStrictMode_AnyValidItem_IsValid()
+    public void Step8_LegacyPath_NonStrictMode_AnyValidItem_IsValid()
     {
         // Non-strict mode: no allowed list passed → any valid equipment item is accepted.
         var character = new Character
@@ -523,7 +523,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void Step7_LegacyPath_NonStrictMode_UnknownItem_IsInvalid()
+    public void Step8_LegacyPath_NonStrictMode_UnknownItem_IsInvalid()
     {
         // Non-strict mode still rejects items not in the equipment data at all.
         var character = new Character
@@ -663,7 +663,7 @@ public class WizardStepValidationTests
     }
 
     [Fact]
-    public void FR2_1_1_Step5_AfterPickingTooManyClassSkills_ValidatorSurfacesError()
+    public void FR2_1_1_Step6_AfterPickingTooManyClassSkills_ValidatorSurfacesError()
     {
         // Before: Fighter with exactly 2 class skills chosen — valid.
         var beforeChar = new Character
