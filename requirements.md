@@ -88,12 +88,12 @@ FR1 — Wizard flows
   - FR1.9.12: For each level above 1, the user shall be presented with two mutually-exclusive options for that level's HP die-roll value:
     1. "Average" — automatically uses the fixed average value for the class's hit die: `floor(hitDie / 2) + 1` (e.g. 5 for d8, 6 for d10, 7 for d12). This is the default selection.
     2. "Manual" — exposes a numeric input field pre-filled with the average, and a "Roll" button that uses a client-side PRNG to simulate the class's hit die and overwrites the input with the result. The entered value must be within the valid range [1, hitDie] and is validated immediately on change.
-  - FR1.9.13: The "Roll" button for manual HP entry uses a client-side PRNG seeded at click time (consistent with all other randomisation buttons per the general randomisation constraints). After rolling, the same step-level validation that runs on manual change is triggered immediately.
+  - FR1.9.13: The "Roll" button for manual HP entry uses an independent client-side RNG context (consistent with all other randomisation buttons per the general randomisation constraints). After rolling, the same step-level validation that runs on manual change is triggered immediately.
   - FR1.9.14: For multiclass characters, each level's HP entry is associated with the class that owns that level and uses that class's `hitDie` for the average calculation, roll range, and validation. The HP panel presents levels in ascending order across all class entries.
 - FR1.10: Review & final validation with explicit errors/warnings.
 
 General constraints applying to all randomisation buttons (FR1.1.1, FR1.2.1, FR1.2.2, FR1.3.1, FR1.3.2, FR1.4.2, FR1.4.3, FR1.6.1, FR1.8.1, FR1.8.2, FR1.9.13):
-- All random selections use a client-side PRNG seeded at click time (no server call needed; consistent with NFR1 client-only operation).
+- All randomisation is performed client-side without server calls (consistent with NFR1 client-only operation). Each user-initiated randomisation action uses an independent RNG context so that separate actions cannot affect one another's outcomes. The randomisation mechanism must support deterministic behaviour under automated tests.
 - After any random selection, the same step-level validation that runs on manual change must be triggered immediately.
 - Randomisation buttons use the Casino dice icon and secondary colour styling to match FR1.1.1's established dice-button pattern.
 - Randomisation buttons are disabled when no valid options exist (e.g., "Random Subrace" is disabled if no race is selected, "Random Subclass" is disabled if no class or subclass-level not reached).

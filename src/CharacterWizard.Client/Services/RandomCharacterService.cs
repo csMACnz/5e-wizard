@@ -1,8 +1,9 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Client.Services;
 
-public sealed class RandomCharacterService(IDataService dataService)
+public sealed class RandomCharacterService(IDataService dataService, IRngFactory rngFactory)
 {
     private static readonly string[] _characterNameOptions =
     [
@@ -36,7 +37,7 @@ public sealed class RandomCharacterService(IDataService dataService)
         var namePool = fullNames.Count > 0 ? fullNames : _characterNameOptions;
 
         var c = new Character();
-        var rng = Random.Shared;
+        var rng = rngFactory.Create();
 
         // Step 1 — Meta
         c.Name = namePool[rng.Next(namePool.Count)];
@@ -45,7 +46,7 @@ public sealed class RandomCharacterService(IDataService dataService)
         // Step 2 — Ability Scores (method from config: 4d6 drop lowest)
         string[] abilityNames = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
         int rollCount = abilitiesConfig.Roll.Count > 0 ? abilitiesConfig.Roll.Count : abilityNames.Length;
-        var rolledScores = Enumerable.Range(0, rollCount).Select(_ => RollAbilityScore()).ToArray();
+        var rolledScores = Enumerable.Range(0, rollCount).Select(_ => RollAbilityScore(rng)).ToArray();
         for (int i = 0; i < Math.Min(rollCount, abilityNames.Length); i++)
             GetAbilityScoreBlock(c, abilityNames[i]).Base = rolledScores[i];
 
@@ -83,7 +84,7 @@ public sealed class RandomCharacterService(IDataService dataService)
             : cls.SkillChoices.Options;
         var availableClassSkills = classSkillOptions
             .Where(sk => !c.Skills.ContainsKey(sk))
-            .OrderBy(_ => rng.Next())
+            .OrderBy(_ => rng.Next(int.MaxValue))
             .ToList();
         int classSkillCount = Math.Min(cls.SkillChoices.Count, availableClassSkills.Count);
         for (int i = 0; i < classSkillCount; i++)
@@ -97,10 +98,10 @@ public sealed class RandomCharacterService(IDataService dataService)
             int maxKnown = sc.SpellsKnownByLevel.Count >= level ? sc.SpellsKnownByLevel[level - 1] : 0;
             var classSpells = spells.Where(s => s.ClassIds.Contains(cls.Id)).ToList();
 
-            foreach (var spell in classSpells.Where(s => s.Level == 0).OrderBy(_ => rng.Next()).Take(maxCantrips))
+            foreach (var spell in classSpells.Where(s => s.Level == 0).OrderBy(_ => rng.Next(int.MaxValue)).Take(maxCantrips))
                 c.Spells.Add(new CharacterSpell { SpellId = spell.Id, ClassId = cls.Id, Prepared = false });
 
-            var levelOneSpells = classSpells.Where(s => s.Level == 1).OrderBy(_ => rng.Next()).ToList();
+            var levelOneSpells = classSpells.Where(s => s.Level == 1).OrderBy(_ => rng.Next(int.MaxValue)).ToList();
             // For prepare-spell classes (wizard, cleric, druid, paladin), pick a few level 1 spells to prepare
             const int defaultPreparedSpellsAtLevelOne = 3;
             int spellsToPick = sc.PrepareSpells ? Math.Min(defaultPreparedSpellsAtLevelOne, levelOneSpells.Count) : Math.Min(maxKnown, levelOneSpells.Count);
@@ -155,9 +156,8 @@ public sealed class RandomCharacterService(IDataService dataService)
         return c;
     }
 
-    private static int RollAbilityScore()
+    private static int RollAbilityScore(IRng rng)
     {
-        var rng = Random.Shared;
         int r1 = rng.Next(1, 7);
         int r2 = rng.Next(1, 7);
         int r3 = rng.Next(1, 7);
