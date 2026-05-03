@@ -11,7 +11,7 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 
 ## Features
 
-- 🎲 **8-step guided wizard** — Walk through character name/meta, ability scores, race, class, background, spells, equipment, and a full review with validation report
+- 🎲 **9-step guided wizard** — Walk through character name/meta, ability scores, race, class, level features, background, spells, equipment, and a full review with validation report
 - ⚔️ **Three ability-score methods** — Standard Array, Point Buy, and Manual Roll, each with live validation
 - 🧝 **Full SRD race/subrace support** — All SRD races with subrace selection (e.g. High Elf, Mountain Dwarf)
 - 🛡️ **Multiclass support** — Add multiple class/level combinations with prerequisite checks
@@ -43,15 +43,16 @@ A data-driven, client-only Blazor WebAssembly wizard for building D&D 5e charact
 
 1. **Visit the live app** at [https://csmacnz.github.io/5e-wizard/](https://csmacnz.github.io/5e-wizard/)
 2. Click **Start New Character** on the home page
-3. Step through the 8-step wizard:
+3. Step through the 9-step wizard:
    - **Step 1 — Meta**: Enter character name, player name, campaign, and choose an ability-score generation method
    - **Step 2 — Abilities**: Assign ability scores using Standard Array, Point Buy, or Manual Roll
    - **Step 3 — Race**: Choose race (and subrace where applicable)
    - **Step 4 — Class**: Select one or more classes and their levels
-   - **Step 5 — Background**: Pick a background and assign skill proficiencies
-   - **Step 6 — Spells**: Choose spells/cantrips for caster classes (skipped for non-casters)
-   - **Step 7 — Equipment**: Select starting gear
-   - **Step 8 — Review**: Full validation report; export as JSON or view the print sheet
+   - **Step 5 — Features**: Review racial traits, class features, ASI/feat choices, and hit points per level
+   - **Step 6 — Background**: Pick a background and assign skill proficiencies
+   - **Step 7 — Spells**: Choose spells/cantrips for caster classes (skipped for non-casters)
+   - **Step 8 — Equipment**: Select starting gear
+   - **Step 9 — Review**: Full validation report; export as JSON or view the print sheet
 4. Use the **Export JSON** button to save your character
 5. Use the **Print Sheet** button to open a printer-friendly view
 
