@@ -1,5 +1,6 @@
 @using CharacterWizard.Client.Services
 @using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Utilities
 @inject WizardContext Ctx
 @inject WizardRandomizerService Randomizer
 @inject CharacterWizardState State
@@ -7,14 +8,34 @@
 @{
     var casterEntries = Ctx.ClassEntries
         .Where(e => !string.IsNullOrEmpty(e.ClassId))
-        .Select(e => (Entry: e, ClassDef: Classes.FirstOrDefault(c => c.Id == e.ClassId)))
-        .Where(p => p.ClassDef?.Spellcasting != null)
+        .Select(e =>
+        {
+            var clsDef = Classes.FirstOrDefault(c => c.Id == e.ClassId);
+            SubclassDefinition? subDef = null;
+            if (!string.IsNullOrEmpty(e.SubclassId))
+                subDef = clsDef?.SubclassOptions.FirstOrDefault(s => s.Id == e.SubclassId);
+            return (Entry: e, ClassDef: clsDef, SubDef: subDef);
+        })
+        .Where(p => p.ClassDef?.Spellcasting != null || (p.SubDef?.Spellcasting != null && p.Entry.Level >= 3))
         .ToList();
+
+    // Check for racial cantrip
+    var selectedRace = Races.FirstOrDefault(r => r.Id == Ctx.SelectedRaceId);
+    bool racialCantripFromRace = selectedRace?.TraitIds.Contains("trait:cantrip") == true;
+    bool racialCantripFromSubrace = false;
+    SubraceDefinition? selectedSubrace = null;
+    if (!string.IsNullOrEmpty(Ctx.SelectedSubraceId))
+    {
+        selectedSubrace = selectedRace?.Subraces.FirstOrDefault(s => s.Id == Ctx.SelectedSubraceId);
+        racialCantripFromSubrace = selectedSubrace?.TraitIds.Contains("trait:cantrip") == true;
+    }
+    bool hasRacialCantrip = racialCantripFromRace || racialCantripFromSubrace;
+    var wizardCantrips = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level == 0).ToList();
 }
 
 <MudText Typo="Typo.h5" GutterBottom="true">Step 7 — Spells</MudText>
 
-@if (casterEntries.Count == 0)
+@if (casterEntries.Count == 0 && !hasRacialCantrip)
 {
     <MudAlert Severity="Severity.Info">
         None of your selected classes are spellcasters. You can skip this step.
@@ -22,107 +43,321 @@
 }
 else
 {
-    @foreach (var (entry, classDef) in casterEntries)
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+        <MudCheckBox T="bool" @bind-Value="Ctx.ShowAllSpellLevels" Color="Color.Primary"
+                     Label="Show all spell levels (including levels beyond current slots)" />
+    </MudStack>
+
+    @foreach (var (entry, classDef, subDef) in casterEntries)
     {
-        var sc = classDef!.Spellcasting!;
+        // Determine effective spellcasting info and spell key
+        SpellcastingInfo sc;
+        string spellKey;
+        bool isSubclassSpellcasting = false;
+        if (classDef?.Spellcasting != null)
+        {
+            sc = classDef.Spellcasting;
+            spellKey = entry.ClassId;
+        }
+        else
+        {
+            sc = subDef!.Spellcasting!;
+            spellKey = subDef.Id;
+            isSubclassSpellcasting = true;
+        }
+
         int level = Math.Clamp(entry.Level, 1, 20);
         int maxCantrips = sc.CantripsKnownByLevel.Count >= level ? sc.CantripsKnownByLevel[level - 1] : 0;
         int maxKnown = sc.SpellsKnownByLevel.Count >= level ? sc.SpellsKnownByLevel[level - 1] : 0;
-        var classSpells = Spells.Where(s => s.ClassIds.Contains(entry.ClassId)).ToList();
+
+        // Filter spells by spell list
+        List<SpellDefinition> classSpells;
+        if (!string.IsNullOrEmpty(sc.SpellListId) && sc.SpellListId.StartsWith("spelllist:"))
+        {
+            string spellListClass = "class:" + sc.SpellListId["spelllist:".Length..];
+            classSpells = Spells.Where(s => s.ClassIds.Contains(spellListClass)).ToList();
+        }
+        else
+        {
+            classSpells = Spells.Where(s => s.ClassIds.Contains(entry.ClassId)).ToList();
+        }
+
         var cantrips = classSpells.Where(s => s.Level == 0).ToList();
-        var leveledSpells = classSpells.Where(s => s.Level > 0).ToList();
-        if (!Ctx.SelectedSpells.ContainsKey(entry.ClassId))
-            Ctx.SelectedSpells[entry.ClassId] = [];
-        var selected = Ctx.SelectedSpells[entry.ClassId];
+        int highestSlot = SpellSlotCalculator.GetHighestSlotLevel(level, sc.CastingType);
+        var leveledSpells = Ctx.ShowAllSpellLevels
+            ? classSpells.Where(s => s.Level > 0).ToList()
+            : classSpells.Where(s => s.Level > 0 && (highestSlot == 0 || s.Level <= highestSlot)).ToList();
+
+        if (!Ctx.SelectedSpells.ContainsKey(spellKey))
+            Ctx.SelectedSpells[spellKey] = [];
+        var selected = Ctx.SelectedSpells[spellKey];
         int selectedCantrips = cantrips.Count(s => selected.Contains(s.Id));
         int selectedLeveled = leveledSpells.Count(s => selected.Contains(s.Id));
+
+        string cardTitle = isSubclassSpellcasting
+            ? $"{classDef?.DisplayName ?? entry.ClassId} ({subDef!.DisplayName})"
+            : classDef!.DisplayName;
 
         <MudCard Class="mb-4" Elevation="1">
             <MudCardHeader>
                 <CardHeaderContent>
                     <MudText Typo="Typo.subtitle1">
-                        <strong>@classDef.DisplayName</strong> — Level @level
+                        <strong>@cardTitle</strong> — Level @level
                         (Casting ability: @sc.SpellcastingAbility)
                     </MudText>
+                    @{
+                        var slotSummaryParts = new List<string>();
+                        for (int sl = 1; sl <= 9; sl++)
+                        {
+                            int slotCount = SpellSlotCalculator.GetMaxSlots(level, sl, sc.CastingType);
+                            if (slotCount > 0)
+                                slotSummaryParts.Add($"L{sl}×{slotCount}");
+                        }
+                    }
+                    @if (slotSummaryParts.Count > 0)
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">
+                            Spell slots: @string.Join("  ", slotSummaryParts)
+                        </MudText>
+                    }
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                @if (maxCantrips > 0)
+                @if (sc.CastingType == "half" && level == 1)
                 {
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-1">
-                        <MudText Typo="Typo.subtitle2">
-                            Cantrips — @selectedCantrips / @maxCantrips selected
-                        </MudText>
-                        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
-                                   StartIcon="@Icons.Material.Filled.Casino"
-                                   OnClick="@(async () => { Randomizer.RandomizeCantrips(entry.ClassId, maxCantrips, Spells); await OnChanged.InvokeAsync(); })">
-                            Random Cantrips
-                        </MudButton>
-                    </MudStack>
-                    <MudGrid>
-                        @foreach (var spell in cantrips)
-                        {
-                            string spellId = spell.Id;
-                            bool isSelected = selected.Contains(spellId);
-                            bool disableAdd = !isSelected && selectedCantrips >= maxCantrips;
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudCheckBox T="bool"
-                                             Value="@isSelected"
-                                             ValueChanged="@(async (bool v) => await ToggleSpell(entry.ClassId, spellId, v))"
-                                             Disabled="@disableAdd"
-                                             Color="Color.Primary"
-                                             Label="@spell.DisplayName" />
-                            </MudItem>
-                        }
-                    </MudGrid>
+                    <MudAlert Severity="Severity.Info">Spellcasting begins at level 2 for this class.</MudAlert>
                 }
-
-                @if (leveledSpells.Count > 0)
+                else
                 {
-                    bool isPrepare = sc.PrepareSpells;
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-3 mb-1">
-                        <MudText Typo="Typo.subtitle2">
-                            @(isPrepare ? "Prepared Spells" : "Known Spells")
-                            @if (!isPrepare && maxKnown > 0)
-                            {
-                                <span> — @selectedLeveled / @maxKnown selected</span>
-                            }
-                            @if (isPrepare)
-                            {
-                                <span> — @selectedLeveled selected (prepare as many as you like)</span>
-                            }
-                        </MudText>
-                        <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
-                                   StartIcon="@Icons.Material.Filled.Casino"
-                                   OnClick="@(async () => { Randomizer.RandomizeSpells(entry.ClassId, maxKnown, isPrepare, level, sc.SpellcastingAbility, Spells, State.Character); await OnChanged.InvokeAsync(); })">
-                            Random Spells
-                        </MudButton>
-                    </MudStack>
-                    @foreach (var spellLevel in leveledSpells.Select(s => s.Level).Distinct().Order())
+                    @if (maxCantrips > 0)
                     {
-                        <MudText Typo="Typo.caption" Class="mt-2 mb-1">
-                            <em>Level @spellLevel spells</em>
-                        </MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-1">
+                            <MudText Typo="Typo.subtitle2">
+                                Cantrips — @selectedCantrips / @maxCantrips selected
+                            </MudText>
+                            <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                                       StartIcon="@Icons.Material.Filled.Casino"
+                                       OnClick="@(async () => { Randomizer.RandomizeCantrips(spellKey, maxCantrips, Spells); await OnChanged.InvokeAsync(); })">
+                                Random Cantrips
+                            </MudButton>
+                        </MudStack>
                         <MudGrid>
-                            @foreach (var spell in leveledSpells.Where(s => s.Level == spellLevel))
+                            @foreach (var spell in cantrips)
                             {
                                 string spellId = spell.Id;
                                 bool isSelected = selected.Contains(spellId);
-                                bool disableAdd = !isPrepare && !isSelected && maxKnown > 0 && selectedLeveled >= maxKnown;
+                                bool disableAdd = !isSelected && selectedCantrips >= maxCantrips;
                                 <MudItem xs="12" sm="6" md="4">
-                                    <MudTooltip Text="@spell.Description" Placement="Placement.Top">
-                                        <MudCheckBox T="bool"
-                                                     Value="@isSelected"
-                                                     ValueChanged="@(async (bool v) => await ToggleSpell(entry.ClassId, spellId, v))"
-                                                     Disabled="@disableAdd"
-                                                     Color="Color.Secondary"
-                                                     Label="@($"{spell.DisplayName}{(spell.Ritual ? " (R)" : string.Empty)}{(spell.Concentration ? " (C)" : string.Empty)}")" />
-                                    </MudTooltip>
+                                    <MudCheckBox T="bool"
+                                                 Value="@isSelected"
+                                                 ValueChanged="@(async (bool v) => await ToggleSpell(spellKey, spellId, v))"
+                                                 Disabled="@disableAdd"
+                                                 Color="Color.Primary"
+                                                 Label="@spell.DisplayName" />
                                 </MudItem>
                             }
                         </MudGrid>
                     }
+
+                    @if (leveledSpells.Count > 0 || (highestSlot > 0 && maxKnown > 0))
+                    {
+                        bool isPrepare = sc.PrepareSpells;
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-3 mb-1">
+                            <MudText Typo="Typo.subtitle2">
+                                @(isPrepare ? "Prepared Spells" : "Known Spells")
+                                @if (!isPrepare && maxKnown > 0)
+                                {
+                                    <span> — @selectedLeveled / @maxKnown selected</span>
+                                }
+                                @if (isPrepare)
+                                {
+                                    <span> — @selectedLeveled selected (prepare as many as you like)</span>
+                                }
+                            </MudText>
+                            <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Secondary"
+                                       StartIcon="@Icons.Material.Filled.Casino"
+                                       OnClick="@(async () => { Randomizer.RandomizeSpells(spellKey, maxKnown, isPrepare, level, sc.SpellcastingAbility, Spells, State.Character); await OnChanged.InvokeAsync(); })">
+                                Random Spells
+                            </MudButton>
+                        </MudStack>
+                        @foreach (var spellLevel in leveledSpells.Select(s => s.Level).Distinct().Order())
+                        {
+                            <MudText Typo="Typo.caption" Class="mt-2 mb-1">
+                                <em>Level @spellLevel spells</em>
+                            </MudText>
+                            <MudGrid>
+                                @foreach (var spell in leveledSpells.Where(s => s.Level == spellLevel))
+                                {
+                                    string spellId = spell.Id;
+                                    bool isSelected = selected.Contains(spellId);
+                                    bool disableAdd = !isPrepare && !isSelected && maxKnown > 0 && selectedLeveled >= maxKnown;
+                                    <MudItem xs="12" sm="6" md="4">
+                                        <MudTooltip Text="@spell.Description" Placement="Placement.Top">
+                                            <MudCheckBox T="bool"
+                                                         Value="@isSelected"
+                                                         ValueChanged="@(async (bool v) => await ToggleSpell(spellKey, spellId, v))"
+                                                         Disabled="@disableAdd"
+                                                         Color="Color.Secondary"
+                                                         Label="@($"{spell.DisplayName}{(spell.Ritual ? " (R)" : string.Empty)}{(spell.Concentration ? " (C)" : string.Empty)}")" />
+                                        </MudTooltip>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        }
+                    }
+
+                    @* Subclass bonus spells (always prepared, read-only) *@
+                    @if (subDef?.BonusSpells != null)
+                    {
+                        var activeBonusSpells = subDef.BonusSpells
+                            .Where(b => b.GrantLevel <= level)
+                            .Select(b => Spells.FirstOrDefault(s => s.Id == b.SpellId))
+                            .Where(s => s != null)
+                            .ToList();
+                        @if (activeBonusSpells.Count > 0)
+                        {
+                            <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">Always Prepared (Subclass)</MudText>
+                            <MudGrid>
+                                @foreach (var spell in activeBonusSpells)
+                                {
+                                    <MudItem xs="12" sm="6" md="4">
+                                        <MudCheckBox T="bool" Value="true" Disabled="true"
+                                                     Color="Color.Tertiary" Label="@spell!.DisplayName" />
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        }
+                    }
+
+                    @* Wizard spellbook section *@
+                    @if (entry.ClassId == "class:wizard" && !isSubclassSpellcasting)
+                    {
+                        var wizardLevel1Spells = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level == 1).ToList();
+                        int spellbookCount = Ctx.WizardSpellbookIds.Count;
+                        <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">
+                            Spellbook (Starting Spells) — @spellbookCount / 6 selected
+                        </MudText>
+                        <MudGrid>
+                            @foreach (var spell in wizardLevel1Spells)
+                            {
+                                string spellId = spell.Id;
+                                bool inBook = Ctx.WizardSpellbookIds.Contains(spellId);
+                                bool disableBookAdd = !inBook && spellbookCount >= 6;
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudCheckBox T="bool"
+                                                 Value="@inBook"
+                                                 ValueChanged="@(async (bool v) => await ToggleSpellbook(spellId, v))"
+                                                 Disabled="@disableBookAdd"
+                                                 Color="Color.Info"
+                                                 Label="@spell.DisplayName" />
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    }
+
+                    @* Bard Magical Secrets *@
+                    @if (entry.ClassId == "class:bard" && !isSubclassSpellcasting)
+                    {
+                        int[] msGrantLevels = [10, 14, 18];
+                        foreach (int msLevel in msGrantLevels)
+                        {
+                            if (level < msLevel) continue;
+                            string featKey = $"feat:magical-secrets-{msLevel}";
+                            if (!Ctx.MagicalSecretsSelections.ContainsKey(featKey))
+                                Ctx.MagicalSecretsSelections[featKey] = ["", ""];
+                            var msList = Ctx.MagicalSecretsSelections[featKey];
+                            while (msList.Count < 2) msList.Add(string.Empty);
+
+                            <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">Magical Secrets (Level @msLevel)</MudText>
+                            <MudGrid>
+                                @for (int msIdx = 0; msIdx < 2; msIdx++)
+                                {
+                                    int idx = msIdx;
+                                    string featKeyCapture = featKey;
+                                    <MudItem xs="12" sm="6">
+                                        <MudSelect T="string" Label="@($"Secret Spell {idx + 1}")"
+                                                   Value="@msList[idx]"
+                                                   ValueChanged="@(async (string v) => { Ctx.MagicalSecretsSelections[featKeyCapture][idx] = v; await OnChanged.InvokeAsync(); })"
+                                                   Clearable="true">
+                                            @foreach (var spell in Spells.Where(s => s.Level > 0).OrderBy(s => s.Level).ThenBy(s => s.DisplayName))
+                                            {
+                                                <MudSelectItem Value="@spell.Id">@spell.DisplayName (L@spell.Level)</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+                            </MudGrid>
+                        }
+                    }
+
+                    @* Warlock Mystic Arcanum *@
+                    @if (entry.ClassId == "class:warlock" && !isSubclassSpellcasting)
+                    {
+                        int[] arcanumMinLevels = [11, 13, 15, 17];
+                        int[] arcanumSpellLevels = [6, 7, 8, 9];
+                        for (int ai = 0; ai < arcanumMinLevels.Length; ai++)
+                        {
+                            if (level < arcanumMinLevels[ai]) continue;
+                            int arcanumSpellLevel = arcanumSpellLevels[ai];
+                            string featKey = $"feat:mystic-arcanum-{arcanumSpellLevel}";
+                            if (!Ctx.MysticArcanumSelections.ContainsKey(featKey))
+                                Ctx.MysticArcanumSelections[featKey] = string.Empty;
+
+                            var arcanumSpells = Spells
+                                .Where(s => s.ClassIds.Contains("class:warlock") && s.Level == arcanumSpellLevel)
+                                .OrderBy(s => s.DisplayName)
+                                .ToList();
+
+                            <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">Mystic Arcanum (Level @arcanumSpellLevel spell)</MudText>
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudSelect T="string" Label="@($"Arcanum Spell (Level {arcanumSpellLevel})")"
+                                               Value="@Ctx.MysticArcanumSelections[featKey]"
+                                               ValueChanged="@(async (string v) => { Ctx.MysticArcanumSelections[featKey] = v; await OnChanged.InvokeAsync(); })"
+                                               Clearable="true">
+                                        @foreach (var spell in arcanumSpells)
+                                        {
+                                            <MudSelectItem Value="@spell.Id">@spell.DisplayName</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    }
                 }
+            </MudCardContent>
+        </MudCard>
+    }
+
+    @* Racial cantrip picker *@
+    @if (hasRacialCantrip)
+    {
+        <MudCard Class="mb-4" Elevation="1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.subtitle1">
+                        <strong>Racial Cantrip</strong>
+                        @if (selectedSubrace != null && racialCantripFromSubrace)
+                        {
+                            <span> (@selectedSubrace.DisplayName)</span>
+                        }
+                        else if (selectedRace != null)
+                        {
+                            <span> (@selectedRace.DisplayName)</span>
+                        }
+                    </MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudSelect T="string" Label="Choose a cantrip"
+                           Value="@Ctx.SelectedRacialCantripId"
+                           ValueChanged="@(async (string v) => { Ctx.SelectedRacialCantripId = v; await OnChanged.InvokeAsync(); })"
+                           Clearable="true">
+                    @foreach (var spell in wizardCantrips.OrderBy(s => s.DisplayName))
+                    {
+                        <MudSelectItem Value="@spell.Id">@spell.DisplayName</MudSelectItem>
+                    }
+                </MudSelect>
             </MudCardContent>
         </MudCard>
     }
@@ -131,6 +366,7 @@ else
 @code {
     [Parameter, EditorRequired] public IReadOnlyList<SpellDefinition> Spells { get; set; } = [];
     [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<RaceDefinition> Races { get; set; } = [];
     [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
 
     private async Task ToggleSpell(string classId, string spellId, bool selected)
@@ -141,6 +377,15 @@ else
             Ctx.SelectedSpells[classId].Add(spellId);
         else
             Ctx.SelectedSpells[classId].Remove(spellId);
+        await OnChanged.InvokeAsync();
+    }
+
+    private async Task ToggleSpellbook(string spellId, bool selected)
+    {
+        if (selected)
+            Ctx.WizardSpellbookIds.Add(spellId);
+        else
+            Ctx.WizardSpellbookIds.Remove(spellId);
         await OnChanged.InvokeAsync();
     }
 }

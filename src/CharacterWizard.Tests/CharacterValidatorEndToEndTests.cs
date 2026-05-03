@@ -121,6 +121,11 @@ public class CharacterValidatorEndToEndTests
             Id = "spell:magic-missile", DisplayName = "Magic Missile",
             Level = 1, ClassIds = ["class:wizard"],
         },
+        new SpellDefinition { Id = "spell:shield", DisplayName = "Shield", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:sleep", DisplayName = "Sleep", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:detect-magic", DisplayName = "Detect Magic", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:burning-hands", DisplayName = "Burning Hands", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:color-spray", DisplayName = "Color Spray", Level = 1, ClassIds = ["class:wizard"] },
     ];
 
     private static readonly List<EquipmentItemDefinition> TestEquipment =
@@ -308,6 +313,11 @@ public class CharacterValidatorEndToEndTests
             [
                 new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:fire-bolt", Prepared = false },
                 new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:magic-missile", Prepared = true },
+                new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:shield", Prepared = true },
+                new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:sleep", Prepared = true },
+                new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:detect-magic", Prepared = true },
+                new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:burning-hands", Prepared = true },
+                new CharacterSpell { ClassId = "class:wizard", SpellId = "spell:color-spray", Prepared = true },
             ],
         };
 

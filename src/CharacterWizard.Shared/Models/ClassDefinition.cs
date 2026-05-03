@@ -2,6 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace CharacterWizard.Shared.Models;
 
+public class SubclassBonusSpell
+{
+    [JsonPropertyName("spellId")]
+    public string SpellId { get; set; } = string.Empty;
+
+    [JsonPropertyName("grantLevel")]
+    public int GrantLevel { get; set; }
+}
+
 public class SubclassDefinition
 {
     [JsonPropertyName("id")]
@@ -9,6 +18,12 @@ public class SubclassDefinition
 
     [JsonPropertyName("displayName")]
     public string DisplayName { get; set; } = string.Empty;
+
+    [JsonPropertyName("bonusSpells")]
+    public List<SubclassBonusSpell>? BonusSpells { get; set; }
+
+    [JsonPropertyName("spellcasting")]
+    public SpellcastingInfo? Spellcasting { get; set; }
 }
 
 public class SpellcastingInfo

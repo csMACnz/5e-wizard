@@ -49,6 +49,9 @@ public class SpellValidatorTests
             Level = 1,
             ClassIds = ["class:bard", "class:cleric"],
         },
+        new SpellDefinition { Id = "spell:detect-magic", DisplayName = "Detect Magic", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:burning-hands", DisplayName = "Burning Hands", Level = 1, ClassIds = ["class:wizard"] },
+        new SpellDefinition { Id = "spell:color-spray", DisplayName = "Color Spray", Level = 1, ClassIds = ["class:wizard"] },
     ];
 
     private static readonly List<ClassDefinition> TestClasses =
@@ -112,6 +115,12 @@ public class SpellValidatorTests
             Spells =
             [
                 new CharacterSpell { SpellId = "spell:fire-bolt", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:magic-missile", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:shield", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:sleep", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:detect-magic", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:burning-hands", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:color-spray", ClassId = "class:wizard" },
             ],
         };
         var result = new SpellValidator(TestSpells, TestClasses).Validate(character);
@@ -232,5 +241,29 @@ public class SpellValidatorTests
         };
         var result = new SpellValidator(TestSpells, TestClasses).Validate(character);
         Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void Wizard_Level1_WithOnly3Level1Spells_HasSpellbookCountError()
+    {
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:wb1", DisplayName = "WB1", Level = 1, ClassIds = ["class:wizard"] },
+            new SpellDefinition { Id = "spell:wb2", DisplayName = "WB2", Level = 1, ClassIds = ["class:wizard"] },
+            new SpellDefinition { Id = "spell:wb3", DisplayName = "WB3", Level = 1, ClassIds = ["class:wizard"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 1 }],
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:wb1", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:wb2", ClassId = "class:wizard" },
+                new CharacterSpell { SpellId = "spell:wb3", ClassId = "class:wizard" },
+            ],
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_WIZARD_SPELLBOOK_COUNT"));
     }
 }

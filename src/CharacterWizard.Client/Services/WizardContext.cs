@@ -103,6 +103,21 @@ public sealed class WizardContext
     // Key = classId, value = set of selected spell IDs.
     public Dictionary<string, HashSet<string>> SelectedSpells { get; } = [];
 
+    // Racial cantrip selection (keyed by race/subrace source).
+    public string SelectedRacialCantripId { get; set; } = string.Empty;
+
+    // Bard Magical Secrets: keyed as "feat:magical-secrets-10/14/18", value = list of 2 selected spell IDs.
+    public Dictionary<string, List<string>> MagicalSecretsSelections { get; } = [];
+
+    // Warlock Mystic Arcanum: keyed as "feat:mystic-arcanum-6/7/8/9", value = selected spell ID or empty.
+    public Dictionary<string, string> MysticArcanumSelections { get; } = [];
+
+    // Wizard spellbook: Set of selected level-1 wizard spell IDs for starting spells.
+    public HashSet<string> WizardSpellbookIds { get; } = [];
+
+    // Toggle for spell level gating (per class).
+    public bool ShowAllSpellLevels { get; set; } = false;
+
     // ── Step 8 state (Equipment) ──────────────────────────────────────────
     public HashSet<string> SelectedEquipmentIds { get; } = [];
     public bool StrictEquipment { get; set; } = true;

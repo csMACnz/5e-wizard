@@ -1,7 +1,7 @@
 # requirements.md — 5e-wizard (csMACnz/5e-wizard)
 
-Version: 0.1
-Date: 2026-04-30
+Version: 0.2
+Date: 2026-05-03
 Status: Draft
 
 Purpose
@@ -60,6 +60,16 @@ FR1 — Wizard flows
 - FR1.8: Spells: enforce known/prepared rules per class and spell slot table.
   - FR1.8.1: For each spellcasting class card, add a "Random Cantrips" dice button in the cantrips section (visible only when `maxCantrips > 0`). Clicking it randomly selects exactly `maxCantrips` cantrips from the available cantrip list for that class, replacing any current cantrip selections for that class.
   - FR1.8.2: For each spellcasting class card, add a "Random Spells" dice button in the known/leveled spells section. For known-spell casters (non-prepare), it randomly selects exactly `maxKnown` spells from the full leveled spell list for that class. For prepare casters, it randomly selects a reasonable default count (equal to the spellcasting modifier + class level, capped to the total available spells) and marks them as prepared. Any previous leveled spell selections for that class are replaced.
+  - FR1.8.3: The Spell step shall display a read-only "Spell Slots" summary in each spellcasting class card header, showing how many slots of each level the character has at the current class level. Slot counts shall be derived from the shared `SpellSlotCalculator` utility (see FR2.5) using the class's `castingType`. This is informational only and does not require user input.
+  - FR1.8.4: The leveled spell list shown in the Spell step shall be filtered to include only spells whose level is ≤ the highest slot level available to the character at the current class level (as returned by `SpellSlotCalculator`). A "Show all spell levels" toggle shall be provided to disable this filter for advanced users; the default state is filtered (on).
+  - FR1.8.5 (Pact Magic): The Warlock class uses Pact Magic, which has its own slot progression distinct from the standard full-caster table. The system shall implement a separate `pactCasterSlots` table that correctly represents Warlock slot counts (e.g., 1 slot at level 1, rising to 4 slots at level 17, with slot level capped at 5 at class level 9). The `castingType` value `"pact"` shall route to this table in `SpellSlotCalculator` rather than falling through to the full-caster table. The print sheet's `GetMaxSlots()` logic shall be updated to use the shared calculator.
+  - FR1.8.6 (Half-Caster Awareness): For Paladin and Ranger at class level 1, the Spell step card shall display an informational message (e.g., "Spellcasting begins at level 2 for this class") rather than rendering empty cantrip/spell sections. No spell selection UI shall be shown for these classes until the character's class level is ≥ 2.
+  - FR1.8.7 (Wizard Spellbook): At character creation, a Wizard starts with 6 first-level spells in their spellbook (PHB/SRD rule). The Spell step shall present a dedicated "Spellbook" section for the Wizard class requiring the user to select exactly 6 first-level wizard spells. These spells are recorded as the wizard's known/available spells and are distinct from the prepared subset (which is not required to be chosen at creation per the general prepared-spells exemption). The `SpellsKnownByLevel` array for the Wizard class shall remain all-zeros (as prepared-count is dynamic), but the spellbook selection shall be enforced by a new `ERR_SPELL_WIZARD_SPELLBOOK_COUNT` validation error if fewer than 6 level-1 spells are selected. At each subsequent Wizard level the player gains 2 additional wizard spells of any level they can cast; this is recorded as awareness text only at creation time (no additional selection is required in the wizard UI beyond the starting 6).
+  - FR1.8.8 (Racial Cantrips): Races or subraces that grant a free cantrip (identified by the `"trait:cantrip"` trait ID in `traitIds`) shall have a dedicated "Racial Cantrip" picker in the Spell step, rendered after the class spell cards. The picker shall present all cantrips available on the Wizard spell list (the SRD default for this grant) as a single-select dropdown; the selected cantrip is stored in `Character.Spells` with `ClassId = raceId` (or `subraceId` as appropriate) and `Prepared = false`. Selection is required when the trait is present; omitting it shall produce `WARN_RACIAL_CANTRIP_MISSING` (non-blocking warning).
+  - FR1.8.9 (Subclass Bonus Spells): Subclasses that grant bonus spells (e.g., Cleric Divine Domains, Paladin Sacred Oaths) shall have their bonus spell lists stored in a new `bonusSpells` structure on `SubclassDefinition` (see FR3.8). These spells are always prepared and shall be added automatically to `Character.Spells` (with `Prepared = true`) during `CommitAllToCharacter()` when the subclass is selected. No user selection is required. The Spell step shall display these spells in a read-only "Always Prepared" section within the class card when a qualifying subclass is chosen.
+  - FR1.8.10 (Bard Magical Secrets): The Bard features `feat:magical-secrets-10`, `feat:magical-secrets-14`, and `feat:magical-secrets-18` (granted at Bard levels 10, 14, and 18 respectively) each allow the Bard to learn 2 spells from any class's spell list. When one of these features is unlocked (i.e., the Bard's class level is ≥ the grant level), the Spell step shall display a "Magical Secrets" picker with exactly 2 spell selection slots, each offering the full combined spell list of all classes in `data/spells.json`. The 2 chosen spells are added to `Character.Spells` with `ClassId = "class:bard"`. Omitting either slot shall produce `WARN_MAGICAL_SECRETS_INCOMPLETE` (non-blocking warning).
+  - FR1.8.11 (Warlock Mystic Arcanum): The Warlock features `feat:mystic-arcanum-6` through `feat:mystic-arcanum-9` (granted at Warlock levels 11, 13, 15, 17 respectively) each allow the Warlock to choose one spell of the corresponding level (6th, 7th, 8th, 9th) that can be cast once per long rest without a spell slot. When one of these features is unlocked, the Spell step shall display a "Mystic Arcanum (Nth Level)" single-select picker showing all Warlock spells of that spell level. The chosen spell is added to `Character.Spells` with `ClassId = "class:warlock"`. Omitting the selection shall produce `WARN_MYSTIC_ARCANUM_INCOMPLETE` (non-blocking warning).
+  - FR1.8.12 (Arcane Trickster and Eldritch Knight): The Arcane Trickster (Rogue subclass) and Eldritch Knight (Fighter subclass) are third-caster classes that gain spellcasting when the subclass is selected at class level 3. Their spellcasting shall be modeled by adding a `SpellcastingInfo` entry to `SubclassDefinition` (see FR3.8) rather than to the parent `ClassDefinition`. When either of these subclasses is active at class level ≥ 3, the Spell step shall render a card for them showing the appropriate cantrip and known-spell selections using the third-caster slot progression. The `castingType` for both is `"third"`. A `thirdCasterSlots` table shall be added to `SpellSlotCalculator`.
 - FR1.9: Level progression: show features unlocked per class level, including ASIs and feature choices.
   - FR1.9.1: A dedicated "Level Features" wizard step (Step 5) shall be inserted between the Class step and the Background step.
   - FR1.9.2: The Level Features step shall display a read-only racial traits panel at the top, listing all trait IDs from the selected race's `traitIds` (and the selected subrace's `traitIds` if applicable), with display names resolved via `feats.json`.
@@ -96,7 +106,23 @@ FR2 — Validation
   - `WARN_ASI_INCOMPLETE` — an ASI/feat opportunity at a given class level has no choice saved (non-blocking warning).
   - `ERR_ASI_INVALID_FEAT` — a general feat was chosen for an ASI slot but the feat ID is unknown or its `type` is not `"general"`.
   - `ERR_HP_ROLL_OUT_OF_RANGE` — a manually-entered hit-point die-roll value for a given level is outside the valid range [1, hitDie] for that level's class (e.g. a value of 0 or 11 for a d10 class).
+  Spell validation codes:
+  - `ERR_SPELL_DUPLICATE` — the same spell ID appears more than once for the same class on the character.
+  - `ERR_SPELL_UNKNOWN` — a spell ID referenced in `Character.Spells` does not exist in `data/spells.json`.
+  - `ERR_SPELL_NOT_FOR_CLASS` — a spell is assigned to a class whose spell list does not include that spell.
+  - `ERR_SPELL_CANTRIP_COUNT` — the number of selected cantrips for a class exceeds the class's `cantripsKnownByLevel` value at the character's current class level.
+  - `ERR_SPELL_KNOWN_COUNT` — the number of selected known spells for a non-prepare class exceeds `spellsKnownByLevel` at the current class level.
+  - `ERR_SPELL_WIZARD_SPELLBOOK_COUNT` — a Wizard at level 1 has fewer than 6 first-level spells selected for their spellbook.
+  - `WARN_RACIAL_CANTRIP_MISSING` — a race or subrace grants a free cantrip (via `"trait:cantrip"`) but no racial cantrip has been selected (non-blocking warning).
+  - `WARN_MAGICAL_SECRETS_INCOMPLETE` — a Bard has an unlocked Magical Secrets feature but fewer than 2 spells have been chosen for that grant (non-blocking warning).
+  - `WARN_MYSTIC_ARCANUM_INCOMPLETE` — a Warlock has an unlocked Mystic Arcanum feature but no spell has been chosen for that slot (non-blocking warning).
 - FR2.4: CI validates canonical /data JSON files against JSON schemas and custom rules.
+- FR2.5: A shared `SpellSlotCalculator` static class shall be extracted into `CharacterWizard.Shared` (from the current inline tables in `PrintSheet.razor`) and shall expose a `GetMaxSlots(int classLevel, int slotLevel, string castingType)` method. It shall contain:
+  - `fullCasterSlots[20, 9]` — the standard full-caster table (Bard, Cleric, Druid, Sorcerer, Wizard).
+  - `halfCasterSlots[20, 9]` — the half-caster table (Paladin, Ranger; spellcasting begins at class level 2 so row 0 is all zeros).
+  - `pactCasterSlots[20, 9]` — the Warlock Pact Magic table (short-rest recovery; distinct slot count and slot level progression).
+  - `thirdCasterSlots[20, 9]` — the third-caster table (Arcane Trickster, Eldritch Knight; spellcasting begins at class level 3 so rows 0–1 are all zeros).
+  All four tables shall be unit-tested against the published SRD slot values for representative levels.
 
 FR3 — Data & Customization
 - FR3.1: All canonical mechanics are stored in versioned JSON files under /data (races.json, classes.json, backgrounds.json, spells.json, equipment.json, feats.json).
@@ -110,6 +136,10 @@ FR3 — Data & Customization
   - Every feat with `type = "class"` shall appear in at least one class's `featuresByLevel`.
   - Every feat with `type = "general"` shall not appear in any class's `featuresByLevel` or as a background `featureId`.
 - FR3.7: `IDataService` shall expose `GetFeatsAsync()` returning `IReadOnlyList<FeatDefinition>`, loading from `data/feats.json` with single-load caching.
+- FR3.8: Subclass data model extensions — `SubclassDefinition` shall support the following optional fields to capture subclass-specific spell rules:
+  - `bonusSpells`: an optional list of `{spellId, grantLevel}` objects representing spells that are always prepared when the subclass is active and the character's class level meets `grantLevel`. These are auto-applied during `CommitAllToCharacter()` without user selection. The `data/classes.json` Cleric domain entries and Paladin sacred oath entries shall be updated to include their SRD bonus spell lists.
+  - `spellcasting`: an optional `SpellcastingInfo` object for subclasses that grant spellcasting themselves (Arcane Trickster, Eldritch Knight). When present, it overrides/supplements the parent class's (null) `Spellcasting` for the purposes of the Spell step and `SpellSlotCalculator`. The `castingType` values `"pact"` and `"third"` shall be valid values for this field.
+- FR3.9: The `spellListId` field on `SpellcastingInfo` (e.g., `"spelllist:bard"`) is currently unused. It shall be retained as a documentation field to identify the authoritative spell list for each class but is not required to drive runtime logic (which uses `SpellDefinition.classIds[]` directly). Future requirements may activate it for cross-class spell access (e.g., Bard Magical Secrets, Arcane Trickster); its presence shall not cause validation failures.
 
 FR4 — Export / Import / Share
 - FR4.1: Export validated character JSON (schema-backed). The downloaded filename must include the character name and total level (e.g. `thorin-level5.json`). The exported `hitPoints` object shall contain only `maximum` (the calculated total max HP); `current` and `temporary` fields are not tracked by this application and shall not be present in the export.
@@ -181,7 +211,7 @@ Core data model (high-level)
   - hitPoints: maximum hit points only; current hit points and temporary hit points are gameplay mechanics outside the scope of this application and are not tracked; stored as a list of per-level entries each recording the level, classId, method (average or manual), and the die-roll value chosen (excluding CON modifier); total max HP = sum of all per-level die-roll values + (CON modifier × total character level), with each level's contribution floored at a minimum of 1 after CON is applied.
   - features: list of resolved features (with source references and optional display overrides)
   - asiChoices: list of {classId, classLevel, mode ("plus2"|"split"|"feat"|null), featId?, abilityOne?, abilityTwo?} — exportable subset only (level-eligible choices at session save/export time)
-  - spells: known/prepared/spellSlots per class feature
+  - spells: known/prepared/spellSlots per class feature; stored as a flat list of `{spellId, classId, prepared}` entries. For Wizard, the spellbook (known) spells are included in this list; the prepared subset is not separately tracked at creation time. For always-prepared bonus spells from subclasses these are included with `prepared = true`.
   - equipment: items w/ quantity
   - validationReport: list of {severity, code, message, detail, path}
 
