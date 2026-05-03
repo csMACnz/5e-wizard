@@ -1,0 +1,5445 @@
+{
+  "summary": {
+    "total_srd_spells": 312,
+    "total_current_spells": 28,
+    "missing_count": 286,
+    "issues_count": 5,
+    "notes": [
+      "Blade Ward and Toll the Dead are NOT in SRD 5.1 - they come from Xanathar's Guide to Everything",
+      "SRD has 312 spell descriptions + many more class-only spells",
+      "Parser note: Raise Dead data is correct in spells.json; PDF layout caused parse error in analysis"
+    ]
+  },
+  "existing_spells_issues": [
+    {
+      "spellId": "spell:blade-ward",
+      "field": "source",
+      "current_value": "SRD 5.1",
+      "correct_value": "NOT IN SRD 5.1",
+      "reason": "Not in SRD 5.1 - from Xanathar's Guide to Everything"
+    },
+    {
+      "spellId": "spell:toll-the-dead",
+      "field": "source",
+      "current_value": "SRD 5.1",
+      "correct_value": "NOT IN SRD 5.1",
+      "reason": "Not in SRD 5.1 - from Xanathar's Guide to Everything"
+    },
+    {
+      "spellId": "spell:shield",
+      "field": "castingTime",
+      "current_value": "1 reaction",
+      "correct_value": "1 reaction, which you take when you are hit by an attack or targeted by the magic missile spell",
+      "reason": "SRD includes full trigger text: '1 reaction, which you take when you are hit by an attack or targeted by the magic missile spell'"
+    },
+    {
+      "spellId": "spell:thunderwave",
+      "field": "classIds",
+      "current_value": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ],
+      "correct_value": [
+        "class:bard",
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ],
+      "reason": "Based on SRD class spell lists"
+    },
+    {
+      "spellId": "spell:counterspell",
+      "field": "castingTime",
+      "current_value": "1 reaction",
+      "correct_value": "1 reaction, which you take when you see a creature within 60 feet of you casting a spell",
+      "reason": "SRD includes full trigger text: '1 reaction, which you take when you see a creature within 60 feet of you casting a spell'"
+    }
+  ],
+  "missing_spells": [
+    {
+      "name": "Chill Touch",
+      "level": 0,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Druidcraft",
+      "level": 0,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Eldritch Blast",
+      "level": 0,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:warlock"
+      ]
+    },
+    {
+      "name": "Guidance",
+      "level": 0,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Mending",
+      "level": 0,
+      "school": "transmutation",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "two lodestones"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Message",
+      "level": 0,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a short piece of copper wire"
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Minor Illusion",
+      "level": 0,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "somatic": true,
+        "material": "a bit of fleece"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Poison Spray",
+      "level": 0,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Produce Flame",
+      "level": 0,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Ray of Frost",
+      "level": 0,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Resistance",
+      "level": 0,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a miniature cloak"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Shillelagh",
+      "level": 0,
+      "school": "transmutation",
+      "castingTime": "1 bonus action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "mistletoe, a shamrock leaf, and a club or quarterstaff"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Spare the Dying",
+      "level": 0,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Thaumaturgy",
+      "level": 0,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Up to 1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "True Strike",
+      "level": 0,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "somatic": true
+      },
+      "duration": "1 round",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Vicious Mockery",
+      "level": 0,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {},
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard"
+      ]
+    },
+    {
+      "name": "Alarm",
+      "level": 1,
+      "school": "abjuration",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny bell and a piece of fine silver wire"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:ranger",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Animal Friendship",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a morsel of food"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Bane",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of blood"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Bless",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a sprinkling of holy water"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Command",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Comprehend Languages",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of soot and salt"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Create or Destroy Water",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of water if creating water or a few grains of sand if destroying it"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Detect Evil and Good",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Detect Poison and Disease",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a yew leaf"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": true,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Disguise Self",
+      "level": 1,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Divine Favor",
+      "level": 1,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Entangle",
+      "level": 1,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Expeditious Retreat",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 bonus action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Faerie Fire",
+      "level": 1,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "False Life",
+      "level": 1,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small amount of alcohol or distilled spirits"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Feather Fall",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 reaction, which you take when you or a creature within 60 feet of you falls",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "material": "a small feather or piece of down"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Floating Disk",
+      "level": 1,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of mercury"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Fog Cloud",
+      "level": 1,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Goodberry",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a sprig of mistletoe"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Grease",
+      "level": 1,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of pork rind or butter"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Guiding Bolt",
+      "level": 1,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Healing Word",
+      "level": 1,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Hellish Rebuke",
+      "level": 1,
+      "school": "evocation",
+      "castingTime": "1 reaction, which you take in response to being damaged by a creature within 60 feet of you that you can see",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:warlock"
+      ]
+    },
+    {
+      "name": "Heroism",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Hideous Laughter",
+      "level": 1,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "tiny tarts and a feather that is waved in the air"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Hunter's Mark",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 bonus action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Identify",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pearl worth at least 100 gp and an owl feather"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Illusory Script",
+      "level": 1,
+      "school": "illusion",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "somatic": true,
+        "material": "a lead-based ink worth at least 10 gp, which the spell consumes"
+      },
+      "duration": "10 days",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Inflict Wounds",
+      "level": 1,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Jump",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a grasshopper's hind leg"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Longstrider",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of dirt"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mage Armor",
+      "level": 1,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a piece of cured leather"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Purify Food and Drink",
+      "level": 1,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Sanctuary",
+      "level": 1,
+      "school": "abjuration",
+      "castingTime": "1 bonus action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small silver mirror"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Shield of Faith",
+      "level": 1,
+      "school": "abjuration",
+      "castingTime": "1 bonus action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small parchment with a bit of holy text written on it"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Silent Image",
+      "level": 1,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fleece"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Speak with Animals",
+      "level": 1,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Acid Arrow",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "powdered rhubarb leaf and an adder's stomach"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Aid",
+      "level": 2,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny strip of white cloth"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Alter Self",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Animal Messenger",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a morsel of food"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Arcane Lock",
+      "level": 2,
+      "school": "abjuration",
+      "castingTime": "1 action System Reference Document 5.1 118",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "gold dust worth at least 25 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Arcanist's Magic Aura",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small square of silk"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Augury",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "specially marked sticks, bones, or similar tokens worth at least 25 gp"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Barkskin",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a handful of oak bark"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Blindness/Deafness",
+      "level": 2,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Blur",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Branding Smite",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Calm Emotions",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Continual Flame",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "ruby dust worth 50 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Darkness",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "material": "bat fur and a drop of pitch or piece of coal"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Darkvision",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "either a pinch of dried carrot or an agate"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Detect Thoughts",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a copper piece"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Enhance Ability",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "fur or a feather from a beast"
+      },
+      "duration": "1 hour.",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Enlarge/Reduce",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of powdered iron"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Enthrall",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:warlock"
+      ]
+    },
+    {
+      "name": "Find Steed",
+      "level": 2,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a set of divinatory tools- such as bones, ivory sticks, cards, teeth, or carved runes-worth 100 gp and an object from the location you wish to find"
+      },
+      "duration": "1 day",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Find Traps",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Flame Blade",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "leaf of sumac"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Flaming Sphere",
+      "level": 2,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of tallow, a pinch of brimstone, and a dusting of powdered iron"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Gentle Repose",
+      "level": 2,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of salt and one copper piece placed on each of the corpse's eyes, which must remain there for the duration"
+      },
+      "duration": "10 days",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Gust of Wind",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Self (60-foot line)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a legume seed"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Heat Metal",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a piece of iron and a flame"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Hold Person",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small, straight piece of iron"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Invisibility",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an eyelash encased in gum arabic"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Knock",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Lesser Restoration",
+      "level": 2,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Levitate",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet System Reference Document 5.1 158",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "either a small leather loop or a piece of golden wire bent into a cup shape with a long shank on one end"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Locate Animals or Plants",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fur from a bloodhound"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Locate Object",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a forked twig"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:ranger",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Magic Mouth",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small bit of honeycomb and jade dust worth at least 10 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Magic Weapon",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 bonus action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:paladin",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mirror Image",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Misty Step",
+      "level": 2,
+      "school": "conjuration",
+      "castingTime": "1 bonus action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Moonbeam",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "several seeds of any moonseed plant and a piece of opalescent feldspar"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Pass without Trace",
+      "level": 2,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "ashes from a burned leaf of mistletoe and a sprig of spruce"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Prayer of Healing",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "10 minutes",
+      "range": "30 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Ray of Enfeeblement",
+      "level": 2,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Rope Trick",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "powdered corn extract and a twisted loop of parchment"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Scorching Ray",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "See Invisibility",
+      "level": 2,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of talc and a small sprinkling of powdered silver"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Shatter",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a chip of mica"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Silence",
+      "level": 2,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Spider Climb",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of bitumen and a spider"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Spike Growth",
+      "level": 2,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "seven sharp thorns or seven small twigs, each sharpened to a point"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Spiritual Weapon",
+      "level": 2,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Suggestion",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "material": "a snake's tongue and either a bit of honeycomb or a drop of sweet oil"
+      },
+      "duration": "8 hours",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Warding Bond",
+      "level": 2,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pair of platinum rings worth at least 50 gp each, which you and the target must wear for the duration"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Web",
+      "level": 2,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of spiderweb"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Zone of Truth",
+      "level": 2,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Animate Dead",
+      "level": 3,
+      "school": "necromancy",
+      "castingTime": "1 minute",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of blood, a piece of flesh, and a pinch of bone dust"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Beacon of Hope",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Bestow Curse",
+      "level": 3,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Blink",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Call Lightning",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Clairvoyance",
+      "level": 3,
+      "school": "divination",
+      "castingTime": "10 minutes",
+      "range": "1 mile",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a focus worth at least 100 gp, either a jeweled horn for hearing or a glass eye for seeing"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Conjure Animals",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Create Food and Water",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Daylight",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:ranger",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Dispel Magic",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Fear",
+      "level": 3,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Self (30-foot cone)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a white feather or the heart of a hen"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Gaseous Form",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of gauze and a wisp of smoke"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Glyph of Warding",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 hour",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "incense and powdered diamond worth at least 200 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled or triggered",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Haste",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a shaving of licorice root"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Hypnotic Pattern",
+      "level": 3,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "somatic": true,
+        "material": "a glowing stick of incense or a crystal vial filled with phosphorescent material"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Lightning Bolt",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Self (100-foot line)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fur and a rod of amber, crystal, or glass"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Magic Circle",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 minute",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "holy water or powdered silver and iron worth at least 100 gp, which the spell consumes"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Major Image",
+      "level": 3,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fleece"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mass Healing Word",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Meld into Stone",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Nondetection",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of diamond dust worth 25 gp sprinkled over the target, which the spell consumes"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:ranger",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Phantom Steed",
+      "level": 3,
+      "school": "illusion",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Plant Growth",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action or 8 hours",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Protection from Energy",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Remove Curse",
+      "level": 3,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Sending",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Unlimited",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a short piece of fine copper wire"
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Sleet Storm",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of dust and a few drops of water"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Slow",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of molasses"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Speak with Dead",
+      "level": 3,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "burning incense"
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Speak with Plants",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self (30-foot radius)",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Spirit Guardians",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Self (15-foot radius)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a holy symbol"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Stinking Cloud",
+      "level": 3,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a rotten egg or several skunk cabbage leaves"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Tiny Hut",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 minute",
+      "range": "Self (10-foot-radius hemisphere)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small crystal bead"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Tongues",
+      "level": 3,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "material": "a small clay model of a ziggurat"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Vampiric Touch",
+      "level": 3,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Water Breathing",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a short reed or piece of straw"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Water Walk",
+      "level": 3,
+      "school": "transmutation",
+      "castingTime": "1 action System Reference Document 5.1 191",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a piece of cork"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Wind Wall",
+      "level": 3,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny fan and a feather of exotic origin"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Arcane Eye",
+      "level": 4,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of bat fur"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Banishment",
+      "level": 4,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an item distasteful to the target"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Black Tentacles",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a piece of tentacle from a giant octopus or a giant squid"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Blight",
+      "level": 4,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Compulsion",
+      "level": 4,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard"
+      ]
+    },
+    {
+      "name": "Confusion",
+      "level": 4,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "three nut shells"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Conjure Minor Elementals",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Conjure Woodland Beings",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "one holly berry per creature summoned"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Control Water",
+      "level": 4,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "300 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of water and a pinch of dust"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Death Ward",
+      "level": 4,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Dimension Door",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "500 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Divination",
+      "level": 4,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "incense and a sacrificial offering appropriate to your religion, together worth at least 25 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Dominate Beast",
+      "level": 4,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Fabricate",
+      "level": 4,
+      "school": "transmutation",
+      "castingTime": "10 minutes",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Faithful Hound",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny silver whistle, a piece of bone, and a thread"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Fire Shield",
+      "level": 4,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of phosphorus or a firefly"
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Freedom of Movement",
+      "level": 4,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a leather strap, bound around the arm or a similar appendage"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Giant Insect",
+      "level": 4,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Guardian of Faith",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {},
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Hallucinatory Terrain",
+      "level": 4,
+      "school": "illusion",
+      "castingTime": "10 minutes",
+      "range": "300 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a stone, a twig, and a bit of green plant"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Locate Creature",
+      "level": 4,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fur from a bloodhound"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:ranger",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Phantasmal Killer",
+      "level": 4,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Polymorph",
+      "level": 4,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a caterpillar cocoon"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Private Sanctum",
+      "level": 4,
+      "school": "abjuration",
+      "castingTime": "10 minutes",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a thin sheet of lead, a piece of opaque glass, a wad of cotton or cloth, and powdered chrysolite"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Resilient Sphere",
+      "level": 4,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a hemispherical piece of clear crystal and a matching hemispherical piece of gum arabic"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Secret Chest",
+      "level": 4,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an exquisite chest, 3 feet by 2 feet by 2 feet, constructed from rare materials worth at least 5,000 gp, and a Tiny replica made from the same materials worth at least 50 gp"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Stone Shape",
+      "level": 4,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "soft clay, which must be worked into roughly the desired shape of the stone object"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Stoneskin",
+      "level": 4,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "diamond dust worth 100 gp, which the spell consumes"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Wall of Fire",
+      "level": 4,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small piece of phosphorus"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Animate Objects",
+      "level": 5,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Antilife Shell",
+      "level": 5,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self (10-foot radius)",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Arcane Hand",
+      "level": 5,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an eggshell and a snakeskin glove"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Awaken",
+      "level": 5,
+      "school": "transmutation",
+      "castingTime": "8 hours",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an agate worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Cloudkill",
+      "level": 5,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Commune",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "incense and a vial of holy or unholy water"
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Commune with Nature",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Conjure Elemental",
+      "level": 5,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "burning incense for air, soft clay for earth, sulfur and phosphorus for fire, or water and sand for water"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Contact Other Plane",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Contagion",
+      "level": 5,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Touch Component: V, S",
+      "components": {},
+      "duration": "7 days",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Creation",
+      "level": 5,
+      "school": "illusion",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny piece of matter of the same type of the item you plan to create"
+      },
+      "duration": "Special",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Dispel Evil and Good",
+      "level": 5,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "holy water or powdered silver and iron"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:paladin"
+      ]
+    },
+    {
+      "name": "Dominate Person",
+      "level": 5,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Dream",
+      "level": 5,
+      "school": "illusion",
+      "castingTime": "1 minute",
+      "range": "Special",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a handful of sand, a dab of ink, and a writing quill plucked from a sleeping bird"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Flame Strike",
+      "level": 5,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "pinch of sulfur"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Geas",
+      "level": 5,
+      "school": "enchantment",
+      "castingTime": "1 minute",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "30 days",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:paladin",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Greater Restoration",
+      "level": 5,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "diamond dust worth at least 100 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Hallow",
+      "level": 5,
+      "school": "evocation",
+      "castingTime": "24 hours",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "herbs, oils, and incense worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Hold Monster",
+      "level": 5,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small, straight piece of iron"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Insect Plague",
+      "level": 5,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "300 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a few grains of sugar, some kernels of grain, and a smear of fat"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Legend Lore",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "10 minutes",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "incense worth at least 250 gp, which the spell consumes, and four ivory strips worth at least 50 gp each"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mislead",
+      "level": 5,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Modify Memory",
+      "level": 5,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Passwall",
+      "level": 5,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of sesame seeds"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Planar Binding",
+      "level": 5,
+      "school": "abjuration",
+      "castingTime": "1 hour",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a jewel worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Reincarnate",
+      "level": 5,
+      "school": "transmutation",
+      "castingTime": "1 hour",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "rare oils and unguents worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Scrying",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "10 minutes",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a focus worth at least 1,000 gp, such as a crystal ball, a silver mirror, or a font filled with holy water"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Seeming",
+      "level": 5,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Telekinesis",
+      "level": 5,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Telepathic Bond",
+      "level": 5,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "pieces of eggshell from two different kinds of creatures"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Teleportation Circle",
+      "level": 5,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "material": "rare chalks and inks infused with precious gems with 50 gp, which the spell consumes"
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Tree Stride",
+      "level": 5,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:ranger"
+      ]
+    },
+    {
+      "name": "Wall of Force",
+      "level": 5,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of powder made by crushing a clear gemstone"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Wall of Stone",
+      "level": 5,
+      "school": "evocation",
+      "castingTime": "1 action System Reference Document 5.1 190",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small block of granite"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Blade Barrier",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Chain Lightning",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fur; a piece of amber, glass, or a crystal rod; and three silver pins"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Circle of Death",
+      "level": 6,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "the powder of a crushed black pearl worth at least 500 gp"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Conjure Fey",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:warlock"
+      ]
+    },
+    {
+      "name": "Contingency",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "10 minutes",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a statuette of yourself carved from ivory and decorated with gems worth at least 1,500 gp"
+      },
+      "duration": "10 days",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Create Undead",
+      "level": 6,
+      "school": "necromancy",
+      "castingTime": "1 minute",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "one clay pot filled with grave dirt, one clay pot filled with brackish water, and one 150 gp black onyx stone for each corpse"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Disintegrate",
+      "level": 6,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet System Reference Document 5.1 135",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a lodestone and a pinch of dust"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Eyebite",
+      "level": 6,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Flesh to Stone",
+      "level": 6,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of lime, water, and earth"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Forbiddance",
+      "level": 6,
+      "school": "abjuration",
+      "castingTime": "10 minutes",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a sprinkling of holy water, rare incense, and powdered ruby worth at least 1,000 gp"
+      },
+      "duration": "1 day",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Freezing Sphere",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "300 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small crystal sphere"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Globe of Invulnerability",
+      "level": 6,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self (10-foot radius)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a glass or crystal bead that shatters when the spell ends"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Guards and Wards",
+      "level": 6,
+      "school": "abjuration",
+      "castingTime": "10 minutes",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "burning incense, a small measure of brimstone and oil, a knotted string, a small amount of umber hulk blood, and a small silver rod worth at least 10 gp"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Harm",
+      "level": 6,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Heal",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Heroes' Feast",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "10 minutes",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a gem-encrusted bowl worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Instant Summons",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a sapphire worth 1,000 gp"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": true,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Irresistible Dance",
+      "level": 6,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Magic Jar",
+      "level": 6,
+      "school": "necromancy",
+      "castingTime": "1 minute",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a gem, crystal, reliquary, or some other ornamental container worth at least 500 gp"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mass Suggestion",
+      "level": 6,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "material": "a snake's tongue and either a bit of honeycomb or a drop of sweet oil"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Move Earth",
+      "level": 6,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an iron blade and a small bag containing a mixture of soils-clay, loam, and sand"
+      },
+      "duration": "2 hours",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Planar Ally",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "10 minutes",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Programmed Illusion",
+      "level": 6,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a bit of fleece and jade dust worth at least 25 gp"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Sunbeam",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Self (60-foot line)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a magnifying glass"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Transport via Plants",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 round",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "True Seeing",
+      "level": 6,
+      "school": "divination",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "an ointment for the eyes that costs 25 gp; is made from mushroom powder, saffron, and fat; and is consumed by the spell"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Wall of Ice",
+      "level": 6,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small piece of quartz"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Wall of Thorns",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a handful of thorns"
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Wind Walk",
+      "level": 6,
+      "school": "transmutation",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "fire and holy water"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Word of Recall",
+      "level": 6,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "5 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Arcane Sword",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a miniature platinum sword with a grip and pommel of copper and zinc, worth 250 gp"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Conjure Celestial",
+      "level": 7,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "90 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Delayed Blast Fireball",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 action System Reference Document 5.1 133",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny ball of bat guano and spell by another creature, you can have the shadowy door connect to its demiplane instead. sulfur"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Divine Word",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 bonus action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Etherealness",
+      "level": 7,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Up to 8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Finger of Death",
+      "level": 7,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Fire Storm",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Forcecage",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "100 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "ruby dust worth 1,500 gp"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Magnificent Mansion",
+      "level": 7,
+      "school": "conjuration",
+      "castingTime": "1 minute",
+      "range": "300 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a miniature portal carved from ivory, a small piece of polished marble, and a tiny silver spoon, each item worth at least 5 gp"
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mirage Arcane",
+      "level": 7,
+      "school": "illusion",
+      "castingTime": "10 minutes",
+      "range": "Sight",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 days",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Plane Shift",
+      "level": 7,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a forked, metal rod worth at least 250 gp, attuned to a particular plane of existence"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Prismatic Spray",
+      "level": 7,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "Self (60-foot cone)",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Project Image",
+      "level": 7,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "500 miles",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a small replica of you made from materials worth at least 5 gp"
+      },
+      "duration": "1 day",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Regenerate",
+      "level": 7,
+      "school": "transmutation",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a prayer wheel and holy water"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Resurrection",
+      "level": 7,
+      "school": "necromancy",
+      "castingTime": "1 hour",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a diamond worth at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Reverse Gravity",
+      "level": 7,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "100 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a lodestone and iron filings"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Sequester",
+      "level": 7,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a powder composed of diamond, emerald, ruby, and sapphire dust worth at least 5,000 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Simulacrum",
+      "level": 7,
+      "school": "illusion",
+      "castingTime": "12 hours",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "snow or ice in quantities sufficient to made a life-size copy of the duplicated creature; some hair, fingernail clippings, or other piece of that creature's body placed inside the snow or ice; and powdered ruby worth 1,500 gp, sprinkled over the duplicate and consumed by the spell"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Symbol",
+      "level": 7,
+      "school": "abjuration",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes"
+      },
+      "duration": "Until dispelled or triggered",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Teleport",
+      "level": 7,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "10 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Animal Shapes",
+      "level": 8,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "24 hours",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Antimagic Field",
+      "level": 8,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self (10-foot-radius sphere)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of powdered iron or iron filings"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Antipathy/Sympathy",
+      "level": 8,
+      "school": "enchantment",
+      "castingTime": "1 hour",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "either a lump of alum soaked in vinegar for the antipathy effect or a drop of honey for the sympathy effect"
+      },
+      "duration": "10 days",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Clone",
+      "level": 8,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "Self (15-foot cone)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of powder or sand that is colored red, yellow, and blue"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Control Weather",
+      "level": 8,
+      "school": "transmutation",
+      "castingTime": "10 minutes",
+      "range": "Self (5-mile radius)",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "burning incense and bits of earth and wood mixed in water"
+      },
+      "duration": "8 hours",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Demiplane",
+      "level": 8,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Dominate Monster",
+      "level": 8,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Earthquake",
+      "level": 8,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "500 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a pinch of dirt, a piece of rock, and a lump of clay"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid",
+        "class:sorcerer"
+      ]
+    },
+    {
+      "name": "Feeblemind",
+      "level": 8,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a handful of clay, crystal, glass, or mineral spheres"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Glibness",
+      "level": 8,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:warlock"
+      ]
+    },
+    {
+      "name": "Holy Aura",
+      "level": 8,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a tiny reliquary worth at least 1,000 gp containing a sacred relic, such as a scrap of cloth from a saint's robe or a piece of parchment from a religious text"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Incendiary Cloud",
+      "level": 8,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Maze",
+      "level": 8,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mind Blank",
+      "level": 8,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "24 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Power Word Stun",
+      "level": 8,
+      "school": "enchantment",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:sorcerer",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Sunburst",
+      "level": 8,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "150 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "fire and a piece of sunstone"
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Astral Projection",
+      "level": 9,
+      "school": "necromancy",
+      "castingTime": "1 hour",
+      "range": "10 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "for each creature you affect with this spell, you must provide one jacinth worth at least 1,000 gp and one ornately carved bar of silver worth at least 100 gp, all of which the spell consumes"
+      },
+      "duration": "Special",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Foresight",
+      "level": 9,
+      "school": "divination",
+      "castingTime": "1 minute",
+      "range": "Touch",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a hummingbird feather"
+      },
+      "duration": "8 hours",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:druid",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Gate",
+      "level": 9,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a diamond worth at least 5,000 gp"
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Imprisonment",
+      "level": 9,
+      "school": "abjuration",
+      "castingTime": "1 minute",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a vellum depiction or a carved statuette in the likeness of the target, and a special component that varies according to the version of the spell you choose, worth at least 500 gp per Hit Die of the target"
+      },
+      "duration": "Until dispelled",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Mass Heal",
+      "level": 9,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric"
+      ]
+    },
+    {
+      "name": "Meteor Swarm",
+      "level": 9,
+      "school": "evocation",
+      "castingTime": "1 action",
+      "range": "1 mile",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Prismatic Wall",
+      "level": 9,
+      "school": "abjuration",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "10 minutes",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Shapechange",
+      "level": 9,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a jade circlet worth at least 1,500 gp, which you must place on your head before you cast the spell"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "Storm of Vengeance",
+      "level": 9,
+      "school": "conjuration",
+      "castingTime": "1 action",
+      "range": "Sight",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "1 minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Time Stop",
+      "level": 9,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "Self",
+      "components": {
+        "verbal": true
+      },
+      "duration": "Instantaneous",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:sorcerer",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "True Polymorph",
+      "level": 9,
+      "school": "transmutation",
+      "castingTime": "1 action",
+      "range": "30 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a drop of mercury, a dollop of gum arabic, and a wisp of smoke"
+      },
+      "duration": "1 hour",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:bard",
+        "class:warlock",
+        "class:wizard"
+      ]
+    },
+    {
+      "name": "True Resurrection",
+      "level": 9,
+      "school": "necromancy",
+      "castingTime": "1 action",
+      "range": "60 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true,
+        "material": "a piece of string and a bit of diamonds worth at least 25,000 gp, which the spell consumes) wood"
+      },
+      "duration": "1 hour",
+      "concentration": false,
+      "ritual": false,
+      "classIds": [
+        "class:cleric",
+        "class:druid"
+      ]
+    },
+    {
+      "name": "Weird",
+      "level": 9,
+      "school": "illusion",
+      "castingTime": "1 action",
+      "range": "120 feet",
+      "components": {
+        "verbal": true,
+        "somatic": true
+      },
+      "duration": "one minute",
+      "concentration": true,
+      "ritual": false,
+      "classIds": [
+        "class:wizard"
+      ]
+    }
+  ]
+}

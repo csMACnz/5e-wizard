@@ -1,0 +1,14 @@
+{
+  "srd_spells": [],
+  "class_spells": {
+    "bard": [],
+    "cleric": [],
+    "druid": [],
+    "paladin": [],
+    "ranger": [],
+    "sorcerer": [],
+    "warlock": [],
+    "wizard": []
+  },
+  "spell_classes": {}
+}
