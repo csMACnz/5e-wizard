@@ -222,33 +222,33 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_DeserializesCorrectly()
     {
-        var data = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
 
-        Assert.NotEmpty(data.Entries);
+        Assert.NotEmpty(data.Classes);
 
-        foreach (var entry in data.Entries)
+        foreach (var cls in data.Classes)
         {
-            Assert.False(string.IsNullOrWhiteSpace(entry.ClassId),
-                $"Entry missing ClassId");
-            Assert.False(string.IsNullOrWhiteSpace(entry.StartingWealthRoll),
-                $"Entry '{entry.ClassId}' missing StartingWealthRoll");
+            var entry = cls.StartingEquipment;
+            Assert.NotNull(entry);
+            Assert.False(string.IsNullOrWhiteSpace(entry!.StartingWealthRoll),
+                $"Class '{cls.Id}' missing StartingWealthRoll");
 
             foreach (var group in entry.ChoiceGroups)
             {
                 Assert.False(string.IsNullOrWhiteSpace(group.Id),
-                    $"Choice group in '{entry.ClassId}' missing Id");
+                    $"Choice group in '{cls.Id}' missing Id");
                 Assert.NotEmpty(group.Options);
 
                 foreach (var option in group.Options)
                 {
                     Assert.False(string.IsNullOrWhiteSpace(option.Id),
-                        $"Option in group '{group.Id}' of '{entry.ClassId}' missing Id");
+                        $"Option in group '{group.Id}' of '{cls.Id}' missing Id");
                     Assert.NotEmpty(option.GrantItems);
 
                     foreach (var grant in option.GrantItems)
                     {
                         Assert.False(string.IsNullOrWhiteSpace(grant.ItemId),
-                            $"Grant item in option '{option.Id}' of '{entry.ClassId}' missing ItemId");
+                            $"Grant item in option '{option.Id}' of '{cls.Id}' missing ItemId");
                         Assert.True(grant.Quantity >= 1,
                             $"Grant item '{grant.ItemId}' in option '{option.Id}' has invalid quantity");
                     }
@@ -260,14 +260,14 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_AllSrdClassesPresent()
     {
-        var data = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         var expectedClassIds = new[]
         {
             "class:barbarian", "class:bard", "class:cleric", "class:druid",
             "class:fighter", "class:monk", "class:paladin", "class:ranger",
             "class:rogue", "class:sorcerer", "class:warlock", "class:wizard",
         };
-        var actualIds = data.Entries.Select(e => e.ClassId).ToHashSet();
+        var actualIds = data.Classes.Where(c => c.StartingEquipment != null).Select(c => c.Id).ToHashSet();
         foreach (var expected in expectedClassIds)
             Assert.Contains(expected, actualIds);
     }
@@ -275,33 +275,39 @@ public class DataDeserializationTests
     [Fact]
     public void ClassStartingEquipment_Json_StartingWealthRollFormat()
     {
-        var data = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
+        var data = DeserializeFile<ClassesData>("classes.json");
         // Validate that each roll expression matches pattern: {n}d{sides} or {n}d{sides}*{mult}
         var rollPattern = new System.Text.RegularExpressions.Regex(@"^\d+d\d+(\*\d+)?$");
-        foreach (var entry in data.Entries)
-            Assert.True(rollPattern.IsMatch(entry.StartingWealthRoll),
-                $"'{entry.ClassId}' startingWealthRoll '{entry.StartingWealthRoll}' does not match expected format");
+        foreach (var cls in data.Classes)
+        {
+            var roll = cls.StartingEquipment?.StartingWealthRoll;
+            if (roll != null)
+                Assert.True(rollPattern.IsMatch(roll),
+                    $"'{cls.Id}' startingWealthRoll '{roll}' does not match expected format");
+        }
     }
 
     [Fact]
     public void ClassStartingEquipment_Json_FighterHasChoiceGroups()
     {
-        var data = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
-        var fighter = data.Entries.FirstOrDefault(e => e.ClassId == "class:fighter");
+        var data = DeserializeFile<ClassesData>("classes.json");
+        var fighter = data.Classes.FirstOrDefault(c => c.Id == "class:fighter");
         Assert.NotNull(fighter);
-        Assert.True(fighter!.ChoiceGroups.Count >= 2,
+        Assert.NotNull(fighter!.StartingEquipment);
+        Assert.True(fighter.StartingEquipment!.ChoiceGroups.Count >= 2,
             "Fighter should have at least 2 choice groups");
-        Assert.Equal("5d4*10", fighter.StartingWealthRoll);
+        Assert.Equal("5d4*10", fighter.StartingEquipment.StartingWealthRoll);
     }
 
     [Fact]
     public void ClassStartingEquipment_Json_MonkHasNoMultiplierInWealthRoll()
     {
-        var data = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
-        var monk = data.Entries.FirstOrDefault(e => e.ClassId == "class:monk");
+        var data = DeserializeFile<ClassesData>("classes.json");
+        var monk = data.Classes.FirstOrDefault(c => c.Id == "class:monk");
         Assert.NotNull(monk);
+        Assert.NotNull(monk!.StartingEquipment);
         // Monk starting wealth is 5d4 gp (no x10 multiplier)
-        Assert.Equal("5d4", monk!.StartingWealthRoll);
+        Assert.Equal("5d4", monk.StartingEquipment!.StartingWealthRoll);
     }
 
     [Fact]
@@ -310,9 +316,12 @@ public class DataDeserializationTests
         var equipData = DeserializeFile<EquipmentData>("equipment.json");
         var validItemIds = equipData.Equipment.Select(e => e.Id).ToHashSet();
 
-        var startEquipData = DeserializeFile<ClassStartingEquipmentData>("class-starting-equipment.json");
-        foreach (var entry in startEquipData.Entries)
+        var classData = DeserializeFile<ClassesData>("classes.json");
+        foreach (var cls in classData.Classes)
         {
+            var entry = cls.StartingEquipment;
+            if (entry == null) continue;
+
             foreach (var fixedItem in entry.FixedItems)
                 Assert.Contains(fixedItem.ItemId, validItemIds);
 

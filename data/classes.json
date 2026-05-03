@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.1",
+  "schemaVersion": "0.2",
   "source": "SRD 5.1",
   "classes": [
     {
@@ -7,642 +7,3938 @@
       "displayName": "Barbarian",
       "description": "Fierce warrior who enters a battle rage.",
       "hitDie": 12,
-      "primaryAbility": ["STR"],
-      "savingThrows": ["STR", "CON"],
+      "primaryAbility": [
+        "STR"
+      ],
+      "savingThrows": [
+        "STR",
+        "CON"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "shields"],
-        "weapons": ["simple", "martial"],
+        "armor": [
+          "light",
+          "medium",
+          "shields"
+        ],
+        "weapons": [
+          "simple",
+          "martial"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:animal-handling", "skill:athletics", "skill:intimidation", "skill:nature", "skill:perception", "skill:survival"]
+        "options": [
+          "skill:animal-handling",
+          "skill:athletics",
+          "skill:intimidation",
+          "skill:nature",
+          "skill:perception",
+          "skill:survival"
+        ]
       },
-      "multiclassPrereqs": { "STR": 13 },
+      "multiclassPrereqs": {
+        "STR": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:rage", "feat:unarmored-defense-barbarian"],
-        "2": ["feat:reckless-attack", "feat:danger-sense"],
-        "3": ["feat:primal-path", "feat:primal-knowledge"],
-        "4": ["feat:asi"],
-        "5": ["feat:extra-attack-barbarian", "feat:fast-movement"],
-        "7": ["feat:feral-instinct"],
-        "8": ["feat:asi"],
-        "9": ["feat:brutal-critical-1"],
-        "11": ["feat:relentless-rage"],
-        "12": ["feat:asi"],
-        "13": ["feat:brutal-critical-2"],
-        "15": ["feat:persistent-rage"],
-        "16": ["feat:asi"],
-        "17": ["feat:brutal-critical-3"],
-        "19": ["feat:asi"],
-        "20": ["feat:primal-champion"]
+        "1": [
+          "feat:rage",
+          "feat:unarmored-defense-barbarian"
+        ],
+        "2": [
+          "feat:reckless-attack",
+          "feat:danger-sense"
+        ],
+        "3": [
+          "feat:primal-path",
+          "feat:primal-knowledge"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:extra-attack-barbarian",
+          "feat:fast-movement"
+        ],
+        "7": [
+          "feat:feral-instinct"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:brutal-critical-1"
+        ],
+        "11": [
+          "feat:relentless-rage"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:brutal-critical-2"
+        ],
+        "15": [
+          "feat:persistent-rage"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:brutal-critical-3"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:primal-champion"
+        ]
       },
       "subclassLevel": 3,
       "subclassLabel": "Primal Path",
       "subclassOptions": [
-        { "id": "subclass:barbarian:berserker", "displayName": "Path of the Berserker" },
-        { "id": "subclass:barbarian:totem-warrior", "displayName": "Path of the Totem Warrior" }
+        {
+          "id": "subclass:barbarian:berserker",
+          "displayName": "Path of the Berserker"
+        },
+        {
+          "id": "subclass:barbarian:totem-warrior",
+          "displayName": "Path of the Totem Warrior"
+        }
       ],
-      "startingEquipmentIds": ["item:greataxe", "item:handaxe", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
+      "startingEquipmentIds": [
+        "item:greataxe",
+        "item:handaxe",
+        "item:dagger",
+        "item:dungeoneer-pack",
+        "item:explorers-pack",
+        "item:light-crossbow"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.16"
+      "srdReference": "SRD p.16",
+      "startingEquipment": {
+        "startingWealthRoll": "2d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:explorers-pack",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:javelin",
+            "quantity": 4
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "barbarian-weapon",
+            "description": "Choose a melee weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "greataxe",
+                "description": "A greataxe",
+                "grantItems": [
+                  {
+                    "itemId": "item:greataxe",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "martial-melee",
+                "description": "Any martial melee weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:battleaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:flail",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:glaive",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greataxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:halberd",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:lance",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:maul",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:morningstar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:pike",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:rapier",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:scimitar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:trident",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:war-pick",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:warhammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:whip",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "barbarian-secondary",
+            "description": "Choose a secondary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "two-handaxes",
+                "description": "Two handaxes",
+                "grantItems": [
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 2
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:bard",
       "displayName": "Bard",
       "description": "Inspiring performer and versatile spellcaster.",
       "hitDie": 8,
-      "primaryAbility": ["CHA"],
-      "savingThrows": ["DEX", "CHA"],
+      "primaryAbility": [
+        "CHA"
+      ],
+      "savingThrows": [
+        "DEX",
+        "CHA"
+      ],
       "proficienciesGranted": {
-        "armor": ["light"],
-        "weapons": ["simple", "hand-crossbow", "longsword", "rapier", "shortsword"],
-        "tools": ["tool:three-musical-instruments"]
+        "armor": [
+          "light"
+        ],
+        "weapons": [
+          "simple",
+          "hand-crossbow",
+          "longsword",
+          "rapier",
+          "shortsword"
+        ],
+        "tools": [
+          "tool:three-musical-instruments"
+        ]
       },
       "skillChoices": {
         "count": 3,
-        "options": ["skill:any"]
+        "options": [
+          "skill:any"
+        ]
       },
-      "multiclassPrereqs": { "CHA": 13 },
+      "multiclassPrereqs": {
+        "CHA": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:spellcasting-bard", "feat:bardic-inspiration-d6"],
-        "2": ["feat:jack-of-all-trades", "feat:song-of-rest-d6"],
-        "3": ["feat:bard-college", "feat:expertise-bard"],
-        "4": ["feat:asi"],
-        "5": ["feat:bardic-inspiration-d8", "feat:font-of-inspiration"],
-        "6": ["feat:countercharm", "feat:bard-college-feature"],
-        "8": ["feat:asi"],
-        "9": ["feat:song-of-rest-d8"],
-        "10": ["feat:bardic-inspiration-d10", "feat:expertise-bard", "feat:magical-secrets-10"],
-        "11": ["feat:song-of-rest-d10"],
-        "12": ["feat:asi"],
-        "13": ["feat:song-of-rest-d12"],
-        "14": ["feat:magical-secrets-14", "feat:bard-college-feature"],
-        "15": ["feat:bardic-inspiration-d12"],
-        "16": ["feat:asi"],
-        "18": ["feat:magical-secrets-18"],
-        "19": ["feat:asi"],
-        "20": ["feat:superior-inspiration"]
+        "1": [
+          "feat:spellcasting-bard",
+          "feat:bardic-inspiration-d6"
+        ],
+        "2": [
+          "feat:jack-of-all-trades",
+          "feat:song-of-rest-d6"
+        ],
+        "3": [
+          "feat:bard-college",
+          "feat:expertise-bard"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:bardic-inspiration-d8",
+          "feat:font-of-inspiration"
+        ],
+        "6": [
+          "feat:countercharm",
+          "feat:bard-college-feature"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:song-of-rest-d8"
+        ],
+        "10": [
+          "feat:bardic-inspiration-d10",
+          "feat:expertise-bard",
+          "feat:magical-secrets-10"
+        ],
+        "11": [
+          "feat:song-of-rest-d10"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:song-of-rest-d12"
+        ],
+        "14": [
+          "feat:magical-secrets-14",
+          "feat:bard-college-feature"
+        ],
+        "15": [
+          "feat:bardic-inspiration-d12"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "18": [
+          "feat:magical-secrets-18"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:superior-inspiration"
+        ]
       },
       "spellcasting": {
         "castingType": "full",
         "spellcastingAbility": "CHA",
         "prepareSpells": false,
         "spellListId": "spelllist:bard",
-        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-        "spellsKnownByLevel": [4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 15, 16, 18, 19, 19, 20, 22, 22, 22],
+        "cantripsKnownByLevel": [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "spellsKnownByLevel": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          14,
+          15,
+          15,
+          16,
+          18,
+          19,
+          19,
+          20,
+          22,
+          22,
+          22
+        ],
         "ritualCasting": true
       },
       "subclassLevel": 3,
       "subclassLabel": "Bard College",
       "subclassOptions": [
-        { "id": "subclass:bard:college-of-lore", "displayName": "College of Lore" },
-        { "id": "subclass:bard:college-of-valor", "displayName": "College of Valor" }
+        {
+          "id": "subclass:bard:college-of-lore",
+          "displayName": "College of Lore"
+        },
+        {
+          "id": "subclass:bard:college-of-valor",
+          "displayName": "College of Valor"
+        }
       ],
-      "startingEquipmentIds": ["item:longsword", "item:dagger", "item:leather-armor", "item:explorers-pack", "item:light-crossbow"],
+      "startingEquipmentIds": [
+        "item:longsword",
+        "item:dagger",
+        "item:leather-armor",
+        "item:explorers-pack",
+        "item:light-crossbow"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.20"
+      "srdReference": "SRD p.20",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:leather-armor",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:dagger",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "bard-weapon",
+            "description": "Choose a weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "rapier",
+                "description": "A rapier",
+                "grantItems": [
+                  {
+                    "itemId": "item:rapier",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "longsword",
+                "description": "A longsword",
+                "grantItems": [
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "bard-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "diplomat-pack",
+                "description": "A diplomat's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:diplomat-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "entertainer-pack",
+                "description": "An entertainer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:entertainer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "bard-instrument",
+            "description": "Choose a musical instrument",
+            "required": true,
+            "options": [
+              {
+                "id": "lute",
+                "description": "A lute",
+                "grantItems": [
+                  {
+                    "itemId": "item:lute",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "other-instrument",
+                "description": "Any musical instrument",
+                "grantItems": [
+                  {
+                    "itemId": "item:bagpipes",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:drum",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dulcimer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:flute",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:horn",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:lute",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:lyre",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:pan-flute",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shawm",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:viol",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:cleric",
       "displayName": "Cleric",
       "description": "Divine spellcaster channeling the power of a deity.",
       "hitDie": 8,
-      "primaryAbility": ["WIS"],
-      "savingThrows": ["WIS", "CHA"],
+      "primaryAbility": [
+        "WIS"
+      ],
+      "savingThrows": [
+        "WIS",
+        "CHA"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "shields"],
-        "weapons": ["simple"],
+        "armor": [
+          "light",
+          "medium",
+          "shields"
+        ],
+        "weapons": [
+          "simple"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:history", "skill:insight", "skill:medicine", "skill:persuasion", "skill:religion"]
+        "options": [
+          "skill:history",
+          "skill:insight",
+          "skill:medicine",
+          "skill:persuasion",
+          "skill:religion"
+        ]
       },
-      "multiclassPrereqs": { "WIS": 13 },
+      "multiclassPrereqs": {
+        "WIS": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:spellcasting-cleric", "feat:divine-domain"],
-        "2": ["feat:channel-divinity-1", "feat:divine-domain-feature"],
-        "3": ["feat:channel-divinity-2"],
-        "4": ["feat:asi"],
-        "5": ["feat:destroy-undead-cr-half"],
-        "6": ["feat:channel-divinity-3", "feat:divine-domain-feature"],
-        "7": ["feat:divine-domain-feature"],
-        "8": ["feat:asi", "feat:destroy-undead-cr-1", "feat:divine-domain-feature"],
-        "10": ["feat:divine-intervention"],
-        "11": ["feat:destroy-undead-cr-2"],
-        "12": ["feat:asi"],
-        "14": ["feat:destroy-undead-cr-3"],
-        "16": ["feat:asi"],
-        "17": ["feat:destroy-undead-cr-4", "feat:divine-domain-feature"],
-        "18": ["feat:channel-divinity-unlimited"],
-        "19": ["feat:asi"],
-        "20": ["feat:divine-intervention-auto"]
+        "1": [
+          "feat:spellcasting-cleric",
+          "feat:divine-domain"
+        ],
+        "2": [
+          "feat:channel-divinity-1",
+          "feat:divine-domain-feature"
+        ],
+        "3": [
+          "feat:channel-divinity-2"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:destroy-undead-cr-half"
+        ],
+        "6": [
+          "feat:channel-divinity-3",
+          "feat:divine-domain-feature"
+        ],
+        "7": [
+          "feat:divine-domain-feature"
+        ],
+        "8": [
+          "feat:asi",
+          "feat:destroy-undead-cr-1",
+          "feat:divine-domain-feature"
+        ],
+        "10": [
+          "feat:divine-intervention"
+        ],
+        "11": [
+          "feat:destroy-undead-cr-2"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:destroy-undead-cr-3"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:destroy-undead-cr-4",
+          "feat:divine-domain-feature"
+        ],
+        "18": [
+          "feat:channel-divinity-unlimited"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:divine-intervention-auto"
+        ]
       },
       "spellcasting": {
         "castingType": "full",
         "spellcastingAbility": "WIS",
         "prepareSpells": true,
         "spellListId": "spelllist:cleric",
-        "cantripsKnownByLevel": [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
-        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "cantripsKnownByLevel": [
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "spellsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "ritualCasting": true
       },
       "subclassLevel": 1,
       "subclassLabel": "Divine Domain",
       "subclassOptions": [
-        { "id": "subclass:cleric:knowledge", "displayName": "Knowledge Domain" },
-        { "id": "subclass:cleric:life", "displayName": "Life Domain" },
-        { "id": "subclass:cleric:light", "displayName": "Light Domain" },
-        { "id": "subclass:cleric:nature", "displayName": "Nature Domain" },
-        { "id": "subclass:cleric:tempest", "displayName": "Tempest Domain" },
-        { "id": "subclass:cleric:trickery", "displayName": "Trickery Domain" },
-        { "id": "subclass:cleric:war", "displayName": "War Domain" }
+        {
+          "id": "subclass:cleric:knowledge",
+          "displayName": "Knowledge Domain"
+        },
+        {
+          "id": "subclass:cleric:life",
+          "displayName": "Life Domain"
+        },
+        {
+          "id": "subclass:cleric:light",
+          "displayName": "Light Domain"
+        },
+        {
+          "id": "subclass:cleric:nature",
+          "displayName": "Nature Domain"
+        },
+        {
+          "id": "subclass:cleric:tempest",
+          "displayName": "Tempest Domain"
+        },
+        {
+          "id": "subclass:cleric:trickery",
+          "displayName": "Trickery Domain"
+        },
+        {
+          "id": "subclass:cleric:war",
+          "displayName": "War Domain"
+        }
       ],
-      "startingEquipmentIds": ["item:leather-armor", "item:chain-mail", "item:shield", "item:light-crossbow", "item:dagger", "item:explorers-pack", "item:holy-symbol"],
+      "startingEquipmentIds": [
+        "item:leather-armor",
+        "item:chain-mail",
+        "item:shield",
+        "item:light-crossbow",
+        "item:dagger",
+        "item:explorers-pack",
+        "item:holy-symbol"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.28"
+      "srdReference": "SRD p.28",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:shield",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:holy-symbol",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "cleric-primary-weapon",
+            "description": "Choose a primary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "mace",
+                "description": "A mace",
+                "grantItems": [
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "warhammer",
+                "description": "A warhammer (if proficient)",
+                "grantItems": [
+                  {
+                    "itemId": "item:warhammer",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "cleric-armor",
+            "description": "Choose armor",
+            "required": true,
+            "options": [
+              {
+                "id": "scale-mail",
+                "description": "Scale mail",
+                "grantItems": [
+                  {
+                    "itemId": "item:scale-mail",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "leather-armor",
+                "description": "Leather armor",
+                "grantItems": [
+                  {
+                    "itemId": "item:leather-armor",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "chain-mail",
+                "description": "Chain mail (if proficient)",
+                "grantItems": [
+                  {
+                    "itemId": "item:chain-mail",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "cleric-weapon",
+            "description": "Choose a secondary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "light-crossbow",
+                "description": "A light crossbow",
+                "grantItems": [
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "cleric-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:druid",
       "displayName": "Druid",
       "description": "Nature spellcaster with wild shape ability.",
       "hitDie": 8,
-      "primaryAbility": ["WIS"],
-      "savingThrows": ["INT", "WIS"],
+      "primaryAbility": [
+        "WIS"
+      ],
+      "savingThrows": [
+        "INT",
+        "WIS"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "shields"],
-        "weapons": ["clubs", "daggers", "darts", "javelins", "maces", "quarterstaffs", "scimitars", "sickles", "slings", "spears"],
-        "tools": ["tool:herbalism-kit"]
+        "armor": [
+          "light",
+          "medium",
+          "shields"
+        ],
+        "weapons": [
+          "clubs",
+          "daggers",
+          "darts",
+          "javelins",
+          "maces",
+          "quarterstaffs",
+          "scimitars",
+          "sickles",
+          "slings",
+          "spears"
+        ],
+        "tools": [
+          "tool:herbalism-kit"
+        ]
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:arcana", "skill:animal-handling", "skill:insight", "skill:medicine", "skill:nature", "skill:perception", "skill:religion", "skill:survival"]
+        "options": [
+          "skill:arcana",
+          "skill:animal-handling",
+          "skill:insight",
+          "skill:medicine",
+          "skill:nature",
+          "skill:perception",
+          "skill:religion",
+          "skill:survival"
+        ]
       },
-      "multiclassPrereqs": { "WIS": 13 },
+      "multiclassPrereqs": {
+        "WIS": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:spellcasting-druid", "feat:druidic"],
-        "2": ["feat:wild-shape", "feat:druid-circle"],
+        "1": [
+          "feat:spellcasting-druid",
+          "feat:druidic"
+        ],
+        "2": [
+          "feat:wild-shape",
+          "feat:druid-circle"
+        ],
         "3": [],
-        "4": ["feat:asi", "feat:wild-shape-cr-half-fly"],
+        "4": [
+          "feat:asi",
+          "feat:wild-shape-cr-half-fly"
+        ],
         "5": [],
-        "6": ["feat:druid-circle-feature"],
+        "6": [
+          "feat:druid-circle-feature"
+        ],
         "7": [],
-        "8": ["feat:asi", "feat:wild-shape-cr-1"],
-        "10": ["feat:druid-circle-feature"],
-        "12": ["feat:asi"],
-        "14": ["feat:druid-circle-feature"],
-        "16": ["feat:asi"],
-        "18": ["feat:timeless-body-druid", "feat:beast-spells"],
-        "19": ["feat:asi"],
-        "20": ["feat:archdruid"]
+        "8": [
+          "feat:asi",
+          "feat:wild-shape-cr-1"
+        ],
+        "10": [
+          "feat:druid-circle-feature"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:druid-circle-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "18": [
+          "feat:timeless-body-druid",
+          "feat:beast-spells"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:archdruid"
+        ]
       },
       "spellcasting": {
         "castingType": "full",
         "spellcastingAbility": "WIS",
         "prepareSpells": true,
         "spellListId": "spelllist:druid",
-        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "cantripsKnownByLevel": [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "spellsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "ritualCasting": true
       },
       "subclassLevel": 2,
       "subclassLabel": "Druid Circle",
       "subclassOptions": [
-        { "id": "subclass:druid:circle-of-the-land", "displayName": "Circle of the Land" },
-        { "id": "subclass:druid:circle-of-the-moon", "displayName": "Circle of the Moon" }
+        {
+          "id": "subclass:druid:circle-of-the-land",
+          "displayName": "Circle of the Land"
+        },
+        {
+          "id": "subclass:druid:circle-of-the-moon",
+          "displayName": "Circle of the Moon"
+        }
       ],
-      "startingEquipmentIds": ["item:shield", "item:dagger", "item:leather-armor", "item:explorers-pack"],
+      "startingEquipmentIds": [
+        "item:shield",
+        "item:dagger",
+        "item:leather-armor",
+        "item:explorers-pack"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.37"
+      "srdReference": "SRD p.37",
+      "startingEquipment": {
+        "startingWealthRoll": "2d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:leather-armor",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:explorers-pack",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:druidic-focus",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "druid-shield-or-weapon",
+            "description": "Choose a shield or a simple weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "shield",
+                "description": "A wooden shield",
+                "grantItems": [
+                  {
+                    "itemId": "item:shield",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "druid-melee",
+            "description": "Choose a melee weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "scimitar",
+                "description": "A scimitar",
+                "grantItems": [
+                  {
+                    "itemId": "item:scimitar",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-melee",
+                "description": "Any simple melee weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:fighter",
       "displayName": "Fighter",
       "description": "Martial warrior with broad weapon and armor mastery.",
       "hitDie": 10,
-      "primaryAbility": ["STR", "DEX"],
-      "savingThrows": ["STR", "CON"],
+      "primaryAbility": [
+        "STR",
+        "DEX"
+      ],
+      "savingThrows": [
+        "STR",
+        "CON"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "heavy", "shields"],
-        "weapons": ["simple", "martial"],
+        "armor": [
+          "light",
+          "medium",
+          "heavy",
+          "shields"
+        ],
+        "weapons": [
+          "simple",
+          "martial"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:acrobatics", "skill:animal-handling", "skill:athletics", "skill:history", "skill:insight", "skill:intimidation", "skill:perception", "skill:survival"]
+        "options": [
+          "skill:acrobatics",
+          "skill:animal-handling",
+          "skill:athletics",
+          "skill:history",
+          "skill:insight",
+          "skill:intimidation",
+          "skill:perception",
+          "skill:survival"
+        ]
       },
-      "multiclassPrereqs": { "STR": 13 },
+      "multiclassPrereqs": {
+        "STR": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:fighting-style", "feat:second-wind"],
-        "2": ["feat:action-surge-1"],
-        "3": ["feat:martial-archetype"],
-        "4": ["feat:asi"],
-        "5": ["feat:extra-attack-1"],
-        "6": ["feat:asi"],
-        "7": ["feat:martial-archetype-feature"],
-        "8": ["feat:asi"],
-        "9": ["feat:indomitable-1"],
-        "10": ["feat:martial-archetype-feature"],
-        "11": ["feat:extra-attack-2"],
-        "12": ["feat:asi"],
-        "13": ["feat:indomitable-2"],
-        "14": ["feat:asi"],
-        "15": ["feat:martial-archetype-feature"],
-        "16": ["feat:asi"],
-        "17": ["feat:action-surge-2", "feat:indomitable-3"],
-        "18": ["feat:martial-archetype-feature"],
-        "19": ["feat:asi"],
-        "20": ["feat:extra-attack-3"]
+        "1": [
+          "feat:fighting-style",
+          "feat:second-wind"
+        ],
+        "2": [
+          "feat:action-surge-1"
+        ],
+        "3": [
+          "feat:martial-archetype"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:extra-attack-1"
+        ],
+        "6": [
+          "feat:asi"
+        ],
+        "7": [
+          "feat:martial-archetype-feature"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:indomitable-1"
+        ],
+        "10": [
+          "feat:martial-archetype-feature"
+        ],
+        "11": [
+          "feat:extra-attack-2"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:indomitable-2"
+        ],
+        "14": [
+          "feat:asi"
+        ],
+        "15": [
+          "feat:martial-archetype-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:action-surge-2",
+          "feat:indomitable-3"
+        ],
+        "18": [
+          "feat:martial-archetype-feature"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:extra-attack-3"
+        ]
       },
       "subclassLevel": 3,
       "subclassLabel": "Martial Archetype",
       "subclassOptions": [
-        { "id": "subclass:fighter:champion", "displayName": "Champion" },
-        { "id": "subclass:fighter:battle-master", "displayName": "Battle Master" },
-        { "id": "subclass:fighter:eldritch-knight", "displayName": "Eldritch Knight" }
+        {
+          "id": "subclass:fighter:champion",
+          "displayName": "Champion"
+        },
+        {
+          "id": "subclass:fighter:battle-master",
+          "displayName": "Battle Master"
+        },
+        {
+          "id": "subclass:fighter:eldritch-knight",
+          "displayName": "Eldritch Knight"
+        }
       ],
-      "startingEquipmentIds": ["item:chain-mail", "item:leather-armor", "item:longsword", "item:shortsword", "item:handaxe", "item:greataxe", "item:light-crossbow", "item:shield", "item:dungeoneer-pack", "item:explorers-pack", "item:dagger"],
+      "startingEquipmentIds": [
+        "item:chain-mail",
+        "item:leather-armor",
+        "item:longsword",
+        "item:shortsword",
+        "item:handaxe",
+        "item:greataxe",
+        "item:light-crossbow",
+        "item:shield",
+        "item:dungeoneer-pack",
+        "item:explorers-pack",
+        "item:dagger"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.46"
+      "srdReference": "SRD p.46",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4*10",
+        "fixedItems": [],
+        "choiceGroups": [
+          {
+            "id": "fighter-armor",
+            "description": "Choose armor",
+            "required": true,
+            "options": [
+              {
+                "id": "chain-mail",
+                "description": "Chain mail",
+                "grantItems": [
+                  {
+                    "itemId": "item:chain-mail",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "leather-armor",
+                "description": "Leather armor, a longbow, and 20 arrows",
+                "grantItems": [
+                  {
+                    "itemId": "item:leather-armor",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:longbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:arrow",
+                    "quantity": 20
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "fighter-weapon",
+            "description": "Choose a weapon or weapon-and-shield combination",
+            "required": true,
+            "options": [
+              {
+                "id": "longsword-shield",
+                "description": "A longsword and a shield",
+                "grantItems": [
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shield",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "martial-melee",
+                "description": "A martial melee weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:battleaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:flail",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:glaive",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greataxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:halberd",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:lance",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:maul",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:morningstar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:pike",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:rapier",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:scimitar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:trident",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:war-pick",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:warhammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:whip",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "fighter-ranged",
+            "description": "Choose a ranged weapon or backup melee weapons",
+            "required": true,
+            "options": [
+              {
+                "id": "light-crossbow",
+                "description": "A light crossbow",
+                "grantItems": [
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "two-handaxes",
+                "description": "Two handaxes",
+                "grantItems": [
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 2
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "fighter-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:monk",
       "displayName": "Monk",
       "description": "Martial artist who harnesses ki energy.",
       "hitDie": 8,
-      "primaryAbility": ["DEX", "WIS"],
-      "savingThrows": ["STR", "DEX"],
+      "primaryAbility": [
+        "DEX",
+        "WIS"
+      ],
+      "savingThrows": [
+        "STR",
+        "DEX"
+      ],
       "proficienciesGranted": {
         "armor": [],
-        "weapons": ["simple", "shortsword"],
-        "tools": ["tool:artisans-or-musical-instrument"]
+        "weapons": [
+          "simple",
+          "shortsword"
+        ],
+        "tools": [
+          "tool:artisans-or-musical-instrument"
+        ]
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:acrobatics", "skill:athletics", "skill:history", "skill:insight", "skill:religion", "skill:stealth"]
+        "options": [
+          "skill:acrobatics",
+          "skill:athletics",
+          "skill:history",
+          "skill:insight",
+          "skill:religion",
+          "skill:stealth"
+        ]
       },
-      "multiclassPrereqs": { "DEX": 13, "WIS": 13 },
+      "multiclassPrereqs": {
+        "DEX": 13,
+        "WIS": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:unarmored-defense-monk", "feat:martial-arts"],
-        "2": ["feat:ki", "feat:unarmored-movement-10"],
-        "3": ["feat:monastic-tradition", "feat:deflect-missiles"],
-        "4": ["feat:asi", "feat:slow-fall"],
-        "5": ["feat:extra-attack-monk", "feat:stunning-strike"],
-        "6": ["feat:ki-empowered-strikes", "feat:monastic-tradition-feature", "feat:unarmored-movement-15"],
-        "7": ["feat:evasion-monk", "feat:stillness-of-mind"],
-        "8": ["feat:asi"],
-        "9": ["feat:unarmored-movement-15"],
-        "10": ["feat:purity-of-body"],
-        "11": ["feat:monastic-tradition-feature"],
-        "12": ["feat:asi"],
-        "13": ["feat:tongue-of-sun-moon"],
-        "14": ["feat:diamond-soul"],
-        "15": ["feat:timeless-body-monk"],
-        "16": ["feat:asi"],
-        "17": ["feat:monastic-tradition-feature"],
-        "18": ["feat:empty-body"],
-        "19": ["feat:asi"],
-        "20": ["feat:perfect-self"]
+        "1": [
+          "feat:unarmored-defense-monk",
+          "feat:martial-arts"
+        ],
+        "2": [
+          "feat:ki",
+          "feat:unarmored-movement-10"
+        ],
+        "3": [
+          "feat:monastic-tradition",
+          "feat:deflect-missiles"
+        ],
+        "4": [
+          "feat:asi",
+          "feat:slow-fall"
+        ],
+        "5": [
+          "feat:extra-attack-monk",
+          "feat:stunning-strike"
+        ],
+        "6": [
+          "feat:ki-empowered-strikes",
+          "feat:monastic-tradition-feature",
+          "feat:unarmored-movement-15"
+        ],
+        "7": [
+          "feat:evasion-monk",
+          "feat:stillness-of-mind"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:unarmored-movement-15"
+        ],
+        "10": [
+          "feat:purity-of-body"
+        ],
+        "11": [
+          "feat:monastic-tradition-feature"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:tongue-of-sun-moon"
+        ],
+        "14": [
+          "feat:diamond-soul"
+        ],
+        "15": [
+          "feat:timeless-body-monk"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:monastic-tradition-feature"
+        ],
+        "18": [
+          "feat:empty-body"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:perfect-self"
+        ]
       },
       "subclassLevel": 3,
       "subclassLabel": "Monastic Tradition",
       "subclassOptions": [
-        { "id": "subclass:monk:open-hand", "displayName": "Way of the Open Hand" },
-        { "id": "subclass:monk:shadow", "displayName": "Way of Shadow" },
-        { "id": "subclass:monk:four-elements", "displayName": "Way of the Four Elements" }
+        {
+          "id": "subclass:monk:open-hand",
+          "displayName": "Way of the Open Hand"
+        },
+        {
+          "id": "subclass:monk:shadow",
+          "displayName": "Way of Shadow"
+        },
+        {
+          "id": "subclass:monk:four-elements",
+          "displayName": "Way of the Four Elements"
+        }
       ],
-      "startingEquipmentIds": ["item:shortsword", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack"],
+      "startingEquipmentIds": [
+        "item:shortsword",
+        "item:dagger",
+        "item:dungeoneer-pack",
+        "item:explorers-pack"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.55"
+      "srdReference": "SRD p.55",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4",
+        "fixedItems": [
+          {
+            "itemId": "item:dart",
+            "quantity": 10
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "monk-weapon",
+            "description": "Choose a weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "shortsword",
+                "description": "A shortsword",
+                "grantItems": [
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "monk-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:paladin",
       "displayName": "Paladin",
       "description": "Holy warrior bound by an oath, half-caster.",
       "hitDie": 10,
-      "primaryAbility": ["STR", "CHA"],
-      "savingThrows": ["WIS", "CHA"],
+      "primaryAbility": [
+        "STR",
+        "CHA"
+      ],
+      "savingThrows": [
+        "WIS",
+        "CHA"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "heavy", "shields"],
-        "weapons": ["simple", "martial"],
+        "armor": [
+          "light",
+          "medium",
+          "heavy",
+          "shields"
+        ],
+        "weapons": [
+          "simple",
+          "martial"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:athletics", "skill:insight", "skill:intimidation", "skill:medicine", "skill:persuasion", "skill:religion"]
+        "options": [
+          "skill:athletics",
+          "skill:insight",
+          "skill:intimidation",
+          "skill:medicine",
+          "skill:persuasion",
+          "skill:religion"
+        ]
       },
-      "multiclassPrereqs": { "STR": 13, "CHA": 13 },
+      "multiclassPrereqs": {
+        "STR": 13,
+        "CHA": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:divine-sense", "feat:lay-on-hands"],
-        "2": ["feat:fighting-style-paladin", "feat:spellcasting-paladin", "feat:divine-smite"],
-        "3": ["feat:divine-health", "feat:sacred-oath"],
-        "4": ["feat:asi"],
-        "5": ["feat:extra-attack-paladin"],
-        "6": ["feat:aura-of-protection"],
-        "7": ["feat:sacred-oath-feature"],
-        "8": ["feat:asi"],
-        "10": ["feat:aura-of-courage"],
-        "11": ["feat:improved-divine-smite"],
-        "12": ["feat:asi"],
-        "14": ["feat:cleansing-touch"],
-        "15": ["feat:sacred-oath-feature"],
-        "16": ["feat:asi"],
-        "18": ["feat:aura-improvements"],
-        "19": ["feat:asi"],
-        "20": ["feat:sacred-oath-feature"]
+        "1": [
+          "feat:divine-sense",
+          "feat:lay-on-hands"
+        ],
+        "2": [
+          "feat:fighting-style-paladin",
+          "feat:spellcasting-paladin",
+          "feat:divine-smite"
+        ],
+        "3": [
+          "feat:divine-health",
+          "feat:sacred-oath"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:extra-attack-paladin"
+        ],
+        "6": [
+          "feat:aura-of-protection"
+        ],
+        "7": [
+          "feat:sacred-oath-feature"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "10": [
+          "feat:aura-of-courage"
+        ],
+        "11": [
+          "feat:improved-divine-smite"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:cleansing-touch"
+        ],
+        "15": [
+          "feat:sacred-oath-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "18": [
+          "feat:aura-improvements"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:sacred-oath-feature"
+        ]
       },
       "spellcasting": {
         "castingType": "half",
         "spellcastingAbility": "CHA",
         "prepareSpells": true,
         "spellListId": "spelllist:paladin",
-        "cantripsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "cantripsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "spellsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "ritualCasting": false
       },
       "subclassLevel": 3,
       "subclassLabel": "Sacred Oath",
       "subclassOptions": [
-        { "id": "subclass:paladin:devotion", "displayName": "Oath of Devotion" },
-        { "id": "subclass:paladin:ancients", "displayName": "Oath of the Ancients" },
-        { "id": "subclass:paladin:vengeance", "displayName": "Oath of Vengeance" }
+        {
+          "id": "subclass:paladin:devotion",
+          "displayName": "Oath of Devotion"
+        },
+        {
+          "id": "subclass:paladin:ancients",
+          "displayName": "Oath of the Ancients"
+        },
+        {
+          "id": "subclass:paladin:vengeance",
+          "displayName": "Oath of Vengeance"
+        }
       ],
-      "startingEquipmentIds": ["item:longsword", "item:shortsword", "item:handaxe", "item:chain-mail", "item:shield", "item:explorers-pack", "item:holy-symbol", "item:dagger"],
+      "startingEquipmentIds": [
+        "item:longsword",
+        "item:shortsword",
+        "item:handaxe",
+        "item:chain-mail",
+        "item:shield",
+        "item:explorers-pack",
+        "item:holy-symbol",
+        "item:dagger"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.64"
+      "srdReference": "SRD p.64",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:chain-mail",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:holy-symbol",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "paladin-weapon",
+            "description": "Choose a weapon or weapon-and-shield combination",
+            "required": true,
+            "options": [
+              {
+                "id": "longsword-shield",
+                "description": "A martial weapon and a shield",
+                "grantItems": [
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shield",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "two-martial",
+                "description": "Two martial weapons",
+                "grantItems": [
+                  {
+                    "itemId": "item:battleaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:flail",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:glaive",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greataxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:halberd",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:lance",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:longsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:maul",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:morningstar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:pike",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:rapier",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:scimitar",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:trident",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:war-pick",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:warhammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:whip",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "paladin-secondary",
+            "description": "Choose a secondary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "dagger",
+                "description": "A dagger",
+                "grantItems": [
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-melee",
+                "description": "A simple melee weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "paladin-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:ranger",
       "displayName": "Ranger",
       "description": "Skilled hunter and tracker, half-caster.",
       "hitDie": 10,
-      "primaryAbility": ["DEX", "WIS"],
-      "savingThrows": ["STR", "DEX"],
+      "primaryAbility": [
+        "DEX",
+        "WIS"
+      ],
+      "savingThrows": [
+        "STR",
+        "DEX"
+      ],
       "proficienciesGranted": {
-        "armor": ["light", "medium", "shields"],
-        "weapons": ["simple", "martial"],
+        "armor": [
+          "light",
+          "medium",
+          "shields"
+        ],
+        "weapons": [
+          "simple",
+          "martial"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 3,
-        "options": ["skill:animal-handling", "skill:athletics", "skill:insight", "skill:investigation", "skill:nature", "skill:perception", "skill:stealth", "skill:survival"]
+        "options": [
+          "skill:animal-handling",
+          "skill:athletics",
+          "skill:insight",
+          "skill:investigation",
+          "skill:nature",
+          "skill:perception",
+          "skill:stealth",
+          "skill:survival"
+        ]
       },
-      "multiclassPrereqs": { "DEX": 13, "WIS": 13 },
+      "multiclassPrereqs": {
+        "DEX": 13,
+        "WIS": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:favored-enemy", "feat:natural-explorer"],
-        "2": ["feat:fighting-style-ranger", "feat:spellcasting-ranger"],
-        "3": ["feat:ranger-archetype", "feat:primeval-awareness"],
-        "4": ["feat:asi"],
-        "5": ["feat:extra-attack-ranger"],
-        "6": ["feat:favored-enemy-improvement", "feat:natural-explorer-improvement"],
-        "7": ["feat:ranger-archetype-feature"],
-        "8": ["feat:asi", "feat:lands-stride"],
-        "10": ["feat:natural-explorer-improvement", "feat:hide-in-plain-sight"],
-        "11": ["feat:ranger-archetype-feature"],
-        "12": ["feat:asi"],
-        "14": ["feat:favored-enemy-improvement", "feat:vanish"],
-        "15": ["feat:ranger-archetype-feature"],
-        "16": ["feat:asi"],
-        "18": ["feat:feral-senses"],
-        "19": ["feat:asi"],
-        "20": ["feat:foe-slayer"]
+        "1": [
+          "feat:favored-enemy",
+          "feat:natural-explorer"
+        ],
+        "2": [
+          "feat:fighting-style-ranger",
+          "feat:spellcasting-ranger"
+        ],
+        "3": [
+          "feat:ranger-archetype",
+          "feat:primeval-awareness"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:extra-attack-ranger"
+        ],
+        "6": [
+          "feat:favored-enemy-improvement",
+          "feat:natural-explorer-improvement"
+        ],
+        "7": [
+          "feat:ranger-archetype-feature"
+        ],
+        "8": [
+          "feat:asi",
+          "feat:lands-stride"
+        ],
+        "10": [
+          "feat:natural-explorer-improvement",
+          "feat:hide-in-plain-sight"
+        ],
+        "11": [
+          "feat:ranger-archetype-feature"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:favored-enemy-improvement",
+          "feat:vanish"
+        ],
+        "15": [
+          "feat:ranger-archetype-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "18": [
+          "feat:feral-senses"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:foe-slayer"
+        ]
       },
       "spellcasting": {
         "castingType": "half",
         "spellcastingAbility": "WIS",
         "prepareSpells": false,
         "spellListId": "spelllist:ranger",
-        "cantripsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "spellsKnownByLevel": [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11],
+        "cantripsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "spellsKnownByLevel": [
+          0,
+          2,
+          3,
+          3,
+          4,
+          4,
+          5,
+          5,
+          6,
+          6,
+          7,
+          7,
+          8,
+          8,
+          9,
+          9,
+          10,
+          10,
+          11,
+          11
+        ],
         "ritualCasting": false
       },
       "subclassLevel": 3,
       "subclassLabel": "Ranger Archetype",
       "subclassOptions": [
-        { "id": "subclass:ranger:hunter", "displayName": "Hunter" },
-        { "id": "subclass:ranger:beast-master", "displayName": "Beast Master" }
+        {
+          "id": "subclass:ranger:hunter",
+          "displayName": "Hunter"
+        },
+        {
+          "id": "subclass:ranger:beast-master",
+          "displayName": "Beast Master"
+        }
       ],
-      "startingEquipmentIds": ["item:leather-armor", "item:shortsword", "item:handaxe", "item:dagger", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
+      "startingEquipmentIds": [
+        "item:leather-armor",
+        "item:shortsword",
+        "item:handaxe",
+        "item:dagger",
+        "item:dungeoneer-pack",
+        "item:explorers-pack",
+        "item:light-crossbow"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.72"
+      "srdReference": "SRD p.72",
+      "startingEquipment": {
+        "startingWealthRoll": "5d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:longbow",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:quiver",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:arrow",
+            "quantity": 20
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "ranger-armor",
+            "description": "Choose armor",
+            "required": true,
+            "options": [
+              {
+                "id": "scale-mail",
+                "description": "Scale mail",
+                "grantItems": [
+                  {
+                    "itemId": "item:scale-mail",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "leather-armor",
+                "description": "Leather armor",
+                "grantItems": [
+                  {
+                    "itemId": "item:leather-armor",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "ranger-melee",
+            "description": "Choose melee weapons",
+            "required": true,
+            "options": [
+              {
+                "id": "two-shortswords",
+                "description": "Two shortswords",
+                "grantItems": [
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 2
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-melee",
+                "description": "Two simple melee weapons",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 2
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 2
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "ranger-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:rogue",
       "displayName": "Rogue",
       "description": "Cunning expert with sneak attack and high skill variety.",
       "hitDie": 8,
-      "primaryAbility": ["DEX"],
-      "savingThrows": ["DEX", "INT"],
+      "primaryAbility": [
+        "DEX"
+      ],
+      "savingThrows": [
+        "DEX",
+        "INT"
+      ],
       "proficienciesGranted": {
-        "armor": ["light"],
-        "weapons": ["simple", "hand-crossbow", "longsword", "rapier", "shortsword"],
-        "tools": ["tool:thieves-tools"]
+        "armor": [
+          "light"
+        ],
+        "weapons": [
+          "simple",
+          "hand-crossbow",
+          "longsword",
+          "rapier",
+          "shortsword"
+        ],
+        "tools": [
+          "tool:thieves-tools"
+        ]
       },
       "skillChoices": {
         "count": 4,
-        "options": ["skill:acrobatics", "skill:athletics", "skill:deception", "skill:insight", "skill:intimidation", "skill:investigation", "skill:perception", "skill:performance", "skill:persuasion", "skill:sleight-of-hand", "skill:stealth"]
+        "options": [
+          "skill:acrobatics",
+          "skill:athletics",
+          "skill:deception",
+          "skill:insight",
+          "skill:intimidation",
+          "skill:investigation",
+          "skill:perception",
+          "skill:performance",
+          "skill:persuasion",
+          "skill:sleight-of-hand",
+          "skill:stealth"
+        ]
       },
-      "multiclassPrereqs": { "DEX": 13 },
+      "multiclassPrereqs": {
+        "DEX": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:expertise-rogue", "feat:sneak-attack-1d6", "feat:thieves-cant"],
-        "2": ["feat:cunning-action"],
-        "3": ["feat:roguish-archetype", "feat:sneak-attack-2d6"],
-        "4": ["feat:asi"],
-        "5": ["feat:uncanny-dodge", "feat:sneak-attack-3d6"],
-        "6": ["feat:expertise-rogue"],
-        "7": ["feat:evasion-rogue", "feat:sneak-attack-4d6"],
-        "8": ["feat:asi"],
-        "9": ["feat:roguish-archetype-feature", "feat:sneak-attack-5d6"],
-        "10": ["feat:asi"],
-        "11": ["feat:reliable-talent", "feat:sneak-attack-6d6"],
-        "12": ["feat:asi"],
-        "13": ["feat:roguish-archetype-feature", "feat:sneak-attack-7d6"],
-        "14": ["feat:blindsense"],
-        "15": ["feat:slippery-mind", "feat:sneak-attack-8d6"],
-        "16": ["feat:asi"],
-        "17": ["feat:roguish-archetype-feature", "feat:sneak-attack-9d6"],
-        "18": ["feat:elusive"],
-        "19": ["feat:asi", "feat:sneak-attack-10d6"],
-        "20": ["feat:stroke-of-luck"]
+        "1": [
+          "feat:expertise-rogue",
+          "feat:sneak-attack-1d6",
+          "feat:thieves-cant"
+        ],
+        "2": [
+          "feat:cunning-action"
+        ],
+        "3": [
+          "feat:roguish-archetype",
+          "feat:sneak-attack-2d6"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:uncanny-dodge",
+          "feat:sneak-attack-3d6"
+        ],
+        "6": [
+          "feat:expertise-rogue"
+        ],
+        "7": [
+          "feat:evasion-rogue",
+          "feat:sneak-attack-4d6"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:roguish-archetype-feature",
+          "feat:sneak-attack-5d6"
+        ],
+        "10": [
+          "feat:asi"
+        ],
+        "11": [
+          "feat:reliable-talent",
+          "feat:sneak-attack-6d6"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:roguish-archetype-feature",
+          "feat:sneak-attack-7d6"
+        ],
+        "14": [
+          "feat:blindsense"
+        ],
+        "15": [
+          "feat:slippery-mind",
+          "feat:sneak-attack-8d6"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:roguish-archetype-feature",
+          "feat:sneak-attack-9d6"
+        ],
+        "18": [
+          "feat:elusive"
+        ],
+        "19": [
+          "feat:asi",
+          "feat:sneak-attack-10d6"
+        ],
+        "20": [
+          "feat:stroke-of-luck"
+        ]
       },
       "subclassLevel": 3,
       "subclassLabel": "Roguish Archetype",
       "subclassOptions": [
-        { "id": "subclass:rogue:thief", "displayName": "Thief" },
-        { "id": "subclass:rogue:assassin", "displayName": "Assassin" },
-        { "id": "subclass:rogue:arcane-trickster", "displayName": "Arcane Trickster" }
+        {
+          "id": "subclass:rogue:thief",
+          "displayName": "Thief"
+        },
+        {
+          "id": "subclass:rogue:assassin",
+          "displayName": "Assassin"
+        },
+        {
+          "id": "subclass:rogue:arcane-trickster",
+          "displayName": "Arcane Trickster"
+        }
       ],
-      "startingEquipmentIds": ["item:shortsword", "item:dagger", "item:leather-armor", "item:dungeoneer-pack", "item:explorers-pack", "item:light-crossbow"],
+      "startingEquipmentIds": [
+        "item:shortsword",
+        "item:dagger",
+        "item:leather-armor",
+        "item:dungeoneer-pack",
+        "item:explorers-pack",
+        "item:light-crossbow"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.81"
+      "srdReference": "SRD p.81",
+      "startingEquipment": {
+        "startingWealthRoll": "4d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:leather-armor",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:dagger",
+            "quantity": 2
+          },
+          {
+            "itemId": "item:thieves-tools",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "rogue-primary",
+            "description": "Choose a primary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "rapier",
+                "description": "A rapier",
+                "grantItems": [
+                  {
+                    "itemId": "item:rapier",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "shortsword",
+                "description": "A shortsword",
+                "grantItems": [
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "rogue-secondary",
+            "description": "Choose a secondary weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "shortbow",
+                "description": "A shortbow and 20 arrows",
+                "grantItems": [
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:arrow",
+                    "quantity": 20
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "shortsword",
+                "description": "A shortsword",
+                "grantItems": [
+                  {
+                    "itemId": "item:shortsword",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "rogue-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "burglar-pack",
+                "description": "A burglar's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:burglar-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:sorcerer",
       "displayName": "Sorcerer",
       "description": "Innate magic wielder with flexible metamagic.",
       "hitDie": 6,
-      "primaryAbility": ["CHA"],
-      "savingThrows": ["CON", "CHA"],
+      "primaryAbility": [
+        "CHA"
+      ],
+      "savingThrows": [
+        "CON",
+        "CHA"
+      ],
       "proficienciesGranted": {
         "armor": [],
-        "weapons": ["daggers", "darts", "slings", "quarterstaffs", "light-crossbows"],
+        "weapons": [
+          "daggers",
+          "darts",
+          "slings",
+          "quarterstaffs",
+          "light-crossbows"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:arcana", "skill:deception", "skill:insight", "skill:intimidation", "skill:persuasion", "skill:religion"]
+        "options": [
+          "skill:arcana",
+          "skill:deception",
+          "skill:insight",
+          "skill:intimidation",
+          "skill:persuasion",
+          "skill:religion"
+        ]
       },
-      "multiclassPrereqs": { "CHA": 13 },
+      "multiclassPrereqs": {
+        "CHA": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:spellcasting-sorcerer", "feat:sorcerous-origin"],
-        "2": ["feat:font-of-magic"],
-        "3": ["feat:metamagic"],
-        "4": ["feat:asi"],
-        "6": ["feat:sorcerous-origin-feature"],
-        "8": ["feat:asi"],
-        "10": ["feat:metamagic-additional"],
-        "12": ["feat:asi"],
-        "14": ["feat:sorcerous-origin-feature"],
-        "16": ["feat:asi"],
-        "17": ["feat:metamagic-additional"],
-        "18": ["feat:sorcerous-origin-feature"],
-        "19": ["feat:asi"],
-        "20": ["feat:sorcerous-restoration"]
+        "1": [
+          "feat:spellcasting-sorcerer",
+          "feat:sorcerous-origin"
+        ],
+        "2": [
+          "feat:font-of-magic"
+        ],
+        "3": [
+          "feat:metamagic"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "6": [
+          "feat:sorcerous-origin-feature"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "10": [
+          "feat:metamagic-additional"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:sorcerous-origin-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:metamagic-additional"
+        ],
+        "18": [
+          "feat:sorcerous-origin-feature"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:sorcerous-restoration"
+        ]
       },
       "spellcasting": {
         "castingType": "full",
         "spellcastingAbility": "CHA",
         "prepareSpells": false,
         "spellListId": "spelllist:sorcerer",
-        "cantripsKnownByLevel": [4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-        "spellsKnownByLevel": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 13, 14, 14, 15, 15, 15, 15],
+        "cantripsKnownByLevel": [
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "spellsKnownByLevel": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          12,
+          13,
+          13,
+          14,
+          14,
+          15,
+          15,
+          15,
+          15
+        ],
         "ritualCasting": false
       },
       "subclassLevel": 1,
       "subclassLabel": "Sorcerous Origin",
       "subclassOptions": [
-        { "id": "subclass:sorcerer:draconic-bloodline", "displayName": "Draconic Bloodline" },
-        { "id": "subclass:sorcerer:wild-magic", "displayName": "Wild Magic" }
+        {
+          "id": "subclass:sorcerer:draconic-bloodline",
+          "displayName": "Draconic Bloodline"
+        },
+        {
+          "id": "subclass:sorcerer:wild-magic",
+          "displayName": "Wild Magic"
+        }
       ],
-      "startingEquipmentIds": ["item:light-crossbow", "item:dagger", "item:arcane-focus", "item:dungeoneer-pack", "item:explorers-pack"],
+      "startingEquipmentIds": [
+        "item:light-crossbow",
+        "item:dagger",
+        "item:arcane-focus",
+        "item:dungeoneer-pack",
+        "item:explorers-pack"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.90"
+      "srdReference": "SRD p.90",
+      "startingEquipment": {
+        "startingWealthRoll": "3d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:dagger",
+            "quantity": 2
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "sorcerer-weapon",
+            "description": "Choose a weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "light-crossbow",
+                "description": "A light crossbow and 20 bolts",
+                "grantItems": [
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:bolt",
+                    "quantity": 20
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "sorcerer-focus",
+            "description": "Choose a spellcasting focus",
+            "required": true,
+            "options": [
+              {
+                "id": "component-pouch",
+                "description": "A component pouch",
+                "grantItems": [
+                  {
+                    "itemId": "item:component-pouch",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "arcane-focus",
+                "description": "An arcane focus",
+                "grantItems": [
+                  {
+                    "itemId": "item:arcane-focus",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "sorcerer-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:warlock",
       "displayName": "Warlock",
       "description": "Pact magic wielder with an otherworldly patron.",
       "hitDie": 8,
-      "primaryAbility": ["CHA"],
-      "savingThrows": ["WIS", "CHA"],
+      "primaryAbility": [
+        "CHA"
+      ],
+      "savingThrows": [
+        "WIS",
+        "CHA"
+      ],
       "proficienciesGranted": {
-        "armor": ["light"],
-        "weapons": ["simple"],
+        "armor": [
+          "light"
+        ],
+        "weapons": [
+          "simple"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:arcana", "skill:deception", "skill:history", "skill:intimidation", "skill:investigation", "skill:nature", "skill:religion"]
+        "options": [
+          "skill:arcana",
+          "skill:deception",
+          "skill:history",
+          "skill:intimidation",
+          "skill:investigation",
+          "skill:nature",
+          "skill:religion"
+        ]
       },
-      "multiclassPrereqs": { "CHA": 13 },
+      "multiclassPrereqs": {
+        "CHA": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:otherworldly-patron", "feat:pact-magic"],
-        "2": ["feat:eldritch-invocations"],
-        "3": ["feat:pact-boon"],
-        "4": ["feat:asi"],
-        "5": ["feat:eldritch-invocations-improvement"],
-        "6": ["feat:otherworldly-patron-feature"],
-        "7": ["feat:eldritch-invocations-improvement"],
-        "8": ["feat:asi"],
-        "9": ["feat:eldritch-invocations-improvement"],
-        "10": ["feat:otherworldly-patron-feature"],
-        "11": ["feat:mystic-arcanum-6"],
-        "12": ["feat:asi"],
-        "13": ["feat:mystic-arcanum-7"],
-        "14": ["feat:otherworldly-patron-feature"],
-        "15": ["feat:mystic-arcanum-8"],
-        "16": ["feat:asi"],
-        "17": ["feat:mystic-arcanum-9"],
-        "18": ["feat:eldritch-invocations-improvement"],
-        "19": ["feat:asi"],
-        "20": ["feat:eldritch-master"]
+        "1": [
+          "feat:otherworldly-patron",
+          "feat:pact-magic"
+        ],
+        "2": [
+          "feat:eldritch-invocations"
+        ],
+        "3": [
+          "feat:pact-boon"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "5": [
+          "feat:eldritch-invocations-improvement"
+        ],
+        "6": [
+          "feat:otherworldly-patron-feature"
+        ],
+        "7": [
+          "feat:eldritch-invocations-improvement"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "9": [
+          "feat:eldritch-invocations-improvement"
+        ],
+        "10": [
+          "feat:otherworldly-patron-feature"
+        ],
+        "11": [
+          "feat:mystic-arcanum-6"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "13": [
+          "feat:mystic-arcanum-7"
+        ],
+        "14": [
+          "feat:otherworldly-patron-feature"
+        ],
+        "15": [
+          "feat:mystic-arcanum-8"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "17": [
+          "feat:mystic-arcanum-9"
+        ],
+        "18": [
+          "feat:eldritch-invocations-improvement"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:eldritch-master"
+        ]
       },
       "spellcasting": {
         "castingType": "pact",
         "spellcastingAbility": "CHA",
         "prepareSpells": false,
         "spellListId": "spelllist:warlock",
-        "cantripsKnownByLevel": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-        "spellsKnownByLevel": [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+        "cantripsKnownByLevel": [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "spellsKnownByLevel": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          10,
+          11,
+          11,
+          12,
+          12,
+          13,
+          13,
+          14,
+          14,
+          15,
+          15
+        ],
         "ritualCasting": false
       },
       "subclassLevel": 1,
       "subclassLabel": "Otherworldly Patron",
       "subclassOptions": [
-        { "id": "subclass:warlock:archfey", "displayName": "The Archfey" },
-        { "id": "subclass:warlock:fiend", "displayName": "The Fiend" },
-        { "id": "subclass:warlock:great-old-one", "displayName": "The Great Old One" }
+        {
+          "id": "subclass:warlock:archfey",
+          "displayName": "The Archfey"
+        },
+        {
+          "id": "subclass:warlock:fiend",
+          "displayName": "The Fiend"
+        },
+        {
+          "id": "subclass:warlock:great-old-one",
+          "displayName": "The Great Old One"
+        }
       ],
-      "startingEquipmentIds": ["item:light-crossbow", "item:dagger", "item:arcane-focus", "item:leather-armor", "item:dungeoneer-pack", "item:explorers-pack"],
+      "startingEquipmentIds": [
+        "item:light-crossbow",
+        "item:dagger",
+        "item:arcane-focus",
+        "item:leather-armor",
+        "item:dungeoneer-pack",
+        "item:explorers-pack"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.99"
+      "srdReference": "SRD p.99",
+      "startingEquipment": {
+        "startingWealthRoll": "4d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:leather-armor",
+            "quantity": 1
+          },
+          {
+            "itemId": "item:dagger",
+            "quantity": 2
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "warlock-weapon",
+            "description": "Choose a weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "light-crossbow",
+                "description": "A light crossbow and 20 bolts",
+                "grantItems": [
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:bolt",
+                    "quantity": 20
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "warlock-focus",
+            "description": "Choose a spellcasting focus",
+            "required": true,
+            "options": [
+              {
+                "id": "component-pouch",
+                "description": "A component pouch",
+                "grantItems": [
+                  {
+                    "itemId": "item:component-pouch",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "arcane-focus",
+                "description": "An arcane focus",
+                "grantItems": [
+                  {
+                    "itemId": "item:arcane-focus",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "warlock-simple-weapon",
+            "description": "Choose any simple weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "simple-weapon",
+                "description": "Any simple weapon",
+                "grantItems": [
+                  {
+                    "itemId": "item:club",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:greatclub",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:handaxe",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:javelin",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-hammer",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:mace",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sickle",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:spear",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:dart",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:light-crossbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:shortbow",
+                    "quantity": 1
+                  },
+                  {
+                    "itemId": "item:sling",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": true
+              }
+            ]
+          },
+          {
+            "id": "warlock-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "scholar-pack",
+                "description": "A scholar's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:scholar-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "dungeoneers-pack",
+                "description": "A dungeoneer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:dungeoneer-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "class:wizard",
       "displayName": "Wizard",
       "description": "Scholarly arcane spellcaster with a broad spell repertoire.",
       "hitDie": 6,
-      "primaryAbility": ["INT"],
-      "savingThrows": ["INT", "WIS"],
+      "primaryAbility": [
+        "INT"
+      ],
+      "savingThrows": [
+        "INT",
+        "WIS"
+      ],
       "proficienciesGranted": {
         "armor": [],
-        "weapons": ["daggers", "darts", "slings", "quarterstaffs", "light-crossbows"],
+        "weapons": [
+          "daggers",
+          "darts",
+          "slings",
+          "quarterstaffs",
+          "light-crossbows"
+        ],
         "tools": []
       },
       "skillChoices": {
         "count": 2,
-        "options": ["skill:arcana", "skill:history", "skill:insight", "skill:investigation", "skill:medicine", "skill:religion"]
+        "options": [
+          "skill:arcana",
+          "skill:history",
+          "skill:insight",
+          "skill:investigation",
+          "skill:medicine",
+          "skill:religion"
+        ]
       },
-      "multiclassPrereqs": { "INT": 13 },
+      "multiclassPrereqs": {
+        "INT": 13
+      },
       "featuresByLevel": {
-        "1": ["feat:spellcasting-wizard", "feat:arcane-recovery"],
-        "2": ["feat:arcane-tradition"],
-        "4": ["feat:asi"],
-        "6": ["feat:arcane-tradition-feature"],
-        "8": ["feat:asi"],
-        "10": ["feat:arcane-tradition-feature"],
-        "12": ["feat:asi"],
-        "14": ["feat:arcane-tradition-feature"],
-        "16": ["feat:asi"],
-        "18": ["feat:spell-mastery"],
-        "19": ["feat:asi"],
-        "20": ["feat:signature-spells"]
+        "1": [
+          "feat:spellcasting-wizard",
+          "feat:arcane-recovery"
+        ],
+        "2": [
+          "feat:arcane-tradition"
+        ],
+        "4": [
+          "feat:asi"
+        ],
+        "6": [
+          "feat:arcane-tradition-feature"
+        ],
+        "8": [
+          "feat:asi"
+        ],
+        "10": [
+          "feat:arcane-tradition-feature"
+        ],
+        "12": [
+          "feat:asi"
+        ],
+        "14": [
+          "feat:arcane-tradition-feature"
+        ],
+        "16": [
+          "feat:asi"
+        ],
+        "18": [
+          "feat:spell-mastery"
+        ],
+        "19": [
+          "feat:asi"
+        ],
+        "20": [
+          "feat:signature-spells"
+        ]
       },
       "spellcasting": {
         "castingType": "full",
         "spellcastingAbility": "INT",
         "prepareSpells": true,
         "spellListId": "spelllist:wizard",
-        "cantripsKnownByLevel": [3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
-        "spellsKnownByLevel": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "cantripsKnownByLevel": [
+          3,
+          3,
+          3,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "spellsKnownByLevel": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
         "ritualCasting": true
       },
       "subclassLevel": 2,
       "subclassLabel": "Arcane Tradition",
       "subclassOptions": [
-        { "id": "subclass:wizard:abjuration", "displayName": "School of Abjuration" },
-        { "id": "subclass:wizard:conjuration", "displayName": "School of Conjuration" },
-        { "id": "subclass:wizard:divination", "displayName": "School of Divination" },
-        { "id": "subclass:wizard:enchantment", "displayName": "School of Enchantment" },
-        { "id": "subclass:wizard:evocation", "displayName": "School of Evocation" },
-        { "id": "subclass:wizard:illusion", "displayName": "School of Illusion" },
-        { "id": "subclass:wizard:necromancy", "displayName": "School of Necromancy" },
-        { "id": "subclass:wizard:transmutation", "displayName": "School of Transmutation" }
+        {
+          "id": "subclass:wizard:abjuration",
+          "displayName": "School of Abjuration"
+        },
+        {
+          "id": "subclass:wizard:conjuration",
+          "displayName": "School of Conjuration"
+        },
+        {
+          "id": "subclass:wizard:divination",
+          "displayName": "School of Divination"
+        },
+        {
+          "id": "subclass:wizard:enchantment",
+          "displayName": "School of Enchantment"
+        },
+        {
+          "id": "subclass:wizard:evocation",
+          "displayName": "School of Evocation"
+        },
+        {
+          "id": "subclass:wizard:illusion",
+          "displayName": "School of Illusion"
+        },
+        {
+          "id": "subclass:wizard:necromancy",
+          "displayName": "School of Necromancy"
+        },
+        {
+          "id": "subclass:wizard:transmutation",
+          "displayName": "School of Transmutation"
+        }
       ],
-      "startingEquipmentIds": ["item:dagger", "item:arcane-focus", "item:explorers-pack"],
+      "startingEquipmentIds": [
+        "item:dagger",
+        "item:arcane-focus",
+        "item:explorers-pack"
+      ],
       "source": "SRD 5.1",
-      "srdReference": "SRD p.106"
+      "srdReference": "SRD p.106",
+      "startingEquipment": {
+        "startingWealthRoll": "4d4*10",
+        "fixedItems": [
+          {
+            "itemId": "item:spellbook",
+            "quantity": 1
+          }
+        ],
+        "choiceGroups": [
+          {
+            "id": "wizard-weapon",
+            "description": "Choose a weapon",
+            "required": true,
+            "options": [
+              {
+                "id": "quarterstaff",
+                "description": "A quarterstaff",
+                "grantItems": [
+                  {
+                    "itemId": "item:quarterstaff",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "dagger",
+                "description": "A dagger",
+                "grantItems": [
+                  {
+                    "itemId": "item:dagger",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "wizard-focus",
+            "description": "Choose a spellcasting focus",
+            "required": true,
+            "options": [
+              {
+                "id": "component-pouch",
+                "description": "A component pouch",
+                "grantItems": [
+                  {
+                    "itemId": "item:component-pouch",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "arcane-focus",
+                "description": "An arcane focus",
+                "grantItems": [
+                  {
+                    "itemId": "item:arcane-focus",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          },
+          {
+            "id": "wizard-pack",
+            "description": "Choose a starting pack",
+            "required": true,
+            "options": [
+              {
+                "id": "scholar-pack",
+                "description": "A scholar's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:scholar-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              },
+              {
+                "id": "explorers-pack",
+                "description": "An explorer's pack",
+                "grantItems": [
+                  {
+                    "itemId": "item:explorers-pack",
+                    "quantity": 1
+                  }
+                ],
+                "pickOne": false
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

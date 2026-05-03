@@ -79,6 +79,9 @@ public class ClassDefinition
     [JsonPropertyName("startingEquipmentIds")]
     public List<string> StartingEquipmentIds { get; set; } = [];
 
+    [JsonPropertyName("startingEquipment")]
+    public ClassStartingEquipmentInfo? StartingEquipment { get; set; }
+
     [JsonPropertyName("spellcasting")]
     public SpellcastingInfo? Spellcasting { get; set; }
 }

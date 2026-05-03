@@ -50,12 +50,12 @@ public class SchemaValidationTests
     [Fact]
     public async Task ClassesJson_ValidatesAgainstClassSchema()
     {
-        var schema = await LoadSchemaAsync("class.schema.json");
+        var schema = await LoadSchemaAsync("classes.schema.json");
         var data = LoadDataFile("classes.json");
 
         var errors = schema.Validate(data);
         Assert.True(errors.Count == 0,
-            $"classes.json has {errors.Count} schema error(s):\n" +
+            $"class.json has {errors.Count} schema error(s):\n" +
             string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
     }
 
@@ -104,18 +104,6 @@ public class SchemaValidationTests
         var errors = schema.Validate(data);
         Assert.True(errors.Count == 0,
             $"backgrounds.json has {errors.Count} schema error(s):\n" +
-            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
-    }
-
-    [Fact]
-    public async Task ClassStartingEquipmentJson_ValidatesAgainstClassStartingEquipmentSchema()
-    {
-        var schema = await LoadSchemaAsync("class-starting-equipment.schema.json");
-        var data = LoadDataFile("class-starting-equipment.json");
-
-        var errors = schema.Validate(data);
-        Assert.True(errors.Count == 0,
-            $"class-starting-equipment.json has {errors.Count} schema error(s):\n" +
             string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
     }
 
