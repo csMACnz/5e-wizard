@@ -3,6 +3,7 @@
 @using CharacterWizard.Client.Pages.WizardSteps
 @using CharacterWizard.Shared.Export
 @using CharacterWizard.Shared.Models
+@using CharacterWizard.Shared.Utilities
 @using CharacterWizard.Shared.Validation
 @using System.Text.Json
 @inject IDataService DataService
@@ -412,7 +413,7 @@ else
     {
         CommitService.CommitAll(_races, _classes, _backgrounds, _spells, _classStartingEquipmentConfigs, _abilitiesConfig);
         var json = JsonSerializer.Serialize(State.Character, new JsonSerializerOptions { WriteIndented = true });
-        var filename = $"{State.Character.Name}-level{State.Character.TotalLevel}.json";
+        var filename = FileNameSanitizer.SanitizeCharacterFileName(State.Character.Name, State.Character.TotalLevel, "json");
         await JS.InvokeVoidAsync("downloadFile", filename, "application/json", json);
     }
 
@@ -421,7 +422,7 @@ else
         CommitService.CommitAll(_races, _classes, _backgrounds, _spells, _classStartingEquipmentConfigs, _abilitiesConfig);
         var xml = new FightClub5eExporter(_races, _classes, _backgrounds, _spells, _equipment, _feats)
             .Export(State.Character);
-        var filename = $"{State.Character.Name}-level{State.Character.TotalLevel}.xml";
+        var filename = FileNameSanitizer.SanitizeCharacterFileName(State.Character.Name, State.Character.TotalLevel, "xml");
         await JS.InvokeVoidAsync("downloadFile", filename, "application/xml", xml);
     }
 }
