@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Shared.Validation;
 
@@ -65,6 +66,16 @@ public class SpellValidator
             var classSpells = character.Spells.Where(s => s.ClassId == classLevel.ClassId).ToList();
             var cantrips = classSpells.Where(s => spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level == 0).ToList();
             var leveled = classSpells.Where(s => spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level > 0).ToList();
+            int highestSlot = SpellSlotCalculator.GetHighestSlotLevel(level, sc.CastingType);
+
+            // Spell level restriction: no selected spell may exceed the highest castable slot level
+            foreach (var classSpell in leveled)
+            {
+                if (spellLookup.TryGetValue(classSpell.SpellId, out var spellDef) && spellDef.Level > highestSlot)
+                {
+                    result.Errors.Add($"ERR_SPELL_LEVEL_TOO_HIGH: Spell '{classSpell.SpellId}' (level {spellDef.Level}) cannot be selected for class '{classLevel.ClassId}' at level {level} (max castable spell level: {highestSlot}).");
+                }
+            }
 
             // Cantrip count check (for classes that have cantrips)
             if (sc.CantripsKnownByLevel.Count >= level)
@@ -80,21 +91,23 @@ public class SpellValidator
             if (!sc.PrepareSpells && sc.SpellsKnownByLevel.Count >= level)
             {
                 int maxKnown = sc.SpellsKnownByLevel[level - 1];
-                if (maxKnown > 0 && leveled.Count > maxKnown)
+                if (leveled.Count > maxKnown)
                 {
                     result.Errors.Add($"ERR_SPELL_KNOWN_COUNT: Class '{classLevel.ClassId}' at level {level} allows {maxKnown} leveled spell(s) but {leveled.Count} selected.");
                 }
             }
 
-            // Wizard spellbook check: level-1 wizard spells (ClassId = "class:wizard", level > 0)
+            // Wizard spellbook check: spells of any castable level (ClassId = "class:wizard", level > 0)
+            // At level 1: 6 spells; each additional level adds 2 more (6 + 2*(level-1) total minimum).
             if (classLevel.ClassId == "class:wizard" && level >= 1)
             {
-                var wizardLevel1Spells = character.Spells
-                    .Where(s => s.ClassId == "class:wizard" && spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level == 1)
+                int requiredSpellbookCount = 6 + 2 * (level - 1);
+                var wizardSpellbookSpells = character.Spells
+                    .Where(s => s.ClassId == "class:wizard" && spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level >= 1 && sd.Level <= highestSlot)
                     .ToList();
-                if (wizardLevel1Spells.Count < 6)
+                if (wizardSpellbookSpells.Count < requiredSpellbookCount)
                 {
-                    result.Errors.Add($"ERR_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard must have at least 6 level-1 spells in the spellbook but only {wizardLevel1Spells.Count} selected.");
+                    result.Errors.Add($"ERR_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard must have at least {requiredSpellbookCount} spells of castable level in the spellbook but only {wizardSpellbookSpells.Count} selected.");
                 }
             }
         }

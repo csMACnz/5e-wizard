@@ -96,6 +96,22 @@ public class SpellValidatorTests
             SavingThrows = ["STR", "CON"],
             SkillChoices = new SkillChoices { Count = 2, Options = ["skill:athletics"] },
         },
+        new ClassDefinition
+        {
+            Id = "class:ranger",
+            DisplayName = "Ranger",
+            HitDie = 10,
+            SavingThrows = ["STR", "DEX"],
+            SkillChoices = new SkillChoices { Count = 3, Options = ["skill:athletics"] },
+            Spellcasting = new SpellcastingInfo
+            {
+                CastingType = "half",
+                SpellcastingAbility = "WIS",
+                PrepareSpells = false,
+                CantripsKnownByLevel = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                SpellsKnownByLevel = [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11],
+            },
+        },
     ];
 
     [Fact]
@@ -265,5 +281,139 @@ public class SpellValidatorTests
         var result = new SpellValidator(spells, TestClasses).Validate(character);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_WIZARD_SPELLBOOK_COUNT"));
+    }
+
+    [Fact]
+    public void Wizard_Level3_NeedsAtLeast10Spells_HasSpellbookCountError()
+    {
+        // Level 3 wizard: 6 + 2*(3-1) = 10 spells required (can be level 1 or 2)
+        var spells = Enumerable.Range(1, 9)
+            .Select(i => new SpellDefinition { Id = $"spell:w{i}", DisplayName = $"W{i}", Level = 1, ClassIds = ["class:wizard"] })
+            .ToList();
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 3 }],
+            Spells = spells.Select(s => new CharacterSpell { SpellId = s.Id, ClassId = "class:wizard" }).ToList(),
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_WIZARD_SPELLBOOK_COUNT"));
+    }
+
+    [Fact]
+    public void Wizard_Level3_With10Spells_IsValid()
+    {
+        // Level 3 wizard: needs exactly 10 spells; can include level-2 spells
+        var spells = Enumerable.Range(1, 8)
+            .Select(i => new SpellDefinition { Id = $"spell:w{i}", DisplayName = $"W{i}", Level = 1, ClassIds = ["class:wizard"] })
+            .Concat(
+            [
+                new SpellDefinition { Id = "spell:w9", DisplayName = "W9", Level = 2, ClassIds = ["class:wizard"] },
+                new SpellDefinition { Id = "spell:w10", DisplayName = "W10", Level = 2, ClassIds = ["class:wizard"] },
+            ])
+            .ToList();
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:wizard", Level = 3 }],
+            Spells = spells.Select(s => new CharacterSpell { SpellId = s.Id, ClassId = "class:wizard" }).ToList(),
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Sorcerer_Level1_SelectingLevel2Spell_IsInvalid()
+    {
+        // Level 1 sorcerer can only cast level 1 spells (highest slot = 1)
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:level2spell", DisplayName = "Level2Spell", Level = 2, ClassIds = ["class:sorcerer"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:sorcerer", Level = 1 }],
+            Spells = [new CharacterSpell { SpellId = "spell:level2spell", ClassId = "class:sorcerer" }],
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
+    }
+
+    [Fact]
+    public void Sorcerer_Level5_SelectingLevel3Spell_IsValid()
+    {
+        // Level 5 sorcerer has level-3 slots, can select level-3 spells; needs 6 known
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:s1", DisplayName = "S1", Level = 1, ClassIds = ["class:sorcerer"] },
+            new SpellDefinition { Id = "spell:s2", DisplayName = "S2", Level = 1, ClassIds = ["class:sorcerer"] },
+            new SpellDefinition { Id = "spell:s3", DisplayName = "S3", Level = 1, ClassIds = ["class:sorcerer"] },
+            new SpellDefinition { Id = "spell:s4", DisplayName = "S4", Level = 2, ClassIds = ["class:sorcerer"] },
+            new SpellDefinition { Id = "spell:s5", DisplayName = "S5", Level = 2, ClassIds = ["class:sorcerer"] },
+            new SpellDefinition { Id = "spell:s6", DisplayName = "S6", Level = 3, ClassIds = ["class:sorcerer"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:sorcerer", Level = 5 }],
+            Spells = spells.Select(s => new CharacterSpell { SpellId = s.Id, ClassId = "class:sorcerer" }).ToList(),
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Ranger_Level1_SelectingASpell_IsInvalid()
+    {
+        // Ranger at level 1 has no spell slots (half-caster, no slots until level 2)
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:hunter-mark", DisplayName = "Hunter's Mark", Level = 1, ClassIds = ["class:ranger"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:ranger", Level = 1 }],
+            Spells = [new CharacterSpell { SpellId = "spell:hunter-mark", ClassId = "class:ranger" }],
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
+    }
+
+    [Fact]
+    public void Ranger_Level2_SelectingOneSpell_IsValid()
+    {
+        // Ranger at level 2 has level-1 spell slots and may know 2 spells
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:hunter-mark", DisplayName = "Hunter's Mark", Level = 1, ClassIds = ["class:ranger"] },
+            new SpellDefinition { Id = "spell:cure-wounds-ranger", DisplayName = "Cure Wounds", Level = 1, ClassIds = ["class:ranger"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:ranger", Level = 2 }],
+            Spells = spells.Select(s => new CharacterSpell { SpellId = s.Id, ClassId = "class:ranger" }).ToList(),
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void KnownSpellsCaster_AtLevelWithZeroAllowed_SelectingSpell_IsInvalid()
+    {
+        // Ranger level 1 has 0 spells known (spellsKnownByLevel[0] = 0) and no spell slots
+        // Selecting a spell should be invalid due to spell level restriction
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:ranger-s1", DisplayName = "RS1", Level = 1, ClassIds = ["class:ranger"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:ranger", Level = 1 }],
+            Spells = [new CharacterSpell { SpellId = "spell:ranger-s1", ClassId = "class:ranger" }],
+        };
+        var result = new SpellValidator(spells, TestClasses).Validate(character);
+        Assert.False(result.IsValid);
+        // Ranger level 1: highest slot = 0, so any leveled spell triggers ERR_SPELL_LEVEL_TOO_HIGH
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
     }
 }
