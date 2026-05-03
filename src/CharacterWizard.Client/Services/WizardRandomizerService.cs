@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 using CharacterWizard.Shared.Validation;
 
 namespace CharacterWizard.Client.Services;
@@ -7,8 +8,10 @@ namespace CharacterWizard.Client.Services;
 /// Provides randomization and dice-roll helpers for the character wizard steps.
 /// All methods mutate WizardContext state; the caller is responsible for triggering
 /// validation and auto-save (typically by invoking an OnChanged EventCallback).
+/// Each public method creates its own independent <see cref="IRng"/> via the injected
+/// <see cref="IRngFactory"/>, keeping separate randomisation actions isolated.
 /// </summary>
-public sealed class WizardRandomizerService(WizardContext ctx)
+public sealed class WizardRandomizerService(WizardContext ctx, IRngFactory rngFactory)
 {
     private static readonly string[] _characterNameOptions =
     [
@@ -31,33 +34,38 @@ public sealed class WizardRandomizerService(WizardContext ctx)
 
     public async Task RandomizeCharacterNameAsync(IReadOnlyList<string> fullNames)
     {
+        var rng = rngFactory.Create();
         var namePool = fullNames.Count > 0 ? fullNames : _characterNameOptions;
-        ctx.CharacterName = namePool[Random.Shared.Next(namePool.Count)];
+        ctx.CharacterName = namePool[rng.Next(namePool.Count)];
     }
 
     public void RandomizeCampaignName()
     {
-        ctx.CampaignName = _campaignNameOptions[Random.Shared.Next(_campaignNameOptions.Length)];
+        var rng = rngFactory.Create();
+        ctx.CampaignName = _campaignNameOptions[rng.Next(_campaignNameOptions.Length)];
     }
 
     // ── Ability Scores ────────────────────────────────────────────────────
 
     public void RandomlyAssignStandardArray(AbilitiesConfig abilitiesConfig)
     {
-        var shuffled = abilitiesConfig.StandardArray.OrderBy(_ => Random.Shared.Next()).ToArray();
+        var rng = rngFactory.Create();
+        var shuffled = abilitiesConfig.StandardArray.OrderBy(_ => rng.Next(int.MaxValue)).ToArray();
         for (int i = 0; i < WizardContext.Abilities.Length; i++)
             ctx.AbilitySelections[WizardContext.Abilities[i]] = shuffled[i];
     }
 
     public void RollAllAbilities()
     {
+        var rng = rngFactory.Create();
         foreach (var ab in WizardContext.Abilities)
-            ctx.RollValues[ab] = RollAbilityScore();
+            ctx.RollValues[ab] = RollAbilityScore(rng);
     }
 
     public void RerollAbility(string ability)
     {
-        ctx.RollValues[ability] = RollAbilityScore();
+        var rng = rngFactory.Create();
+        ctx.RollValues[ability] = RollAbilityScore(rng);
     }
 
     // ── Race ──────────────────────────────────────────────────────────────
@@ -65,7 +73,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
     public void RandomizeRace(IReadOnlyList<RaceDefinition> races)
     {
         if (races.Count == 0) return;
-        ctx.SelectedRaceId = races[Random.Shared.Next(races.Count)].Id;
+        var rng = rngFactory.Create();
+        ctx.SelectedRaceId = races[rng.Next(races.Count)].Id;
         ctx.SelectedSubraceId = string.Empty;
     }
 
@@ -73,7 +82,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
     {
         var race = races.FirstOrDefault(r => r.Id == ctx.SelectedRaceId);
         if (race == null || race.Subraces.Count == 0) return;
-        ctx.SelectedSubraceId = race.Subraces[Random.Shared.Next(race.Subraces.Count)].Id;
+        var rng = rngFactory.Create();
+        ctx.SelectedSubraceId = race.Subraces[rng.Next(race.Subraces.Count)].Id;
     }
 
     // ── Class ─────────────────────────────────────────────────────────────
@@ -81,7 +91,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
     public void RandomizeClass(int classIdx, IReadOnlyList<ClassDefinition> classes)
     {
         if (classes.Count == 0 || classIdx >= ctx.ClassEntries.Count) return;
-        ctx.ClassEntries[classIdx].ClassId = classes[Random.Shared.Next(classes.Count)].Id;
+        var rng = rngFactory.Create();
+        ctx.ClassEntries[classIdx].ClassId = classes[rng.Next(classes.Count)].Id;
         ctx.ClassEntries[classIdx].SubclassId = string.Empty;
     }
 
@@ -90,7 +101,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
         if (classIdx >= ctx.ClassEntries.Count) return;
         var clsDef = classes.FirstOrDefault(c => c.Id == ctx.ClassEntries[classIdx].ClassId);
         if (clsDef == null || clsDef.SubclassOptions.Count == 0) return;
-        ctx.ClassEntries[classIdx].SubclassId = clsDef.SubclassOptions[Random.Shared.Next(clsDef.SubclassOptions.Count)].Id;
+        var rng = rngFactory.Create();
+        ctx.ClassEntries[classIdx].SubclassId = clsDef.SubclassOptions[rng.Next(clsDef.SubclassOptions.Count)].Id;
     }
 
     // ── Background ────────────────────────────────────────────────────────
@@ -98,7 +110,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
     public void RandomizeBackground(IReadOnlyList<BackgroundDefinition> backgrounds)
     {
         if (backgrounds.Count == 0) return;
-        ctx.SetBackground(backgrounds[Random.Shared.Next(backgrounds.Count)].Id, backgrounds);
+        var rng = rngFactory.Create();
+        ctx.SetBackground(backgrounds[rng.Next(backgrounds.Count)].Id, backgrounds);
     }
 
     // ── Skills ────────────────────────────────────────────────────────────
@@ -115,10 +128,11 @@ public sealed class WizardRandomizerService(WizardContext ctx)
         for (int i = 0; i < ctx.ClassSkillSelections.Count; i++)
             ctx.ClassSkillSelections[i] = false;
 
+        var rng = rngFactory.Create();
         var available = ctx.ClassSkillOptionIds
             .Select((id, idx) => (id, idx))
             .Where(x => !bgSkills.Contains(x.id))
-            .OrderBy(_ => Random.Shared.Next())
+            .OrderBy(_ => rng.Next(int.MaxValue))
             .Take(primaryCls.SkillChoices.Count);
 
         foreach (var (_, idx) in available)
@@ -129,7 +143,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
 
     public void RollHp(string classId, int classLevel, int hitDie)
     {
-        int rolled = Random.Shared.Next(1, hitDie + 1);
+        var rng = rngFactory.Create();
+        int rolled = rng.Next(1, hitDie + 1);
         string key = $"{classId}|{classLevel}";
         ctx.AllHpChoicesByKey[key] = ("manual", rolled);
     }
@@ -149,7 +164,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
 
         ctx.SelectedSpells[classId] = currentLeveled;
 
-        foreach (var spell in cantrips.OrderBy(_ => Random.Shared.Next()).Take(maxCantrips))
+        var rng = rngFactory.Create();
+        foreach (var spell in cantrips.OrderBy(_ => rng.Next(int.MaxValue)).Take(maxCantrips))
             ctx.SelectedSpells[classId].Add(spell.Id);
     }
 
@@ -185,7 +201,8 @@ public sealed class WizardRandomizerService(WizardContext ctx)
             countToSelect = maxKnown;
         }
 
-        foreach (var spell in leveledSpells.OrderBy(_ => Random.Shared.Next()).Take(countToSelect))
+        var rng = rngFactory.Create();
+        foreach (var spell in leveledSpells.OrderBy(_ => rng.Next(int.MaxValue)).Take(countToSelect))
             ctx.SelectedSpells[classId].Add(spell.Id);
     }
 
@@ -196,23 +213,23 @@ public sealed class WizardRandomizerService(WizardContext ctx)
         var primaryClassId = ctx.ClassEntries.Count > 0 ? ctx.ClassEntries[0].ClassId : string.Empty;
         var config = classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClassId);
         if (config == null) return;
-        ctx.ClassStartingGold = RollWealthExpression(config.StartingWealthRoll);
+        var rng = rngFactory.Create();
+        ctx.ClassStartingGold = RollWealthExpression(rng, config.StartingWealthRoll);
     }
 
     // ── Static helpers ────────────────────────────────────────────────────
 
-    public static int RollAbilityScore()
+    public static int RollAbilityScore(IRng rng)
     {
-        int r1 = Random.Shared.Next(1, 7);
-        int r2 = Random.Shared.Next(1, 7);
-        int r3 = Random.Shared.Next(1, 7);
-        int r4 = Random.Shared.Next(1, 7);
+        int r1 = rng.Next(1, 7);
+        int r2 = rng.Next(1, 7);
+        int r3 = rng.Next(1, 7);
+        int r4 = rng.Next(1, 7);
         return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
     }
 
-    public static int RollWealthExpression(string expression)
+    public static int RollWealthExpression(IRng rng, string expression)
     {
-        var rng = Random.Shared;
         int multiplier = 1;
         var parts = expression.Split('*');
         var dicePart = parts[0].Trim();
