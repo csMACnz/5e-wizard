@@ -416,4 +416,260 @@ public class SpellValidatorTests
         // Ranger level 1: highest slot = 0, so any leveled spell triggers ERR_SPELL_LEVEL_TOO_HIGH
         Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
     }
+
+    // ── Pact Magic (Warlock) ──────────────────────────────────────────────
+
+    private static readonly List<ClassDefinition> WarlockClasses =
+    [
+        new ClassDefinition
+        {
+            Id = "class:warlock",
+            DisplayName = "Warlock",
+            HitDie = 8,
+            SavingThrows = ["WIS", "CHA"],
+            SkillChoices = new SkillChoices { Count = 2, Options = ["skill:arcana"] },
+            Spellcasting = new SpellcastingInfo
+            {
+                CastingType = "pact",
+                SpellcastingAbility = "CHA",
+                PrepareSpells = false,
+                CantripsKnownByLevel = [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                // Warlock known spells: 2 at L1, increasing by 1 per level
+                SpellsKnownByLevel = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+            },
+        },
+    ];
+
+    [Fact]
+    public void Warlock_Level1_WithOneLevel1Spell_IsValid()
+    {
+        // Warlock L1 has 1 pact slot at L1, so selecting a L1 spell is valid
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:hex", DisplayName = "Hex", Level = 1, ClassIds = ["class:warlock"] },
+            new SpellDefinition { Id = "spell:eldritch-blast", DisplayName = "Eldritch Blast", Level = 0, ClassIds = ["class:warlock"] },
+            new SpellDefinition { Id = "spell:chill-touch", DisplayName = "Chill Touch", Level = 0, ClassIds = ["class:warlock"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:warlock", Level = 1 }],
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:eldritch-blast", ClassId = "class:warlock" },
+                new CharacterSpell { SpellId = "spell:chill-touch", ClassId = "class:warlock" },
+                new CharacterSpell { SpellId = "spell:hex", ClassId = "class:warlock" },
+            ],
+        };
+        var result = new SpellValidator(spells, WarlockClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Warlock_Level3_WithLevel2Spell_IsValid()
+    {
+        // Warlock L3 has 2 pact slots at slot level L2; selecting a L2 spell is valid
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:s1", DisplayName = "S1", Level = 1, ClassIds = ["class:warlock"] },
+            new SpellDefinition { Id = "spell:s2", DisplayName = "S2", Level = 2, ClassIds = ["class:warlock"] },
+            new SpellDefinition { Id = "spell:s3", DisplayName = "S3", Level = 2, ClassIds = ["class:warlock"] },
+            new SpellDefinition { Id = "spell:s4", DisplayName = "S4", Level = 1, ClassIds = ["class:warlock"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:warlock", Level = 3 }],
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:s1", ClassId = "class:warlock" },
+                new CharacterSpell { SpellId = "spell:s2", ClassId = "class:warlock" },
+                new CharacterSpell { SpellId = "spell:s3", ClassId = "class:warlock" },
+                new CharacterSpell { SpellId = "spell:s4", ClassId = "class:warlock" },
+            ],
+        };
+        var result = new SpellValidator(spells, WarlockClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void Warlock_Level3_WithLevel3Spell_IsInvalid()
+    {
+        // Warlock L3 pact slots are L2 — selecting a L3 spell exceeds highest slot level
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:counterspell", DisplayName = "Counterspell", Level = 3, ClassIds = ["class:warlock"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:warlock", Level = 3 }],
+            Spells = [new CharacterSpell { SpellId = "spell:counterspell", ClassId = "class:warlock" }],
+        };
+        var result = new SpellValidator(spells, WarlockClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
+    }
+
+    // ── Third-caster subclass spellcasting (Arcane Trickster / Eldritch Knight) ──
+
+    private static readonly List<ClassDefinition> ThirdCasterClasses =
+    [
+        new ClassDefinition
+        {
+            Id = "class:fighter",
+            DisplayName = "Fighter",
+            HitDie = 10,
+            SavingThrows = ["STR", "CON"],
+            SkillChoices = new SkillChoices { Count = 2, Options = ["skill:athletics"] },
+            SubclassOptions =
+            [
+                new SubclassDefinition
+                {
+                    Id = "subclass:fighter:eldritch-knight",
+                    DisplayName = "Eldritch Knight",
+                    Spellcasting = new SpellcastingInfo
+                    {
+                        CastingType = "third",
+                        SpellcastingAbility = "INT",
+                        PrepareSpells = false,
+                        SpellListId = "spelllist:wizard",
+                        // AT/EK cantrips: 0 until L3, 2 at L3-7, 3 at L8-14, 4 at L15+
+                        CantripsKnownByLevel = [0, 0, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4],
+                        // AT/EK known spells: 0 at L1-2, 3 at L3, increasing
+                        SpellsKnownByLevel = [0, 0, 3, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 11, 11, 12, 13],
+                    },
+                },
+            ],
+        },
+        new ClassDefinition
+        {
+            Id = "class:rogue",
+            DisplayName = "Rogue",
+            HitDie = 8,
+            SavingThrows = ["DEX", "INT"],
+            SkillChoices = new SkillChoices { Count = 4, Options = ["skill:acrobatics"] },
+            SubclassOptions =
+            [
+                new SubclassDefinition
+                {
+                    Id = "subclass:rogue:arcane-trickster",
+                    DisplayName = "Arcane Trickster",
+                    Spellcasting = new SpellcastingInfo
+                    {
+                        CastingType = "third",
+                        SpellcastingAbility = "INT",
+                        PrepareSpells = false,
+                        SpellListId = "spelllist:wizard",
+                        CantripsKnownByLevel = [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4],
+                        SpellsKnownByLevel = [0, 0, 3, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 11, 11, 12, 13],
+                    },
+                },
+            ],
+        },
+    ];
+
+    [Fact]
+    public void ThirdCaster_Level3_WithLevel1Spell_IsValid()
+    {
+        // Fighter(EK) L3 with third-caster spellcasting: has 2 L1 slots, L1 spells are valid
+        // Spells stored with the subclass ID as ClassId
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:magic-missile", DisplayName = "Magic Missile", Level = 1, ClassIds = ["class:wizard"] },
+            new SpellDefinition { Id = "spell:shield", DisplayName = "Shield", Level = 1, ClassIds = ["class:wizard"] },
+            new SpellDefinition { Id = "spell:fire-bolt", DisplayName = "Fire Bolt", Level = 0, ClassIds = ["class:wizard"] },
+            new SpellDefinition { Id = "spell:prestidigitation", DisplayName = "Prestidigitation", Level = 0, ClassIds = ["class:wizard"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3, SubclassId = "subclass:fighter:eldritch-knight" }],
+            Spells =
+            [
+                new CharacterSpell { SpellId = "spell:fire-bolt", ClassId = "subclass:fighter:eldritch-knight" },
+                new CharacterSpell { SpellId = "spell:prestidigitation", ClassId = "subclass:fighter:eldritch-knight" },
+                new CharacterSpell { SpellId = "spell:magic-missile", ClassId = "subclass:fighter:eldritch-knight" },
+                new CharacterSpell { SpellId = "spell:shield", ClassId = "subclass:fighter:eldritch-knight" },
+            ],
+        };
+        var result = new SpellValidator(spells, ThirdCasterClasses).Validate(character);
+        Assert.True(result.IsValid, string.Join("; ", result.Errors));
+    }
+
+    [Fact]
+    public void ThirdCaster_Level2_WithLevel1Spell_IsInvalid()
+    {
+        // Fighter at L2 without any spellcasting subclass unlock — spell should be invalid
+        // (third-caster gets no slots until L3)
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:magic-missile", DisplayName = "Magic Missile", Level = 1, ClassIds = ["class:wizard"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 2, SubclassId = "subclass:fighter:eldritch-knight" }],
+            Spells = [new CharacterSpell { SpellId = "spell:magic-missile", ClassId = "subclass:fighter:eldritch-knight" }],
+        };
+        var result = new SpellValidator(spells, ThirdCasterClasses).Validate(character);
+        Assert.False(result.IsValid);
+        // At level 2 the third-caster highest slot is 0, so level-1 spell is too high
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
+    }
+
+    [Fact]
+    public void ThirdCaster_Level3_WithLevel2Spell_IsInvalid()
+    {
+        // Fighter(EK) L3 has only L1 slots (third-caster), so a L2 spell is too high
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:misty-step", DisplayName = "Misty Step", Level = 2, ClassIds = ["class:wizard"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3, SubclassId = "subclass:fighter:eldritch-knight" }],
+            Spells = [new CharacterSpell { SpellId = "spell:misty-step", ClassId = "subclass:fighter:eldritch-knight" }],
+        };
+        var result = new SpellValidator(spells, ThirdCasterClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_LEVEL_TOO_HIGH"));
+    }
+
+    [Fact]
+    public void ThirdCaster_SpellNotOnSpellList_IsInvalid()
+    {
+        // EK uses the wizard spell list; a Druid spell should be flagged as not for class
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:druidcraft", DisplayName = "Druidcraft", Level = 0, ClassIds = ["class:druid"] },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 3, SubclassId = "subclass:fighter:eldritch-knight" }],
+            Spells = [new CharacterSpell { SpellId = "spell:druidcraft", ClassId = "subclass:fighter:eldritch-knight" }],
+        };
+        var result = new SpellValidator(spells, ThirdCasterClasses).Validate(character);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.Contains("ERR_SPELL_NOT_FOR_CLASS"));
+    }
+
+    [Fact]
+    public void RacialCantrip_WithRaceSourceId_IsNotFlaggedAsInvalidClass()
+    {
+        // A racial cantrip stored with ClassId = raceId should not trigger ERR_SPELL_NOT_FOR_CLASS
+        var spells = new List<SpellDefinition>
+        {
+            new SpellDefinition { Id = "spell:minor-illusion", DisplayName = "Minor Illusion", Level = 0, ClassIds = ["class:wizard"] },
+        };
+        var classes = new List<ClassDefinition>
+        {
+            new ClassDefinition { Id = "class:fighter", DisplayName = "Fighter", HitDie = 10,
+                SavingThrows = [], SkillChoices = new SkillChoices { Count = 2, Options = [] } },
+        };
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 1 }],
+            // Racial cantrip — ClassId is the race/subrace ID, not a class
+            Spells = [new CharacterSpell { SpellId = "spell:minor-illusion", ClassId = "race:elf:high-elf" }],
+        };
+        var result = new SpellValidator(spells, classes).Validate(character);
+        // No ERR_SPELL_NOT_FOR_CLASS — racial cantrip bypasses class membership check
+        Assert.DoesNotContain(result.Errors, e => e.Contains("ERR_SPELL_NOT_FOR_CLASS"));
+    }
 }

@@ -141,4 +141,42 @@ public static class SpellSlotCalculator
                 return slotLevel;
         return 0;
     }
+
+    /// <summary>
+    /// Returns the effective caster level contribution for multiclass spellcasting.
+    /// Full casters contribute their full level; half-casters contribute half (rounded down);
+    /// third-casters contribute one-third (rounded down); Pact Magic (Warlock) returns 0
+    /// as pact slots are tracked separately and do not combine with the multiclass table.
+    /// Unknown casting types fall back to the full-caster contribution.
+    /// </summary>
+    public static int GetEffectiveCasterLevel(int classLevel, string castingType)
+    {
+        int level = Math.Clamp(classLevel, 1, 20);
+        return castingType.ToLowerInvariant() switch
+        {
+            "half" => level / 2,
+            "third" => level / 3,
+            "pact" => 0,
+            _ => level, // "full" and unknown types
+        };
+    }
+
+    /// <summary>
+    /// Returns the number of combined multiclass spell slots of <paramref name="slotLevel"/>
+    /// for a character with the given collection of (classLevel, castingType) pairs.
+    /// Pact Magic casters are excluded from the combined level (their slots are tracked
+    /// separately via <see cref="GetMaxSlots"/> with castingType = "pact").
+    /// The combined effective caster level is used to index the full-caster slot table.
+    /// Returns 0 if the combined level is 0 (no contributing spellcasting classes).
+    /// </summary>
+    public static int GetMulticlassSlots(IEnumerable<(int classLevel, string castingType)> classCasters, int slotLevel)
+    {
+        if (slotLevel < 1 || slotLevel > 9) return 0;
+        int combinedLevel = 0;
+        foreach (var (classLevel, castingType) in classCasters)
+            combinedLevel += GetEffectiveCasterLevel(classLevel, castingType);
+        combinedLevel = Math.Clamp(combinedLevel, 0, 20);
+        if (combinedLevel == 0) return 0;
+        return FullCasterSlots[combinedLevel - 1, slotLevel - 1];
+    }
 }
