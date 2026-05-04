@@ -7,12 +7,19 @@
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <!-- Default base href for local dev; override with -p:GHPagesBaseHref=/5e-wizard/ for GitHub Pages -->
     <GHPagesBaseHref Condition="'$(GHPagesBaseHref)' == ''">/</GHPagesBaseHref>
+    <!-- PWA: generate service-worker-assets.js manifest during publish -->
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
     <PackageReference Include="MudBlazor" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- PWA service worker: dev version used in development, published version bundled on publish -->
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,11 +41,12 @@
       SkipUnchangedFiles="true" />
   </Target>
 
-  <!-- Replace __BASE_HREF__ placeholder in published index.html -->
+  <!-- Replace __BASE_HREF__ placeholder in published index.html and manifest.json -->
   <Target Name="SetBaseHref" AfterTargets="Publish">
     <PropertyGroup>
       <_PublishedIndexHtml>$(PublishDir)wwwroot\index.html</_PublishedIndexHtml>
       <_PublishedIndexHtmlUnix>$(PublishDir)wwwroot/index.html</_PublishedIndexHtmlUnix>
+      <_PublishedManifestUnix>$(PublishDir)wwwroot/manifest.json</_PublishedManifestUnix>
     </PropertyGroup>
     <ReadLinesFromFile File="$(_PublishedIndexHtmlUnix)" Condition="Exists('$(_PublishedIndexHtmlUnix)')">
       <Output TaskParameter="Lines" ItemName="_IndexHtmlLines" />
@@ -48,6 +56,14 @@
       Lines="@(_IndexHtmlLines->'%(Identity)'->Replace('__BASE_HREF__', '$(GHPagesBaseHref)'))"
       Overwrite="true"
       Condition="Exists('$(_PublishedIndexHtmlUnix)')" />
+    <ReadLinesFromFile File="$(_PublishedManifestUnix)" Condition="Exists('$(_PublishedManifestUnix)')">
+      <Output TaskParameter="Lines" ItemName="_ManifestLines" />
+    </ReadLinesFromFile>
+    <WriteLinesToFile
+      File="$(_PublishedManifestUnix)"
+      Lines="@(_ManifestLines->'%(Identity)'->Replace('__BASE_HREF__', '$(GHPagesBaseHref)'))"
+      Overwrite="true"
+      Condition="Exists('$(_PublishedManifestUnix)')" />
   </Target>
 
   <!-- Create 404.html and per-route index.html copies for GitHub Pages SPA routing -->
