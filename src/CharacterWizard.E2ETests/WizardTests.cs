@@ -143,8 +143,18 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         // Capture the current session ID from the URL
         var urlBeforeReset = Page.Url;
 
-        // Click "New Character" in the nav menu
-        var newCharacterLink = Page.Locator("a", new PageLocatorOptions { HasTextString = "New Character" });
+        // The nav drawer starts closed (_drawerOpen = false in MainLayout.razor).
+        // Open it by clicking the hamburger menu button if the nav link is not yet visible.
+        var newCharacterLink = Page.Locator("[aria-label='Site navigation']")
+            .Locator("a, button")
+            .Filter(new LocatorFilterOptions { HasText = "New Character" });
+        if (!await newCharacterLink.IsVisibleAsync())
+        {
+            var menuToggle = Page.Locator("button[aria-label='Toggle navigation menu']");
+            await menuToggle.ClickAsync();
+            await Expect(newCharacterLink).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+        }
+
         await newCharacterLink.ClickAsync();
 
         // The wizard should return to step 1
