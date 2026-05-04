@@ -107,11 +107,13 @@ public sealed class WizardRandomizerService(WizardContext ctx, IRngFactory rngFa
 
     // ── Background ────────────────────────────────────────────────────────
 
-    public void RandomizeBackground(IReadOnlyList<BackgroundDefinition> backgrounds)
+    public void RandomizeBackground(
+        IReadOnlyList<BackgroundDefinition> backgrounds,
+        IReadOnlyList<RaceDefinition> races)
     {
         if (backgrounds.Count == 0) return;
         var rng = rngFactory.Create();
-        ctx.SetBackground(backgrounds[rng.Next(backgrounds.Count)].Id, backgrounds);
+        ctx.SetBackground(backgrounds[rng.Next(backgrounds.Count)].Id, backgrounds, races);
     }
 
     // ── Skills ────────────────────────────────────────────────────────────

@@ -176,7 +176,10 @@ public sealed class WizardContext
     /// conflict with the new background's granted skill proficiencies, and reconciles
     /// extra language picks against the new slot count.
     /// </summary>
-    public void SetBackground(string value, IReadOnlyList<BackgroundDefinition> backgrounds)
+    public void SetBackground(
+        string value,
+        IReadOnlyList<BackgroundDefinition> backgrounds,
+        IReadOnlyList<RaceDefinition> races)
     {
         SelectedBackgroundId = value;
         var newBg = backgrounds.FirstOrDefault(b => b.Id == value);
@@ -187,7 +190,7 @@ public sealed class WizardContext
                     ClassSkillSelections[i] = false;
         }
 
-        ReconcileExtraLanguages(backgrounds);
+        ReconcileExtraLanguages(races, backgrounds);
     }
 
     /// <summary>
@@ -272,14 +275,6 @@ public sealed class WizardContext
             result.Add(id);
         return [.. result];
     }
-
-    /// <summary>
-    /// Reconciles <see cref="ChosenExtraLanguageIds"/> after the race or background changes.
-    /// Removes any chosen extras that are now in the fixed list, then trims if over the new
-    /// slot limit (deterministically — removes from the end).
-    /// </summary>
-    public void ReconcileExtraLanguages(IReadOnlyList<BackgroundDefinition> backgrounds) =>
-        ReconcileExtraLanguages([], backgrounds);
 
     /// <summary>
     /// Reconciles <see cref="ChosenExtraLanguageIds"/> after the race or background changes.

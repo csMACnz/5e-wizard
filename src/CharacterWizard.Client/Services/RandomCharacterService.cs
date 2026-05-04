@@ -33,6 +33,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         var equipment = await dataService.GetEquipmentAsync();
         var classStartingEquipment = await dataService.GetClassStartingEquipmentAsync();
         var fullNames = await dataService.GetFullNamesAsync();
+        var languages = await dataService.GetLanguagesAsync();
 
         var namePool = fullNames.Count > 0 ? fullNames : _characterNameOptions;
 
@@ -73,11 +74,30 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         c.Levels.Add(new ClassLevel { ClassId = cls.Id, Level = level, SubclassId = subclassId });
         c.TotalLevel = level;
 
-        // Step 6 — Background + Skill Proficiencies
+        // Step 6 — Background + Skill Proficiencies + Languages
         var bg = backgrounds[rng.Next(backgrounds.Count)];
         c.BackgroundId = bg.Id;
         foreach (var sk in bg.SkillProficiencies)
             c.Skills[sk] = "background";
+
+        // Fixed race languages
+        var fixedLangIds = LanguageHelper.GetFixedLanguageIds(races, race.Id, c.SubraceId ?? string.Empty);
+        foreach (var id in fixedLangIds)
+            if (!c.Proficiencies.Languages.Contains(id))
+                c.Proficiencies.Languages.Add(id);
+
+        // Extra language slots
+        int extraSlots = LanguageHelper.GetExtraLanguageSlots(races, backgrounds, race.Id, c.SubraceId ?? string.Empty, bg.Id);
+        if (extraSlots > 0)
+        {
+            var available = languages
+                .Where(l => !c.Proficiencies.Languages.Contains(l.Id))
+                .OrderBy(_ => rng.Next(int.MaxValue))
+                .Take(extraSlots)
+                .Select(l => l.Id);
+            foreach (var id in available)
+                c.Proficiencies.Languages.Add(id);
+        }
 
         var classSkillOptions = cls.SkillChoices.Options.Contains("skill:any")
             ? _allSkillIds

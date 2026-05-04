@@ -23,11 +23,11 @@
     <MudItem xs="12" sm="6">
         <MudSelect T="string" Label="Background"
                    Value="@Ctx.SelectedBackgroundId"
-                   ValueChanged="@(async (string v) => { Ctx.SetBackground(v, Backgrounds); await OnChanged.InvokeAsync(); })"
+                   ValueChanged="@(async (string v) => { Ctx.SetBackground(v, Backgrounds, Races); await OnChanged.InvokeAsync(); })"
                    Variant="Variant.Outlined" Required="true"
                    Adornment="Adornment.End"
                    AdornmentIcon="@Icons.Material.Filled.Casino"
-                   OnAdornmentClick="@(async () => { Randomizer.RandomizeBackground(Backgrounds); await OnChanged.InvokeAsync(); })"
+                   OnAdornmentClick="@(async () => { Randomizer.RandomizeBackground(Backgrounds, Races); await OnChanged.InvokeAsync(); })"
                    AdornmentAriaLabel="Random background">
             <MudSelectItem Value="@string.Empty"></MudSelectItem>
             @foreach (var bg in Backgrounds)

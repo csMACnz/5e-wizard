@@ -87,26 +87,26 @@ public class LanguageSelectionTests
     [Fact]
     public void GetFixedLanguageIds_NoRaceSelected_ReturnsEmpty()
     {
-        var fixed_ = LanguageHelper.GetFixedLanguageIds(TestRaces, string.Empty, string.Empty);
-        Assert.Empty(fixed_);
+        var fixedIds = LanguageHelper.GetFixedLanguageIds(TestRaces, string.Empty, string.Empty);
+        Assert.Empty(fixedIds);
     }
 
     [Fact]
     public void GetFixedLanguageIds_DwarfNoSubrace_ReturnsCommonAndDwarvish()
     {
-        var fixed_ = LanguageHelper.GetFixedLanguageIds(TestRaces, "race:dwarf", string.Empty);
-        Assert.Contains("lang:common", fixed_);
-        Assert.Contains("lang:dwarvish", fixed_);
-        Assert.Equal(2, fixed_.Count);
+        var fixedIds = LanguageHelper.GetFixedLanguageIds(TestRaces, "race:dwarf", string.Empty);
+        Assert.Contains("lang:common", fixedIds);
+        Assert.Contains("lang:dwarvish", fixedIds);
+        Assert.Equal(2, fixedIds.Count);
     }
 
     [Fact]
     public void GetFixedLanguageIds_ElfHighElfSubrace_ReturnsCommonAndElvish()
     {
-        var fixed_ = LanguageHelper.GetFixedLanguageIds(TestRaces, "race:elf", "subrace:high-elf");
-        Assert.Contains("lang:common", fixed_);
-        Assert.Contains("lang:elvish", fixed_);
-        Assert.Equal(2, fixed_.Count);
+        var fixedIds = LanguageHelper.GetFixedLanguageIds(TestRaces, "race:elf", "subrace:high-elf");
+        Assert.Contains("lang:common", fixedIds);
+        Assert.Contains("lang:elvish", fixedIds);
+        Assert.Equal(2, fixedIds.Count);
     }
 
     // ── GetExtraLanguageSlots ────────────────────────────────────────────
