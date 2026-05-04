@@ -116,6 +116,64 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         await Expect(step2Heading).ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task NewCharacterMenuButton_WhileOnStep2_ResetsWizardToStep1WithEmptyForm()
+    {
+        await NavigateAndWaitForBlazorAsync("/");
+
+        // Start a new character from the home page
+        var startButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
+        await startButton.ClickAsync();
+
+        // Wait for step 1
+        var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
+        // Fill in a character name and advance to step 2
+        var nameInput = Page.Locator("input[aria-required='true']");
+        await nameInput.FillAsync("Thorin");
+
+        var nextButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Next" });
+        await Expect(nextButton).ToBeEnabledAsync();
+        await nextButton.ClickAsync();
+
+        var step2Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 2" });
+        await Expect(step2Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+
+        // Capture the current session ID from the URL
+        var urlBeforeReset = Page.Url;
+
+        // MudNavLink with OnClick (no Href) renders the clickable inner element as
+        // <div class="mud-nav-link"> — not as <a> or <button>.
+        // When the drawer is closed, elements remain in the DOM but are positioned
+        // outside the viewport via CSS transform. IsVisibleAsync() returns true in
+        // this case (CSS visibility check only). Use JS bounding-box to detect it.
+        var newCharacterNavItem = Page.Locator(".mud-nav-link")
+            .Filter(new LocatorFilterOptions { HasText = "New Character" });
+
+        var isInViewport = await newCharacterNavItem.EvaluateAsync<bool>(
+            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
+
+        if (!isInViewport)
+        {
+            await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
+            await Expect(newCharacterNavItem).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
+        }
+
+        await newCharacterNavItem.ClickAsync();
+
+        // The wizard should return to step 1
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+
+        // The character name field should be empty (fresh session)
+        var nameInputAfterReset = Page.Locator("input[aria-required='true']");
+        await Expect(nameInputAfterReset).ToBeEmptyAsync();
+
+        // The session ID in the URL should be different (new session)
+        Assert.NotEqual(urlBeforeReset, Page.Url);
+        Assert.Contains("session=", Page.Url);
+    }
+
     // Convenience wrapper
     private static ILocatorAssertions Expect(ILocator locator) =>
         Assertions.Expect(locator);

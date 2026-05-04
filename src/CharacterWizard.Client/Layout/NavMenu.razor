@@ -1,4 +1,4 @@
-﻿@using CharacterWizard.Client.Services
+@using CharacterWizard.Client.Services
 @inject CharacterWizardState State
 @inject WizardContext Ctx
 @inject NavigationManager Navigation
@@ -25,6 +25,7 @@
         State.SessionId = Guid.NewGuid().ToString("N");
         State.Character = new() { Id = Guid.NewGuid().ToString() };
         State.ActiveStep = 0;
+        Ctx.Reset();
         Navigation.NavigateTo($"wizard?session={State.SessionId}");
     }
 }
