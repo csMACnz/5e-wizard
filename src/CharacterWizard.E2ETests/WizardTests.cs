@@ -143,19 +143,24 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         // Capture the current session ID from the URL
         var urlBeforeReset = Page.Url;
 
-        // The nav drawer starts closed (_drawerOpen = false in MainLayout.razor).
-        // Open it by clicking the hamburger menu button if the nav link is not yet visible.
-        var newCharacterLink = Page.Locator("[aria-label='Site navigation']")
-            .Locator("a, button")
+        // MudNavLink with OnClick (no Href) renders the clickable inner element as
+        // <div class="mud-nav-link"> — not as <a> or <button>.
+        // When the drawer is closed, elements remain in the DOM but are positioned
+        // outside the viewport via CSS transform. IsVisibleAsync() returns true in
+        // this case (CSS visibility check only). Use JS bounding-box to detect it.
+        var newCharacterNavItem = Page.Locator(".mud-nav-link")
             .Filter(new LocatorFilterOptions { HasText = "New Character" });
-        if (!await newCharacterLink.IsVisibleAsync())
+
+        var isInViewport = await newCharacterNavItem.EvaluateAsync<bool>(
+            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
+
+        if (!isInViewport)
         {
-            var menuToggle = Page.Locator("button[aria-label='Toggle navigation menu']");
-            await menuToggle.ClickAsync();
-            await Expect(newCharacterLink).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+            await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
+            await Expect(newCharacterNavItem).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
         }
 
-        await newCharacterLink.ClickAsync();
+        await newCharacterNavItem.ClickAsync();
 
         // The wizard should return to step 1
         await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
