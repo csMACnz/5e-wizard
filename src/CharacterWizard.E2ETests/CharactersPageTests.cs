@@ -37,12 +37,12 @@ public sealed class CharactersPageTests(BlazorServerFixture server) : E2ETestBas
     }
 
     [Fact]
-    public async Task CharactersPage_HasBackToHomeLink()
+    public async Task CharactersPage_HasBackToHomeButton()
     {
         await NavigateAndWaitForBlazorAsync("/characters");
 
-        var backLink = Page.Locator("a", new PageLocatorOptions { HasTextString = "Back to Home" });
-        await Expect(backLink).ToBeVisibleAsync();
+        var backButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Back to Home" });
+        await Expect(backButton).ToBeVisibleAsync();
     }
 
     // Convenience wrapper
