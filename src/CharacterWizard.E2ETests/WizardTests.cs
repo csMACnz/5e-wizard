@@ -116,6 +116,49 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         await Expect(step2Heading).ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task NewCharacterMenuButton_WhileOnStep2_ResetsWizardToStep1WithEmptyForm()
+    {
+        await NavigateAndWaitForBlazorAsync("/");
+
+        // Start a new character from the home page
+        var startButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
+        await startButton.ClickAsync();
+
+        // Wait for step 1
+        var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
+        // Fill in a character name and advance to step 2
+        var nameInput = Page.Locator("input[aria-required='true']");
+        await nameInput.FillAsync("Thorin");
+
+        var nextButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Next" });
+        await Expect(nextButton).ToBeEnabledAsync();
+        await nextButton.ClickAsync();
+
+        var step2Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 2" });
+        await Expect(step2Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+
+        // Capture the current session ID from the URL
+        var urlBeforeReset = Page.Url;
+
+        // Click "New Character" in the nav menu
+        var newCharacterLink = Page.Locator("a", new PageLocatorOptions { HasTextString = "New Character" });
+        await newCharacterLink.ClickAsync();
+
+        // The wizard should return to step 1
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+
+        // The character name field should be empty (fresh session)
+        var nameInputAfterReset = Page.Locator("input[aria-required='true']");
+        await Expect(nameInputAfterReset).ToBeEmptyAsync();
+
+        // The session ID in the URL should be different (new session)
+        Assert.NotEqual(urlBeforeReset, Page.Url);
+        Assert.Contains("session=", Page.Url);
+    }
+
     // Convenience wrapper
     private static ILocatorAssertions Expect(ILocator locator) =>
         Assertions.Expect(locator);

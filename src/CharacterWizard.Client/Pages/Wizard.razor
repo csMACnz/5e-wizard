@@ -165,6 +165,7 @@ else
     // ── Loaded data ──────────────────────────────────────────────────────
     private bool _loading = true;
     private int _activeStep = 0;
+    private string? _initializedSession;
     private AbilitiesConfig _abilitiesConfig = new();
     private IReadOnlyList<RaceDefinition> _races = [];
     private IReadOnlyList<ClassDefinition> _classes = [];
@@ -205,7 +206,21 @@ else
         _loading = false;
 
         await InitialiseSessionAsync();
+        _initializedSession = State.SessionId;
         RestoreFromState();
+        if (_activeStep == 8) RunReviewValidation();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Skip during initial load (OnInitializedAsync handles it) or if the session hasn't changed.
+        if (_loading || string.IsNullOrEmpty(SessionQueryParam) || SessionQueryParam == _initializedSession)
+            return;
+
+        _initializedSession = SessionQueryParam;
+        await InitialiseSessionAsync();
+        RestoreFromState();
+        _stepErrors = [];
         if (_activeStep == 8) RunReviewValidation();
     }
 

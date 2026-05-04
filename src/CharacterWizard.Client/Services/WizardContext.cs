@@ -136,6 +136,53 @@ public sealed class WizardContext
     // ── Computed ──────────────────────────────────────────────────────────
     public int TotalClassLevel => ClassEntries.Sum(e => e.Level);
 
+    // ── Reset ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resets all mutable wizard UI state back to its initial (new-character) defaults.
+    /// Call this before starting a fresh character session.
+    /// </summary>
+    public void Reset()
+    {
+        CharacterName = string.Empty;
+        PlayerName = string.Empty;
+        CampaignName = string.Empty;
+        GenerationMethodStr = nameof(GenerationMethod.StandardArray);
+
+        foreach (var ab in Abilities)
+        {
+            AbilitySelections[ab] = 0;
+            PointBuyValues[ab] = 8;
+            RollValues[ab] = 8;
+        }
+
+        SelectedRaceId = string.Empty;
+        SelectedSubraceId = string.Empty;
+
+        ClassEntries = [new ClassEntry()];
+
+        AllAsiChoicesByKey.Clear();
+        AllHpChoicesByKey.Clear();
+
+        SelectedBackgroundId = string.Empty;
+        ClassSkillOptionIds = [];
+        ClassSkillSelections = [];
+        ChosenExtraLanguageIds = [];
+
+        SelectedSpells.Clear();
+        SelectedRacialCantripId = string.Empty;
+        MagicalSecretsSelections.Clear();
+        MysticArcanumSelections.Clear();
+        WizardSpellbookIds.Clear();
+        ShowAllSpellLevels = false;
+
+        SelectedEquipmentIds.Clear();
+        StrictEquipment = true;
+        EquipmentChoices.Clear();
+        ClassStartingWealthChosen = false;
+        ClassStartingGold = null;
+    }
+
     // ── Pure helpers ──────────────────────────────────────────────────────
     public static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
 
