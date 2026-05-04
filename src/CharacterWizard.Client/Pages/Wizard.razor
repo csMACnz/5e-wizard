@@ -88,6 +88,8 @@ else
             case 5:
                 <WizardStepBackground Backgrounds="_backgrounds"
                                       Classes="_classes"
+                                      Races="_races"
+                                      Languages="_languages"
                                       OnChanged="ValidateAndAutoSaveAsync" />
                 break;
 
@@ -170,6 +172,7 @@ else
     private IReadOnlyList<SpellDefinition> _spells = [];
     private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
     private IReadOnlyList<FeatDefinition> _feats = [];
+    private IReadOnlyList<LanguageDefinition> _languages = [];
     private IReadOnlyList<string> _fullNames = [];
     private IReadOnlyList<ClassStartingEquipmentEntry> _classStartingEquipmentConfigs = [];
     private ValidationResult? _reviewValidation;
@@ -190,6 +193,7 @@ else
         _feats = await DataService.GetFeatsAsync();
         _classStartingEquipmentConfigs = await DataService.GetClassStartingEquipmentAsync();
         _fullNames = await DataService.GetFullNamesAsync();
+        _languages = await DataService.GetLanguagesAsync();
 
         // Initialise point-buy defaults from config
         if (_abilitiesConfig.PointBuy.MinScore != 0)
@@ -304,6 +308,14 @@ else
                 if (idx >= 0) Ctx.ClassSkillSelections[idx] = true;
             }
         }
+
+        // Restore language picks: infer chosen extras as stored - fixed
+        var fixedLangIds = new HashSet<string>(Ctx.GetFixedLanguageIds(_races));
+        Ctx.ChosenExtraLanguageIds = c.Proficiencies.Languages
+            .Where(id => !fixedLangIds.Contains(id))
+            .ToList();
+        // Reconcile in case race/background changed since save
+        Ctx.ReconcileExtraLanguages(_races, _backgrounds);
 
         Ctx.SelectedSpells.Clear();
         foreach (var cs in c.Spells)

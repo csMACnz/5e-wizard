@@ -11,6 +11,7 @@ public interface IDataService
     Task<IReadOnlyList<EquipmentItemDefinition>> GetEquipmentAsync();
     Task<IReadOnlyList<ClassStartingEquipmentEntry>> GetClassStartingEquipmentAsync();
     Task<IReadOnlyList<FeatDefinition>> GetFeatsAsync();
+    Task<IReadOnlyList<LanguageDefinition>> GetLanguagesAsync();
     Task<IReadOnlyList<string>> GetFullNamesAsync();
     Task<IReadOnlyList<string>> GetGivenNamesAsync();
     Task<IReadOnlyList<string>> GetSurnamesAsync();

@@ -437,4 +437,81 @@ public class DataDeserializationTests
         Assert.Equal("4d6-drop-lowest", data.Roll.Method);
         Assert.Equal(6, data.Roll.Count);
     }
+
+    [Fact]
+    public void Languages_Json_DeserializesCorrectly()
+    {
+        var data = DeserializeFile<LanguagesData>("languages.json");
+
+        Assert.NotEmpty(data.Languages);
+
+        foreach (var lang in data.Languages)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(lang.Id), $"Language missing Id: {lang.DisplayName}");
+            Assert.True(lang.Id.StartsWith("lang:"), $"Language Id does not start with 'lang:': {lang.Id}");
+            Assert.False(string.IsNullOrWhiteSpace(lang.DisplayName), $"Language missing DisplayName: {lang.Id}");
+            Assert.True(lang.Type == "standard" || lang.Type == "exotic",
+                $"Language '{lang.Id}' has unexpected type: {lang.Type}");
+        }
+
+        // Common must be present (used by all races)
+        var common = data.Languages.FirstOrDefault(l => l.Id == "lang:common");
+        Assert.NotNull(common);
+        Assert.Equal("Common", common!.DisplayName);
+        Assert.Equal("standard", common.Type);
+    }
+
+    [Fact]
+    public void Languages_Json_HasAllStandardSrdLanguages()
+    {
+        var data = DeserializeFile<LanguagesData>("languages.json");
+
+        string[] expectedStandard = ["lang:common", "lang:dwarvish", "lang:elvish", "lang:giant",
+            "lang:gnomish", "lang:goblin", "lang:halfling", "lang:orc"];
+        string[] expectedExotic = ["lang:abyssal", "lang:celestial", "lang:draconic",
+            "lang:deep-speech", "lang:infernal", "lang:primordial", "lang:sylvan", "lang:undercommon"];
+
+        foreach (var id in expectedStandard)
+            Assert.Contains(data.Languages, l => l.Id == id && l.Type == "standard");
+        foreach (var id in expectedExotic)
+            Assert.Contains(data.Languages, l => l.Id == id && l.Type == "exotic");
+    }
+
+    [Fact]
+    public void Races_Json_LanguageIdsDeserialize()
+    {
+        var data = DeserializeFile<RacesData>("races.json");
+
+        // Human only has Common in fixed languages (the extra is via trait:extra-language)
+        var human = data.Races.FirstOrDefault(r => r.Id == "race:human");
+        Assert.NotNull(human);
+        Assert.Contains("lang:common", human!.LanguageIds);
+
+        // Dwarf has Common and Dwarvish
+        var dwarf = data.Races.FirstOrDefault(r => r.Id == "race:dwarf");
+        Assert.NotNull(dwarf);
+        Assert.Contains("lang:common", dwarf!.LanguageIds);
+        Assert.Contains("lang:dwarvish", dwarf.LanguageIds);
+    }
+
+    [Fact]
+    public void Backgrounds_Json_LanguageCountDeserializes()
+    {
+        var data = DeserializeFile<BackgroundsData>("backgrounds.json");
+
+        // Acolyte grants 2 languages
+        var acolyte = data.Backgrounds.FirstOrDefault(b => b.Id == "background:acolyte");
+        Assert.NotNull(acolyte);
+        Assert.Equal(2, acolyte!.LanguageCount);
+
+        // Soldier grants 0 languages
+        var soldier = data.Backgrounds.FirstOrDefault(b => b.Id == "background:soldier");
+        Assert.NotNull(soldier);
+        Assert.Equal(0, soldier!.LanguageCount);
+
+        // Noble grants 1 language
+        var noble = data.Backgrounds.FirstOrDefault(b => b.Id == "background:noble");
+        Assert.NotNull(noble);
+        Assert.Equal(1, noble!.LanguageCount);
+    }
 }

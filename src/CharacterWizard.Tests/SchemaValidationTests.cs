@@ -144,6 +144,18 @@ public class SchemaValidationTests
     }
 
     [Fact]
+    public async Task LanguagesJson_ValidatesAgainstLanguageSchema()
+    {
+        var schema = await LoadSchemaAsync("language.schema.json");
+        var data = LoadDataFile("languages.json");
+
+        var errors = schema.Validate(data);
+        Assert.True(errors.Count == 0,
+            $"languages.json has {errors.Count} schema error(s):\n" +
+            string.Join("\n", errors.Select(e => $"  [{e.Path}] {e.Kind}: {e.Property}")));
+    }
+
+    [Fact]
     public void DataFiles_HaveRequiredFields()
     {
         var required = new[]

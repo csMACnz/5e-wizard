@@ -36,7 +36,7 @@
     </PropertyGroup>
     <MakeDir Directories="$(_DataDestDir)" />
     <Copy
-      SourceFiles="$(_DataSourceDir)/races.json;$(_DataSourceDir)/classes.json;$(_DataSourceDir)/backgrounds.json;$(_DataSourceDir)/spells.json;$(_DataSourceDir)/equipment.json;$(_DataSourceDir)/names.json;$(_DataSourceDir)/feats.json"
+      SourceFiles="$(_DataSourceDir)/races.json;$(_DataSourceDir)/classes.json;$(_DataSourceDir)/backgrounds.json;$(_DataSourceDir)/spells.json;$(_DataSourceDir)/equipment.json;$(_DataSourceDir)/names.json;$(_DataSourceDir)/feats.json;$(_DataSourceDir)/languages.json"
       DestinationFolder="$(_DataDestDir)"
       SkipUnchangedFiles="true" />
   </Target>

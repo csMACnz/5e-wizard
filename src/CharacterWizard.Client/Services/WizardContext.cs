@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Client.Services;
 
@@ -99,6 +100,12 @@ public sealed class WizardContext
     public List<string> ClassSkillOptionIds { get; set; } = [];
     public List<bool> ClassSkillSelections { get; set; } = [];
 
+    /// <summary>
+    /// The extra language IDs chosen by the player on the Background step.
+    /// Does not include fixed (race-granted) languages.
+    /// </summary>
+    public List<string> ChosenExtraLanguageIds { get; set; } = [];
+
     // ── Step 7 state (Spells) ─────────────────────────────────────────────
     // Key = classId, value = set of selected spell IDs.
     public Dictionary<string, HashSet<string>> SelectedSpells { get; } = [];
@@ -166,7 +173,8 @@ public sealed class WizardContext
 
     /// <summary>
     /// Updates the background selection and deselects any class skills that would
-    /// conflict with the new background's granted skill proficiencies.
+    /// conflict with the new background's granted skill proficiencies, and reconciles
+    /// extra language picks against the new slot count.
     /// </summary>
     public void SetBackground(string value, IReadOnlyList<BackgroundDefinition> backgrounds)
     {
@@ -178,6 +186,8 @@ public sealed class WizardContext
                 if (ClassSkillSelections[i] && newBg.SkillProficiencies.Contains(ClassSkillOptionIds[i]))
                     ClassSkillSelections[i] = false;
         }
+
+        ReconcileExtraLanguages(backgrounds);
     }
 
     /// <summary>
@@ -230,6 +240,59 @@ public sealed class WizardContext
                     SelectedEquipmentIds.Remove(id);
             }
         }
+    }
+
+    /// <summary>
+    /// Returns the language IDs fixed by the selected race (and subrace), i.e. not subject
+    /// to user choice.
+    /// </summary>
+    public List<string> GetFixedLanguageIds(IReadOnlyList<RaceDefinition> races) =>
+        LanguageHelper.GetFixedLanguageIds(races, SelectedRaceId, SelectedSubraceId);
+
+    /// <summary>
+    /// Returns the number of extra language slots the character may fill (background +
+    /// one per <c>trait:extra-language</c> in the selected race/subrace traits).
+    /// Returns 0 if no background is selected.
+    /// </summary>
+    public int GetExtraLanguageSlots(
+        IReadOnlyList<RaceDefinition> races,
+        IReadOnlyList<BackgroundDefinition> backgrounds) =>
+        LanguageHelper.GetExtraLanguageSlots(races, backgrounds, SelectedRaceId, SelectedSubraceId, SelectedBackgroundId);
+
+    /// <summary>
+    /// Returns the union of fixed race languages and the player's chosen extra languages,
+    /// deduped, for display and export.
+    /// </summary>
+    public List<string> GetAllLanguageIds(
+        IReadOnlyList<RaceDefinition> races,
+        IReadOnlyList<BackgroundDefinition> backgrounds)
+    {
+        var result = new HashSet<string>(GetFixedLanguageIds(races));
+        foreach (var id in ChosenExtraLanguageIds)
+            result.Add(id);
+        return [.. result];
+    }
+
+    /// <summary>
+    /// Reconciles <see cref="ChosenExtraLanguageIds"/> after the race or background changes.
+    /// Removes any chosen extras that are now in the fixed list, then trims if over the new
+    /// slot limit (deterministically — removes from the end).
+    /// </summary>
+    public void ReconcileExtraLanguages(IReadOnlyList<BackgroundDefinition> backgrounds) =>
+        ReconcileExtraLanguages([], backgrounds);
+
+    /// <summary>
+    /// Reconciles <see cref="ChosenExtraLanguageIds"/> after the race or background changes.
+    /// Removes any chosen extras that are now in the fixed list, then trims if over the new
+    /// slot limit (deterministically — removes from the end).
+    /// </summary>
+    public void ReconcileExtraLanguages(
+        IReadOnlyList<RaceDefinition> races,
+        IReadOnlyList<BackgroundDefinition> backgrounds)
+    {
+        var fixedIds = GetFixedLanguageIds(races);
+        int slots = GetExtraLanguageSlots(races, backgrounds);
+        ChosenExtraLanguageIds = LanguageHelper.Reconcile(ChosenExtraLanguageIds, fixedIds, slots);
     }
 }
 

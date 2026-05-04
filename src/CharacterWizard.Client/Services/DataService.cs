@@ -13,6 +13,7 @@ public sealed class DataService : IDataService
     private List<EquipmentItemDefinition>? _equipment;
     private List<ClassStartingEquipmentEntry>? _classStartingEquipment;
     private List<FeatDefinition>? _feats;
+    private List<LanguageDefinition>? _languages;
     private NamesData? _names;
     private AbilitiesConfig? _abilitiesConfig;
 
@@ -105,6 +106,17 @@ public sealed class DataService : IDataService
         }
 
         return _feats;
+    }
+
+    public async Task<IReadOnlyList<LanguageDefinition>> GetLanguagesAsync()
+    {
+        if (_languages is null)
+        {
+            var data = await _http.GetFromJsonAsync<LanguagesData>("data/languages.json");
+            _languages = data?.Languages ?? [];
+        }
+
+        return _languages;
     }
 
     public async Task<IReadOnlyList<string>> GetFullNamesAsync()

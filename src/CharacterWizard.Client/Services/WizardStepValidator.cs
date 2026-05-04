@@ -160,6 +160,20 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                 var profResult = new ProficiencyValidator(classes, backgrounds).Validate(profTemp);
                 result.Errors.AddRange(profResult.Errors);
                 result.Warnings.AddRange(profResult.Warnings);
+
+                // Language validation
+                int extraSlots = ctx.GetExtraLanguageSlots(races, backgrounds);
+                if (extraSlots > 0)
+                {
+                    int chosen = ctx.ChosenExtraLanguageIds.Count;
+                    int deficit = extraSlots - chosen;
+                    if (deficit > 0)
+                        result.Errors.Add(
+                            $"ERR_LANGUAGE_PICKS_INCOMPLETE: Choose {deficit} more language{(deficit > 1 ? "s" : "")} to continue.");
+                    else if (deficit < 0)
+                        result.Errors.Add(
+                            $"ERR_LANGUAGE_PICKS_EXCESS: Remove {-deficit} language{(-deficit > 1 ? "s" : "")} to continue.");
+                }
                 break;
 
             case 6:

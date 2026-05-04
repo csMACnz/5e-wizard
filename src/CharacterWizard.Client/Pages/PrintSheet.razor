@@ -238,7 +238,7 @@ else
                     {
                         <div class="prof-group">
                             <div class="prof-group-label">Languages</div>
-                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Languages)</div>
+                            <div class="prof-group-value">@string.Join(", ", c.Proficiencies.Languages.Select(LanguageDisplayName))</div>
                         </div>
                     }
                     @if (c.Proficiencies.Armor.Count == 0 && c.Proficiencies.Weapons.Count == 0 &&
@@ -513,6 +513,7 @@ else
     private IReadOnlyList<SpellDefinition> _spells = [];
     private IReadOnlyList<EquipmentItemDefinition> _equipment = [];
     private IReadOnlyList<FeatDefinition> _feats = [];
+    private IReadOnlyList<LanguageDefinition> _languages = [];
 
     protected override async Task OnInitializedAsync()
     {
@@ -522,6 +523,7 @@ else
         _spells = await DataService.GetSpellsAsync();
         _equipment = await DataService.GetEquipmentAsync();
         _feats = await DataService.GetFeatsAsync();
+        _languages = await DataService.GetLanguagesAsync();
         _loading = false;
     }
 
@@ -552,6 +554,12 @@ else
         // Fall back to human-readable for trait: IDs
         var s = id.Replace("trait:", string.Empty).Replace("feat:", string.Empty).Replace("-", " ");
         return s.Length > 0 ? char.ToUpper(s[0]) + s[1..] : id;
+    }
+
+    private string LanguageDisplayName(string id)
+    {
+        var lang = _languages.FirstOrDefault(l => l.Id == id);
+        return lang?.DisplayName ?? id;
     }
 
     // ── Proficiency & calculated values ─────────────────────────────────────
