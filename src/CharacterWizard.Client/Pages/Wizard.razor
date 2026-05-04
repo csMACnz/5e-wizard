@@ -264,23 +264,19 @@ else
         foreach (var ab in WizardContext.Abilities)
         {
             var block = GetAbilityBlock(c, ab);
-            if (block.Base != 0)
-            {
-                Ctx.AbilitySelections[ab] = block.Base;
-                Ctx.PointBuyValues[ab] = block.Base;
-                Ctx.RollValues[ab] = block.Base;
-            }
+            Ctx.AbilitySelections[ab] = block.Base;
+            Ctx.PointBuyValues[ab] = block.Base != 0 ? block.Base : (_abilitiesConfig.PointBuy.MinScore != 0 ? _abilitiesConfig.PointBuy.MinScore : 8);
+            Ctx.RollValues[ab] = block.Base != 0 ? block.Base : 8;
         }
 
-        if (!string.IsNullOrEmpty(c.RaceId)) Ctx.SelectedRaceId = c.RaceId;
+        Ctx.SelectedRaceId = c.RaceId ?? string.Empty;
         Ctx.SelectedSubraceId = c.SubraceId ?? string.Empty;
 
-        if (c.Levels.Count > 0)
-        {
-            Ctx.ClassEntries = c.Levels
+        Ctx.ClassEntries = c.Levels.Count > 0
+            ? c.Levels
                 .Select(l => new ClassEntry { ClassId = l.ClassId, Level = l.Level, SubclassId = l.SubclassId ?? string.Empty })
-                .ToList();
-        }
+                .ToList()
+            : [new ClassEntry()];
 
         Ctx.AllAsiChoicesByKey.Clear();
         foreach (var choice in c.AsiChoices)
@@ -296,7 +292,7 @@ else
             Ctx.AllHpChoicesByKey[key] = (entry.Method, entry.DieRollValue);
         }
 
-        if (!string.IsNullOrEmpty(c.BackgroundId)) Ctx.SelectedBackgroundId = c.BackgroundId;
+        Ctx.SelectedBackgroundId = c.BackgroundId ?? string.Empty;
 
         Ctx.SyncClassSkillOptions(_classes);
 

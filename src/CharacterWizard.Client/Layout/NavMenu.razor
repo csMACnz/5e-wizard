@@ -1,8 +1,14 @@
-﻿<MudNavMenu>
+﻿@using CharacterWizard.Client.Services
+@inject CharacterWizardState State
+@inject WizardContext Ctx
+@inject NavigationManager Navigation
+
+<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
         Home
     </MudNavLink>
-    <MudNavLink Href="wizard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AutoStories">
+    <MudNavLink Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AutoStories"
+                OnClick="@StartNewCharacter">
         New Character
     </MudNavLink>
     <MudNavLink Href="import" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.FileUpload">
@@ -12,3 +18,13 @@
         My Characters
     </MudNavLink>
 </MudNavMenu>
+
+@code {
+    private void StartNewCharacter()
+    {
+        State.SessionId = Guid.NewGuid().ToString("N");
+        State.Character = new() { Id = Guid.NewGuid().ToString() };
+        State.ActiveStep = 0;
+        Navigation.NavigateTo($"wizard?session={State.SessionId}");
+    }
+}
