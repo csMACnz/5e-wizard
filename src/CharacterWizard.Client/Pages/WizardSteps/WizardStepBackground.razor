@@ -7,6 +7,15 @@
     var selectedBg = Backgrounds.FirstOrDefault(b => b.Id == Ctx.SelectedBackgroundId);
     var primaryClass = Classes.FirstOrDefault(c => c.Id == (Ctx.ClassEntries.Count > 0 ? Ctx.ClassEntries[0].ClassId : string.Empty));
     var backgroundSkills = selectedBg?.SkillProficiencies ?? [];
+
+    // Language computation
+    var fixedLangIds = Ctx.GetFixedLanguageIds(Races);
+    int extraSlots = Ctx.GetExtraLanguageSlots(Races, Backgrounds);
+    var allLangIds = Ctx.GetAllLanguageIds(Races, Backgrounds);
+    // Pick list: all languages minus fixed, preserving catalog order
+    var langPickList = Languages
+        .Where(l => !fixedLangIds.Contains(l.Id))
+        .ToList();
 }
 
 <MudText Typo="Typo.h5" GutterBottom="true">Step 6 — Background &amp; Proficiencies</MudText>
@@ -14,11 +23,11 @@
     <MudItem xs="12" sm="6">
         <MudSelect T="string" Label="Background"
                    Value="@Ctx.SelectedBackgroundId"
-                   ValueChanged="@(async (string v) => { Ctx.SetBackground(v, Backgrounds); await OnChanged.InvokeAsync(); })"
+                   ValueChanged="@(async (string v) => { Ctx.SetBackground(v, Backgrounds, Races); await OnChanged.InvokeAsync(); })"
                    Variant="Variant.Outlined" Required="true"
                    Adornment="Adornment.End"
                    AdornmentIcon="@Icons.Material.Filled.Casino"
-                   OnAdornmentClick="@(async () => { Randomizer.RandomizeBackground(Backgrounds); await OnChanged.InvokeAsync(); })"
+                   OnAdornmentClick="@(async () => { Randomizer.RandomizeBackground(Backgrounds, Races); await OnChanged.InvokeAsync(); })"
                    AdornmentAriaLabel="Random background">
             <MudSelectItem Value="@string.Empty"></MudSelectItem>
             @foreach (var bg in Backgrounds)
@@ -98,9 +107,63 @@
     </MudChipSet>
 }
 
+<!-- Languages Section -->
+@if (selectedBg != null)
+{
+    <MudDivider Class="my-4" />
+    <MudText Typo="Typo.subtitle1" Class="mb-2"><strong>Languages</strong></MudText>
+
+    @if (fixedLangIds.Count > 0)
+    {
+        <MudText Typo="Typo.subtitle2" Class="mb-1">Fixed (from race):</MudText>
+        <MudChipSet T="string" Class="mb-3">
+            @foreach (var id in fixedLangIds)
+            {
+                <MudChip T="string" Color="Color.Default" Size="Size.Small">@LanguageLabel(id)</MudChip>
+            }
+        </MudChipSet>
+    }
+
+    @if (extraSlots > 0)
+    {
+        int chosenCount = Ctx.ChosenExtraLanguageIds.Count;
+        <MudText Typo="Typo.subtitle2" Class="mb-1">
+            Choose @extraSlots extra language@(extraSlots > 1 ? "s" : "") (@chosenCount / @extraSlots selected):
+        </MudText>
+        <MudGrid>
+            @foreach (var lang in langPickList)
+            {
+                bool isChosen = Ctx.ChosenExtraLanguageIds.Contains(lang.Id);
+                bool atMax = !isChosen && chosenCount >= extraSlots;
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCheckBox T="bool"
+                                 Value="@isChosen"
+                                 ValueChanged="@(async (bool v) => { ToggleExtraLanguage(lang.Id, v); await OnChanged.InvokeAsync(); })"
+                                 Disabled="@atMax"
+                                 Color="Color.Primary"
+                                 Label="@lang.DisplayName" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+
+    @if (allLangIds.Count > 0)
+    {
+        <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">All known languages:</MudText>
+        <MudChipSet T="string" Class="mt-1">
+            @foreach (var id in allLangIds)
+            {
+                <MudChip T="string" Color="Color.Primary" Size="Size.Small">@LanguageLabel(id)</MudChip>
+            }
+        </MudChipSet>
+    }
+}
+
 @code {
     [Parameter, EditorRequired] public IReadOnlyList<BackgroundDefinition> Backgrounds { get; set; } = [];
     [Parameter, EditorRequired] public IReadOnlyList<ClassDefinition> Classes { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<RaceDefinition> Races { get; set; } = [];
+    [Parameter, EditorRequired] public IReadOnlyList<LanguageDefinition> Languages { get; set; } = [];
     [Parameter, EditorRequired] public EventCallback OnChanged { get; set; }
 
     private List<string> GetAllSkillIds(BackgroundDefinition? bg)
@@ -111,5 +174,24 @@
         for (int i = 0; i < Ctx.ClassSkillOptionIds.Count; i++)
             if (Ctx.ClassSkillSelections[i]) result.Add(Ctx.ClassSkillOptionIds[i]);
         return [.. result];
+    }
+
+    private string LanguageLabel(string id)
+    {
+        var lang = Languages.FirstOrDefault(l => l.Id == id);
+        return lang?.DisplayName ?? id;
+    }
+
+    private void ToggleExtraLanguage(string langId, bool add)
+    {
+        if (add)
+        {
+            if (!Ctx.ChosenExtraLanguageIds.Contains(langId))
+                Ctx.ChosenExtraLanguageIds.Add(langId);
+        }
+        else
+        {
+            Ctx.ChosenExtraLanguageIds.Remove(langId);
+        }
     }
 }

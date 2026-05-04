@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Languages Data",
+  "type": "object",
+  "required": ["schemaVersion", "source", "languages"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "source": { "type": "string" },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "displayName", "type", "source"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^lang:" },
+          "displayName": { "type": "string" },
+          "script": { "type": ["string", "null"] },
+          "type": { "type": "string", "enum": ["standard", "exotic"] },
+          "source": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

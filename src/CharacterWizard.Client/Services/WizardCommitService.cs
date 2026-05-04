@@ -176,6 +176,11 @@ public sealed class WizardCommitService(WizardContext ctx, CharacterWizardState 
             if (ctx.ClassSkillSelections[i] && !c.Skills.ContainsKey(ctx.ClassSkillOptionIds[i]))
                 c.Skills[ctx.ClassSkillOptionIds[i]] = "class";
 
+        // Languages: fixed (race) ∪ chosen extras
+        c.Proficiencies.Languages.Clear();
+        c.Proficiencies.Languages.AddRange(
+            ctx.GetAllLanguageIds(races, backgrounds));
+
         // Step 7 — Spells
         c.Spells.Clear();
         foreach (var (classId, spellIds) in ctx.SelectedSpells)

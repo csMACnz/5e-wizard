@@ -16,6 +16,9 @@ public class BackgroundDefinition
     [JsonPropertyName("skillProficiencies")]
     public List<string> SkillProficiencies { get; set; } = [];
 
+    [JsonPropertyName("languageCount")]
+    public int LanguageCount { get; set; }
+
     [JsonPropertyName("startingEquipmentIds")]
     public List<string> StartingEquipmentIds { get; set; } = [];
 

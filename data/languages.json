@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "0.1",
+  "source": "SRD 5.1",
+  "languages": [
+    {
+      "id": "lang:common",
+      "displayName": "Common",
+      "script": "Common",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:dwarvish",
+      "displayName": "Dwarvish",
+      "script": "Dwarvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:elvish",
+      "displayName": "Elvish",
+      "script": "Elvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:giant",
+      "displayName": "Giant",
+      "script": "Dwarvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:gnomish",
+      "displayName": "Gnomish",
+      "script": "Dwarvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:goblin",
+      "displayName": "Goblin",
+      "script": "Dwarvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:halfling",
+      "displayName": "Halfling",
+      "script": "Common",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:orc",
+      "displayName": "Orc",
+      "script": "Dwarvish",
+      "type": "standard",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:abyssal",
+      "displayName": "Abyssal",
+      "script": "Infernal",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:celestial",
+      "displayName": "Celestial",
+      "script": "Celestial",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:draconic",
+      "displayName": "Draconic",
+      "script": "Draconic",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:deep-speech",
+      "displayName": "Deep Speech",
+      "script": null,
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:infernal",
+      "displayName": "Infernal",
+      "script": "Infernal",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:primordial",
+      "displayName": "Primordial",
+      "script": "Dwarvish",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:sylvan",
+      "displayName": "Sylvan",
+      "script": "Elvish",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    },
+    {
+      "id": "lang:undercommon",
+      "displayName": "Undercommon",
+      "script": "Elvish",
+      "type": "exotic",
+      "source": "SRD 5.1"
+    }
+  ]
+}

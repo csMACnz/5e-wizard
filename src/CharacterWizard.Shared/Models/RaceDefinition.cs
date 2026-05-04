@@ -15,6 +15,9 @@ public class SubraceDefinition
 
     [JsonPropertyName("traitIds")]
     public List<string> TraitIds { get; set; } = [];
+
+    [JsonPropertyName("languageIds")]
+    public List<string> LanguageIds { get; set; } = [];
 }
 
 public class RaceDefinition
@@ -33,6 +36,9 @@ public class RaceDefinition
 
     [JsonPropertyName("traitIds")]
     public List<string> TraitIds { get; set; } = [];
+
+    [JsonPropertyName("languageIds")]
+    public List<string> LanguageIds { get; set; } = [];
 
     [JsonPropertyName("subraces")]
     public List<SubraceDefinition> Subraces { get; set; } = [];
