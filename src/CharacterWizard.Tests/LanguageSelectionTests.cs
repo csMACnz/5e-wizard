@@ -237,7 +237,7 @@ public class LanguageSelectionTests
         int chosen = 0;
         int deficit = slots - chosen;
         Assert.Equal(3, deficit);
-        // Validator would produce ERR_LANGUAGE_PICKS_INCOMPLETE for deficit > 0
+        // Validator produces ERR_LANGUAGE_PICKS_INCOMPLETE when deficit > 0
         Assert.True(deficit > 0);
     }
 
