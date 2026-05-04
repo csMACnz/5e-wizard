@@ -265,8 +265,11 @@ else
         {
             var block = GetAbilityBlock(c, ab);
             Ctx.AbilitySelections[ab] = block.Base;
-            Ctx.PointBuyValues[ab] = block.Base != 0 ? block.Base : (_abilitiesConfig.PointBuy.MinScore != 0 ? _abilitiesConfig.PointBuy.MinScore : 8);
-            Ctx.RollValues[ab] = block.Base != 0 ? block.Base : 8;
+            if (block.Base != 0)
+            {
+                Ctx.PointBuyValues[ab] = block.Base;
+                Ctx.RollValues[ab] = block.Base;
+            }
         }
 
         Ctx.SelectedRaceId = c.RaceId ?? string.Empty;
