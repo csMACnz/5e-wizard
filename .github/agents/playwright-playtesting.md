@@ -275,18 +275,15 @@ Always use `FullPage = true` for context.
 
 ---
 
-## Known Bugs (Previously Identified)
+## Checking for Previously Reported Bugs
 
-These bugs are already documented and have open/potential issues — **do not re-report them** unless you have new evidence or a regression. Use them as regression test cases instead:
+Before raising a new GitHub Issue, check whether the bug has already been reported. Use the `gh` CLI or GitHub Issues MCP to list open issues:
 
-| # | Title | Location |
-|---|-------|----------|
-| 1 | App loads Roboto/Material Icons from Google Fonts CDN; fails offline | `wwwroot/index.html` lines 13–14 |
-| 2 | `/print` without session shows blank sheet (no error/redirect) | `PrintSheet.razor` |
-| 3 | Standard Array: used values still appear in other ability dropdowns | `WizardStepAbilityScores.razor` |
-| 4 | Multiclass: same class can be selected twice (no deduplication) | `ClassValidator.cs`, `WizardStepClass.razor` |
-| 5 | ASI "+1/+1": same ability selectable for both slots | `LevelFeatureValidator.cs`, `WizardStepFeatures.razor` |
-| 6 | Step 5: ASI incomplete is a non-blocking warning; user can skip | `WizardStepValidator.cs` case 4 |
+```bash
+gh issue list --state open --label bug
+```
+
+Or via the GitHub Issues MCP — search for issues matching the symptom you observed before creating a new one. Do **not** re-report an already-open issue; instead, write a regression test that verifies the expected (fixed) behaviour and reference the existing issue number in the test's doc comment.
 
 ---
 
