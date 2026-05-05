@@ -63,6 +63,17 @@ public class LevelFeatureValidator
                             $"for the ASI at {classDef.DisplayName} level {grantLevel}.");
                     }
                 }
+
+                // Validate split: the two abilities must be distinct
+                if (choice.Mode == "split" &&
+                    !string.IsNullOrEmpty(choice.AbilityOne) &&
+                    !string.IsNullOrEmpty(choice.AbilityTwo) &&
+                    choice.AbilityOne == choice.AbilityTwo)
+                {
+                    result.Errors.Add(
+                        $"ERR_ASI_SPLIT_SAME_ABILITY: Both split abilities are '{choice.AbilityOne}' " +
+                        $"for the ASI at {classDef.DisplayName} level {grantLevel}. Choose two different abilities.");
+                }
             }
         }
 

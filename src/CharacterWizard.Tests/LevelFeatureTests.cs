@@ -293,6 +293,42 @@ public class LevelFeatureTests
         Assert.Contains(result.Errors, e => e.Contains("ERR_ASI_INVALID_FEAT"));
     }
 
+    [Fact]
+    public void LevelFeatureValidator_SplitSameAbility_ProducesError()
+    {
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 4 }],
+            AsiChoices =
+            [
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "split", AbilityOne = "STR", AbilityTwo = "STR" },
+            ],
+        };
+
+        var result = new LevelFeatureValidator(TestClasses, TestFeats).Validate(character);
+
+        Assert.Contains(result.Errors, e => e.Contains("ERR_ASI_SPLIT_SAME_ABILITY"));
+    }
+
+    [Fact]
+    public void LevelFeatureValidator_SplitDistinctAbilities_NoError()
+    {
+        var character = new Character
+        {
+            Levels = [new ClassLevel { ClassId = "class:fighter", Level = 4 }],
+            AsiChoices =
+            [
+                new AsiChoice { ClassId = "class:fighter", ClassLevel = 4, Mode = "split", AbilityOne = "STR", AbilityTwo = "DEX" },
+            ],
+        };
+
+        var result = new LevelFeatureValidator(TestClasses, TestFeats).Validate(character);
+
+        Assert.DoesNotContain(result.Errors, e => e.Contains("ERR_ASI_SPLIT_SAME_ABILITY"));
+        Assert.Empty(result.Errors);
+        Assert.Empty(result.Warnings);
+    }
+
     // ── §4 — AsiChoice serialisation round-trip ──────────────────────────
 
     [Fact]
