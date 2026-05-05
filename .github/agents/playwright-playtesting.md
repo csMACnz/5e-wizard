@@ -260,18 +260,42 @@ Systematically cover these scenarios for each run:
 
 ### 3. Screenshot Conventions
 
-Save screenshots to `docs/playtest-screenshots/` with descriptive names:
+**Do not commit screenshots to the repository.** Capture screenshots into a temporary directory (e.g. `/tmp/playtest-screenshots/`) during the session only.
 
 ```
-bugN-short-description.png
+/tmp/playtest-screenshots/bugN-short-description.png
 ```
 
 e.g.:
-- `bug1-google-fonts-cdn-offline.png`
-- `bug2-print-sheet-blank.png`
-- `bug3-standard-array-duplicates.png`
+- `/tmp/playtest-screenshots/bug1-google-fonts-cdn-offline.png`
+- `/tmp/playtest-screenshots/bug2-print-sheet-blank.png`
 
-Always use `FullPage = true` for context.
+Always use `FullPage = true` for context. Screenshots are uploaded to GitHub Issues directly via the `gh` CLI `--attach` flag or the GitHub MCP server's file-upload capability. They are ephemeral — discard them after the session.
+
+---
+
+## Two Operating Modes
+
+This agent operates in one of two modes depending on the task it is given. Determine the correct mode before starting.
+
+### Mode A — Test & Fix
+
+Use this mode when asked to **fix a known or newly discovered bug**.
+
+1. Reproduce the bug with a Playwright test (the test should fail initially).
+2. Fix the production code.
+3. Confirm the regression test now passes.
+4. Open a PR with both the fix and the passing regression test.
+5. No GitHub Issue is required; no screenshots are committed to the repository.
+
+### Mode B — Test & Report
+
+Use this mode when asked to **explore the app and identify bugs** without fixing them.
+
+1. Explore the app, capture screenshots to `/tmp/playtest-screenshots/`.
+2. For each new bug: raise a GitHub Issue with the screenshot attached (see below).
+3. **Do not** commit screenshots, bug report markdown, or any new E2E test files to the repository.
+4. No PR is opened; the only repository change is the issues filed on GitHub.
 
 ---
 
@@ -287,9 +311,9 @@ Or via the GitHub Issues MCP — search for issues matching the symptom you obse
 
 ---
 
-## Adding New E2E Tests
+## Adding New E2E Tests (Mode A — Test & Fix)
 
-When you discover a bug, write a **regression test** in the appropriate test file (or create a new file in `src/CharacterWizard.E2ETests/`):
+When fixing a bug, write a **regression test** that initially fails (proving the bug exists), then passes once the fix is applied. Add it to the appropriate test file or create a new file in `src/CharacterWizard.E2ETests/`:
 
 ```csharp
 using Microsoft.Playwright;
@@ -318,14 +342,17 @@ File naming convention: `<Area>Tests.cs` or `<Feature>RegressionTests.cs`.
 
 ---
 
-## Raising GitHub Issues
+## Raising GitHub Issues (Mode B — Test & Report)
 
-For each newly discovered bug, raise a GitHub Issue using the following template. Use the `gh` CLI:
+For each newly discovered bug in Mode B, upload the screenshot and raise a GitHub Issue. Screenshots are captured to `/tmp/playtest-screenshots/` and attached directly to the issue — **never committed to the repository**.
+
+Use the `gh` CLI with `--attach` to upload the screenshot alongside the issue body:
 
 ```bash
 gh issue create \
   --title "Bug: <short description>" \
   --label "bug" \
+  --attach /tmp/playtest-screenshots/bugN-description.png \
   --body "$(cat <<'EOF'
 ## Description
 
@@ -345,10 +372,6 @@ gh issue create \
 
 <What actually happens>
 
-## Screenshot
-
-![Screenshot](docs/playtest-screenshots/bugN-description.png)
-
 ## Affected Files
 
 - `path/to/file.cs` — <what needs to change>
@@ -360,37 +383,48 @@ EOF
 )"
 ```
 
-Or create issues via the GitHub MCP server if available.
+Or create issues via the GitHub MCP server if available, using its file-upload capability to attach the screenshot.
 
 ---
 
 ## Agent Workflow
 
-Follow this sequence for each playtesting session:
+### Mode A — Test & Fix workflow
 
-1. **Explore** — Read `requirements.md` and skim `src/CharacterWizard.Client/Pages/WizardSteps/` to understand current state before testing.
+1. **Explore** — Read `requirements.md` and the relevant `.razor` components to understand the expected behaviour.
+2. **Build** — Run `dotnet build src/CharacterWizard.slnx -c Release` and fix any build errors.
+3. **Reproduce** — Write a Playwright test that reproduces the bug (it should fail at this point).
+4. **Fix** — Make the production code change that resolves the bug.
+5. **Verify** — Confirm the regression test now passes: `dotnet test src/CharacterWizard.E2ETests -c Release`.
+6. **PR** — Use `report_progress` to open/update a PR containing both the fix and the passing regression test.
+
+### Mode B — Test & Report workflow
+
+1. **Explore** — Read `requirements.md` and skim `src/CharacterWizard.Client/Pages/WizardSteps/` to understand the current state before testing.
 2. **Build** — Run `dotnet build src/CharacterWizard.slnx -c Release` and fix any build errors.
 3. **Baseline** — Run existing E2E tests (`dotnet test src/CharacterWizard.E2ETests -c Release`) and note any pre-existing failures.
-4. **Playtest** — Write Playwright test methods that exercise the coverage matrix above, take screenshots on failure or unexpected behaviour.
-5. **Document** — For each new bug found:
-   - Commit screenshot to `docs/playtest-screenshots/`.
-   - Write a regression test in `src/CharacterWizard.E2ETests/`.
-   - Raise a GitHub Issue with screenshot and reproduction steps.
-6. **Verify regressions** — Re-run the full E2E suite to confirm new tests fail (as expected, since bugs are not yet fixed). Record test names in the issue for tracking.
-7. **Report** — Use `report_progress` to push screenshots and regression tests. Update the PR description with a summary of findings.
+4. **Playtest** — Explore the app via Playwright following the coverage matrix above. Capture screenshots to `/tmp/playtest-screenshots/` on failure or unexpected behaviour.
+5. **Check for duplicates** — Run `gh issue list --state open --label bug` before filing anything.
+6. **Report** — For each new bug, raise a GitHub Issue with the screenshot attached (via `gh issue create --attach …`). **Do not** commit screenshots or any new files to the repository.
+7. **Clean up** — Delete `/tmp/playtest-screenshots/` at the end of the session.
 
 ---
 
 ## Quality Bar
 
-A good playtesting session should:
+**Mode A (Test & Fix)** — a good fix session should:
+
+- Include a regression test that was **failing** before the fix and **passes** after.
+- Not leave the E2E suite in a worse state than before.
+- Not commit screenshots or bug report artefacts to the repository.
+
+**Mode B (Test & Report)** — a good exploration session should:
 
 - Cover **all 9 wizard steps** plus Home, Characters, Print, and Import pages.
 - Test at minimum **2 viewport sizes**: 1280×720 (desktop) and 390×844 (mobile).
 - Find at least **5 distinct bugs or UX issues** per session.
-- Capture a screenshot for **every reported bug**.
-- Write a **regression test** for every reproducible bug.
-- Raise a **GitHub Issue** for every new bug.
+- Capture a screenshot for **every reported bug** and attach it to the GitHub Issue.
+- **Not** commit screenshots, markdown reports, or E2E test stubs to the repository.
 
 ---
 
