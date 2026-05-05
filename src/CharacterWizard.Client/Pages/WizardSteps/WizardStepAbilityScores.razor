@@ -26,10 +26,13 @@
                            Value="@Ctx.AbilitySelections[ab]"
                            ValueChanged="@(async (int v) => { Ctx.AbilitySelections[ab] = v; await OnChanged.InvokeAsync(); })"
                            Variant="Variant.Outlined">
-                    <MudSelectItem Value="0"></MudSelectItem>
+                    <MudSelectItem Value="0">— choose —</MudSelectItem>
                     @foreach (int v in AbilitiesConfig.StandardArray)
                     {
-                        <MudSelectItem Value="@v">@v (mod @WizardContext.Modifier(v))</MudSelectItem>
+                        bool usedByOther = WizardContext.Abilities
+                            .Where(a => a != ab)
+                            .Any(a => Ctx.AbilitySelections[a] == v);
+                        <MudSelectItem Value="@v" Disabled="@usedByOther">@v (mod @WizardContext.Modifier(v))@(usedByOther ? " — used" : "")</MudSelectItem>
                     }
                 </MudSelect>
             </MudItem>
