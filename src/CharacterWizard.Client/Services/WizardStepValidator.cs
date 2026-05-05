@@ -95,7 +95,7 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                 break;
 
             case 4:
-                // Features step: warn for incomplete ASI choices (non-blocking)
+                // Features step: block for incomplete ASI choices
                 {
                     var levels = ctx.ClassEntries.Where(e => !string.IsNullOrEmpty(e.ClassId)).ToList();
                     foreach (var entry in levels)
@@ -109,8 +109,8 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                             if (!featIds.Contains("feat:asi")) continue;
                             string key = $"{entry.ClassId}|{grantLevel}";
                             if (!ctx.AllAsiChoicesByKey.ContainsKey(key))
-                                result.Warnings.Add(
-                                    $"WARN_ASI_INCOMPLETE: ASI at {clsDef.DisplayName} level {grantLevel} has not been made.");
+                                result.Errors.Add(
+                                    $"ERR_ASI_INCOMPLETE: ASI at {clsDef.DisplayName} level {grantLevel} has not been made.");
                         }
                     }
 
