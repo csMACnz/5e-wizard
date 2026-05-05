@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject BuildInfoService BuildInfoSvc
+@inject NavigationManager Navigation
+@implements IDisposable
 
 <!-- Skip Navigation for keyboard/screen-reader users -->
 <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -52,6 +54,18 @@
     protected override async Task OnInitializedAsync()
     {
         _buildInfo = await BuildInfoSvc.GetAsync();
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        _drawerOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
