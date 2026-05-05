@@ -270,7 +270,7 @@ e.g.:
 - `/tmp/playtest-screenshots/bug1-google-fonts-cdn-offline.png`
 - `/tmp/playtest-screenshots/bug2-print-sheet-blank.png`
 
-Always use `FullPage = true` for context. Screenshots are uploaded to GitHub Issues directly via the `gh` CLI `--attach` flag or the GitHub MCP server's file-upload capability. They are ephemeral — discard them after the session.
+Always use `FullPage = true` for context. Screenshots are uploaded to GitHub Issues using the GitHub Issues MCP server. They are ephemeral — discard them from `/tmp/` after the session.
 
 ---
 
@@ -301,13 +301,7 @@ Use this mode when asked to **explore the app and identify bugs** without fixing
 
 ## Checking for Previously Reported Bugs
 
-Before raising a new GitHub Issue, check whether the bug has already been reported. Use the `gh` CLI or GitHub Issues MCP to list open issues:
-
-```bash
-gh issue list --state open --label bug
-```
-
-Or via the GitHub Issues MCP — search for issues matching the symptom you observed before creating a new one. Do **not** re-report an already-open issue; instead, write a regression test that verifies the expected (fixed) behaviour and reference the existing issue number in the test's doc comment.
+Before raising a new GitHub Issue, check whether the bug has already been reported. Use the GitHub Issues MCP server to list open bug issues and search for symptoms matching what you observed. Do **not** re-report an already-open issue; instead, write a regression test that verifies the expected (fixed) behaviour and reference the existing issue number in the test's doc comment.
 
 ---
 
@@ -344,16 +338,14 @@ File naming convention: `<Area>Tests.cs` or `<Feature>RegressionTests.cs`.
 
 ## Raising GitHub Issues (Mode B — Test & Report)
 
-For each newly discovered bug in Mode B, upload the screenshot and raise a GitHub Issue. Screenshots are captured to `/tmp/playtest-screenshots/` and attached directly to the issue — **never committed to the repository**.
+For each newly discovered bug in Mode B, upload the screenshot and raise a GitHub Issue using the **GitHub Issues MCP server**. Screenshots are captured to `/tmp/playtest-screenshots/` and attached directly to the issue — **never committed to the repository**.
 
-Use the `gh` CLI with `--attach` to upload the screenshot alongside the issue body:
+Use the GitHub Issues MCP to create an issue with the following structure:
 
-```bash
-gh issue create \
-  --title "Bug: <short description>" \
-  --label "bug" \
-  --attach /tmp/playtest-screenshots/bugN-description.png \
-  --body "$(cat <<'EOF'
+```
+Title: Bug: <short description>
+Labels: bug
+Body:
 ## Description
 
 <Clear description of the bug>
@@ -379,11 +371,9 @@ gh issue create \
 ## Severity
 
 <High | Medium | Low>
-EOF
-)"
 ```
 
-Or create issues via the GitHub MCP server if available, using its file-upload capability to attach the screenshot.
+Attach the screenshot from `/tmp/playtest-screenshots/bugN-description.png` to the issue using the MCP server's file-upload capability.
 
 ---
 
@@ -404,8 +394,8 @@ Or create issues via the GitHub MCP server if available, using its file-upload c
 2. **Build** — Run `dotnet build src/CharacterWizard.slnx -c Release` and fix any build errors.
 3. **Baseline** — Run existing E2E tests (`dotnet test src/CharacterWizard.E2ETests -c Release`) and note any pre-existing failures.
 4. **Playtest** — Explore the app via Playwright following the coverage matrix above. Capture screenshots to `/tmp/playtest-screenshots/` on failure or unexpected behaviour.
-5. **Check for duplicates** — Run `gh issue list --state open --label bug` before filing anything.
-6. **Report** — For each new bug, raise a GitHub Issue with the screenshot attached (via `gh issue create --attach …`). **Do not** commit screenshots or any new files to the repository.
+5. **Check for duplicates** — Use the GitHub Issues MCP to search open bug issues before filing anything.
+6. **Report** — For each new bug, raise a GitHub Issue with the screenshot attached using the GitHub Issues MCP. **Do not** commit screenshots or any new files to the repository.
 7. **Clean up** — Delete `/tmp/playtest-screenshots/` at the end of the session.
 
 ---
