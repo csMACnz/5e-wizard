@@ -1,0 +1,50 @@
+name: "Copilot Setup Steps"
+
+# Run automatically when this file changes, or manually from the Actions tab.
+on:
+    workflow_dispatch:
+    push:
+        paths:
+            - .github/workflows/copilot-setup-steps.yml
+    pull_request:
+        paths:
+            - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+    # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+    copilot-setup-steps:
+        runs-on: ubuntu-latest
+
+        permissions:
+            # Allow the agent to read repository contents (e.g. for checkout/restore).
+            contents: read
+            # Allow the agent to create and update GitHub Issues via the Issues MCP tool.
+            issues: write
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup .NET 10
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: '10.0.x'
+                  cache: true
+                  cache-dependency-path: '**/*.csproj'
+
+            - name: Restore .NET dependencies
+              run: dotnet restore src/CharacterWizard.slnx
+
+            - name: Build solution (Release)
+              run: dotnet build src/CharacterWizard.slnx -c Release --no-restore
+
+            - name: Cache Playwright browsers
+              id: playwright-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-chromium-${{ runner.os }}-${{ hashFiles('**/CharacterWizard.E2ETests.csproj') }}
+
+            - name: Install Playwright browsers
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              run: pwsh src/CharacterWizard.E2ETests/bin/Release/net10.0/playwright.ps1 install chromium --with-deps
