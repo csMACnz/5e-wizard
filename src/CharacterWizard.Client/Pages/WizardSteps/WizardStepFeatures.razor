@@ -130,7 +130,7 @@
                                    ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, v, currentChoice?.AbilityTwo))"
                                    Variant="Variant.Outlined" Style="max-width:200px">
                             <MudSelectItem Value="@string.Empty"></MudSelectItem>
-                            @foreach (var ab in WizardContext.Abilities)
+                            @foreach (var ab in WizardContext.Abilities.Where(a => a != currentChoice?.AbilityTwo))
                             {
                                 <MudSelectItem Value="@ab">@ab</MudSelectItem>
                             }
@@ -141,7 +141,7 @@
                                    ValueChanged="@(async (string v) => await OnAsiAbilityChanged(classEntry.ClassId, asiLevel, currentChoice?.AbilityOne, v))"
                                    Variant="Variant.Outlined" Style="max-width:200px">
                             <MudSelectItem Value="@string.Empty"></MudSelectItem>
-                            @foreach (var ab in WizardContext.Abilities)
+                            @foreach (var ab in WizardContext.Abilities.Where(a => a != currentChoice?.AbilityOne))
                             {
                                 <MudSelectItem Value="@ab">@ab</MudSelectItem>
                             }
