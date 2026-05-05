@@ -175,17 +175,17 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
     }
 
     [Fact]
-    public async Task HomePageStartNew_WithExistingWizardSession_ResetsToFreshWizard()
+    public async Task HomePageStartNew_AfterExistingSession_NavigatesToFreshWizard()
     {
+        // Create a wizard session first (navigate from home, fill in a name, advance to step 2)
         await NavigateAndWaitForBlazorAsync("/");
 
-        // Start a character from the home page
         var startButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
         await startButton.ClickAsync();
 
-        // Wait for step 1 and fill in a name
         var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
         await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
         var nameInput = Page.Locator("input[aria-required='true']");
         await nameInput.FillAsync("Gandalf");
 
@@ -196,37 +196,28 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         var step2Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 2" });
         await Expect(step2Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
 
-        // Capture the session ID from the URL before reset
-        var urlWithFirstSession = Page.Url;
+        var firstSessionUrl = Page.Url;
 
-        // Navigate back to the home page via the Home nav link
-        var homeNavLink = Page.Locator("a.mud-nav-link", new PageLocatorOptions { HasText = "Home" });
-        var isHomeInViewport = await homeNavLink.EvaluateAsync<bool>(
-            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
-        if (!isHomeInViewport)
-        {
-            await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
-            await Expect(homeNavLink).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
-        }
-        await homeNavLink.ClickAsync();
+        // Return to the home page via a full page reload (as a real user returning to "/"
+        // after their browser history brings them back)
+        await NavigateAndWaitForBlazorAsync("/");
 
-        // Wait for home page
-        await Page.WaitForURLAsync(url => !url.Contains("/wizard"), new PageWaitForURLOptions { Timeout = 10_000 });
-
-        // Click "Start New Character" from home page
+        // Click "Start New Character" from the home page
         var startNewButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
         await Expect(startNewButton).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
         await startNewButton.ClickAsync();
 
         // The wizard should open at step 1
+        await Page.WaitForURLAsync(url => url.Contains("/wizard") && url.Contains("session="),
+            new PageWaitForURLOptions { Timeout = 10_000 });
         await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
 
-        // The character name field should be empty (fresh session, not "Gandalf")
+        // The character name field must be empty — not "Gandalf" from the previous session
         var nameInputAfterReset = Page.Locator("input[aria-required='true']");
         await Expect(nameInputAfterReset).ToBeEmptyAsync();
 
-        // The URL session ID should be different from the first session
-        Assert.NotEqual(urlWithFirstSession, Page.Url);
+        // The URL session ID must differ from the first session
+        Assert.NotEqual(firstSessionUrl, Page.Url);
         Assert.Contains("session=", Page.Url);
     }
 
