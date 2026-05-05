@@ -3,6 +3,7 @@
 @using CharacterWizard.Shared.Models
 @inject CharacterSessionService SessionService
 @inject CharacterWizardState State
+@inject WizardContext Ctx
 @inject NavigationManager Nav
 
 <PageTitle>My Characters — 5e Character Wizard</PageTitle>
@@ -121,6 +122,7 @@ else
         State.SessionId = Guid.NewGuid().ToString("N");
         State.Character = new() { Id = Guid.NewGuid().ToString() };
         State.ActiveStep = 0;
+        Ctx.Reset();
         Nav.NavigateTo($"wizard?session={State.SessionId}");
     }
 

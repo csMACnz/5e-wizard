@@ -174,6 +174,141 @@ public sealed class WizardTests(BlazorServerFixture server) : E2ETestBase(server
         Assert.Contains("session=", Page.Url);
     }
 
+    [Fact]
+    public async Task HomePageStartNew_WithExistingWizardSession_ResetsToFreshWizard()
+    {
+        await NavigateAndWaitForBlazorAsync("/");
+
+        // Start a character from the home page
+        var startButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
+        await startButton.ClickAsync();
+
+        // Wait for step 1 and fill in a name
+        var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+        var nameInput = Page.Locator("input[aria-required='true']");
+        await nameInput.FillAsync("Gandalf");
+
+        var nextButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Next" });
+        await Expect(nextButton).ToBeEnabledAsync();
+        await nextButton.ClickAsync();
+
+        var step2Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 2" });
+        await Expect(step2Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+
+        // Capture the session ID from the URL before reset
+        var urlWithFirstSession = Page.Url;
+
+        // Navigate back to the home page via the Home nav link
+        var homeNavLink = Page.Locator("a.mud-nav-link", new PageLocatorOptions { HasText = "Home" });
+        var isHomeInViewport = await homeNavLink.EvaluateAsync<bool>(
+            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
+        if (!isHomeInViewport)
+        {
+            await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
+            await Expect(homeNavLink).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
+        }
+        await homeNavLink.ClickAsync();
+
+        // Wait for home page
+        await Page.WaitForURLAsync(url => !url.Contains("/wizard"), new PageWaitForURLOptions { Timeout = 10_000 });
+
+        // Click "Start New Character" from home page
+        var startNewButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
+        await Expect(startNewButton).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+        await startNewButton.ClickAsync();
+
+        // The wizard should open at step 1
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
+        // The character name field should be empty (fresh session, not "Gandalf")
+        var nameInputAfterReset = Page.Locator("input[aria-required='true']");
+        await Expect(nameInputAfterReset).ToBeEmptyAsync();
+
+        // The URL session ID should be different from the first session
+        Assert.NotEqual(urlWithFirstSession, Page.Url);
+        Assert.Contains("session=", Page.Url);
+    }
+
+    [Fact]
+    public async Task CharactersPageStartNew_NavigatesToFreshWizard()
+    {
+        await NavigateAndWaitForBlazorAsync("/characters");
+
+        // The Characters page should have a "Start New Character" button
+        var startNewButton = Page.Locator("button", new PageLocatorOptions { HasTextString = "Start New Character" });
+        await Expect(startNewButton).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 10_000 });
+        await startNewButton.ClickAsync();
+
+        // Should navigate to the wizard at step 1
+        await Page.WaitForURLAsync(url => url.Contains("/wizard") && url.Contains("session="),
+            new PageWaitForURLOptions { Timeout = 10_000 });
+
+        var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
+        // The character name field should be empty
+        var nameInput = Page.Locator("input[aria-required='true']");
+        await Expect(nameInput).ToBeEmptyAsync();
+    }
+
+    [Fact]
+    public async Task NewCharacterMenuButton_ClosesMenuDrawer()
+    {
+        await NavigateAndWaitForBlazorAsync("/");
+
+        // Open the drawer
+        await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
+
+        // Verify the "New Character" nav item is in the viewport (drawer is open)
+        var newCharacterNavItem = Page.Locator(".mud-nav-link")
+            .Filter(new LocatorFilterOptions { HasText = "New Character" });
+        await Expect(newCharacterNavItem).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
+
+        // Click "New Character" in the menu
+        await newCharacterNavItem.ClickAsync();
+
+        // Wait for navigation to the wizard
+        await Page.WaitForURLAsync(url => url.Contains("/wizard") && url.Contains("session="),
+            new PageWaitForURLOptions { Timeout = 10_000 });
+
+        // The drawer should now be closed: the nav item should no longer be in the viewport
+        var isInViewport = await newCharacterNavItem.EvaluateAsync<bool>(
+            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
+        Assert.False(isInViewport, "The navigation drawer should have closed after clicking 'New Character'.");
+    }
+
+    [Fact]
+    public async Task NewCharacterMenuButton_FromCharactersPage_NavigatesToFreshWizard()
+    {
+        await NavigateAndWaitForBlazorAsync("/characters");
+
+        // Open the nav drawer and click "New Character"
+        var newCharacterNavItem = Page.Locator(".mud-nav-link")
+            .Filter(new LocatorFilterOptions { HasText = "New Character" });
+
+        var isInViewport = await newCharacterNavItem.EvaluateAsync<bool>(
+            "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth; }");
+        if (!isInViewport)
+        {
+            await Page.Locator("button[aria-label='Toggle navigation menu']").ClickAsync();
+            await Expect(newCharacterNavItem).ToBeInViewportAsync(new LocatorAssertionsToBeInViewportOptions { Timeout = 10_000 });
+        }
+
+        await newCharacterNavItem.ClickAsync();
+
+        // Should navigate to the wizard at step 1
+        await Page.WaitForURLAsync(url => url.Contains("/wizard") && url.Contains("session="),
+            new PageWaitForURLOptions { Timeout = 10_000 });
+
+        var step1Heading = Page.Locator("h5", new PageLocatorOptions { HasTextString = "Step 1" });
+        await Expect(step1Heading).ToBeVisibleAsync(new LocatorAssertionsToBeVisibleOptions { Timeout = 60_000 });
+
+        // The character name field should be empty (fresh session)
+        var nameInput = Page.Locator("input[aria-required='true']");
+        await Expect(nameInput).ToBeEmptyAsync();
+    }
+
     // Convenience wrapper
     private static ILocatorAssertions Expect(ILocator locator) =>
         Assertions.Expect(locator);
