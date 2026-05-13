@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 using CharacterWizard.Shared.Validation;
 
 namespace CharacterWizard.Client.Services;
@@ -208,7 +209,7 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                     var wizardEntry = ctx.ClassEntries.FirstOrDefault(e => e.ClassId == "class:wizard");
                     if (wizardEntry != null && wizardEntry.Level >= 1)
                     {
-                        int requiredSpellbookCount = 6 + 2 * (wizardEntry.Level - 1);
+                        int requiredSpellbookCount = SpellSelectionRules.GetWizardRequiredSpellbookCount(wizardEntry.Level);
                         if (ctx.WizardSpellbookIds.Count < requiredSpellbookCount)
                             result.Warnings.Add($"WARN_SPELL_WIZARD_SPELLBOOK_COUNT: Wizard spellbook should have {requiredSpellbookCount} starting spells ({ctx.WizardSpellbookIds.Count} selected).");
                     }
@@ -216,14 +217,10 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                     // Racial cantrip warning
                     if (string.IsNullOrEmpty(ctx.SelectedRacialCantripId))
                     {
-                        // Only warn if race/subrace has trait:cantrip
-                        var race = races.FirstOrDefault(r => r.Id == ctx.SelectedRaceId);
-                        bool hasCantripTrait = race?.TraitIds.Contains("trait:cantrip") == true;
-                        if (!hasCantripTrait && !string.IsNullOrEmpty(ctx.SelectedSubraceId))
-                        {
-                            var sub = race?.Subraces.FirstOrDefault(s => s.Id == ctx.SelectedSubraceId);
-                            hasCantripTrait = sub?.TraitIds.Contains("trait:cantrip") == true;
-                        }
+                        bool hasCantripTrait = SpellSelectionRules.HasRacialCantripTrait(
+                            races,
+                            ctx.SelectedRaceId,
+                            ctx.SelectedSubraceId);
                         if (hasCantripTrait)
                             result.Warnings.Add("WARN_RACIAL_CANTRIP_MISSING: A racial cantrip has not been selected.");
                     }
@@ -235,8 +232,7 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                         var bardDef = classes.FirstOrDefault(c => c.Id == "class:bard");
                         if (bardDef != null)
                         {
-                            int[] msLevels = [10, 14, 18];
-                            foreach (int msLevel in msLevels)
+                            foreach (int msLevel in SpellSelectionRules.MagicalSecretsGrantLevels)
                             {
                                 if (bardEntry.Level < msLevel) continue;
                                 string featKey = $"feat:magical-secrets-{msLevel}";
@@ -252,15 +248,14 @@ public sealed class WizardStepValidator(WizardContext ctx, CharacterWizardState 
                     var warlockEntry = ctx.ClassEntries.FirstOrDefault(e => e.ClassId == "class:warlock");
                     if (warlockEntry != null)
                     {
-                        int[] arcanumMinLevels = [11, 13, 15, 17];
-                        int[] arcanumSpellLevels = [6, 7, 8, 9];
-                        for (int i = 0; i < arcanumMinLevels.Length; i++)
+                        for (int i = 0; i < SpellSelectionRules.MysticArcanumMinLevels.Length; i++)
                         {
-                            if (warlockEntry.Level < arcanumMinLevels[i]) continue;
-                            string featKey = $"feat:mystic-arcanum-{arcanumSpellLevels[i]}";
+                            if (warlockEntry.Level < SpellSelectionRules.MysticArcanumMinLevels[i]) continue;
+                            int spellLevel = SpellSelectionRules.MysticArcanumSpellLevels[i];
+                            string featKey = $"feat:mystic-arcanum-{spellLevel}";
                             ctx.MysticArcanumSelections.TryGetValue(featKey, out var selection);
                             if (string.IsNullOrEmpty(selection))
-                                result.Warnings.Add($"WARN_MYSTIC_ARCANUM_INCOMPLETE: Mystic Arcanum (level {arcanumSpellLevels[i]} spell) has not been selected.");
+                                result.Warnings.Add($"WARN_MYSTIC_ARCANUM_INCOMPLETE: Mystic Arcanum (level {spellLevel} spell) has not been selected.");
                         }
                     }
                 }

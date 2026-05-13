@@ -353,16 +353,8 @@ else
         _activeStep = State.ActiveStep;
     }
 
-    private static AbilityBlock GetAbilityBlock(Character c, string ability) => ability switch
-    {
-        "STR" => c.AbilityScores.STR,
-        "DEX" => c.AbilityScores.DEX,
-        "CON" => c.AbilityScores.CON,
-        "INT" => c.AbilityScores.INT,
-        "WIS" => c.AbilityScores.WIS,
-        "CHA" => c.AbilityScores.CHA,
-        _ => new AbilityBlock(),
-    };
+    private static AbilityBlock GetAbilityBlock(Character c, string ability) =>
+        AbilityHelper.GetAbilityBlock(c, ability);
 
     // ── Validation ────────────────────────────────────────────────────────
     private ValidationResult ValidateStep(int step) =>

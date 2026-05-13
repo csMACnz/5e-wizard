@@ -126,7 +126,7 @@ public class SpellValidator
             // At level 1: 6 spells; each additional level adds 2 more (6 + 2*(level-1) total minimum).
             if (classLevel.ClassId == "class:wizard" && level >= 1)
             {
-                int requiredSpellbookCount = 6 + 2 * (level - 1);
+                int requiredSpellbookCount = SpellSelectionRules.GetWizardRequiredSpellbookCount(level);
                 var wizardSpellbookSpells = character.Spells
                     .Where(s => s.ClassId == "class:wizard" && spellLookup.TryGetValue(s.SpellId, out var sd) && sd.Level >= 1 && sd.Level <= highestSlot)
                     .ToList();

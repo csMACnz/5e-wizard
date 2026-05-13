@@ -59,13 +59,13 @@ public sealed class WizardRandomizerService(WizardContext ctx, IRngFactory rngFa
     {
         var rng = rngFactory.Create();
         foreach (var ab in WizardContext.Abilities)
-            ctx.RollValues[ab] = RollAbilityScore(rng);
+            ctx.RollValues[ab] = DiceHelper.RollAbilityScore(rng);
     }
 
     public void RerollAbility(string ability)
     {
         var rng = rngFactory.Create();
-        ctx.RollValues[ability] = RollAbilityScore(rng);
+        ctx.RollValues[ability] = DiceHelper.RollAbilityScore(rng);
     }
 
     // ── Race ──────────────────────────────────────────────────────────────
@@ -194,7 +194,7 @@ public sealed class WizardRandomizerService(WizardContext ctx, IRngFactory rngFa
         int countToSelect;
         if (isPrepare)
         {
-            var block = GetAbilityBlock(character, spellcastingAbility);
+            var block = AbilityHelper.GetAbilityBlock(character, spellcastingAbility);
             int modifier = WizardContext.Modifier(block.Final);
             countToSelect = Math.Max(1, Math.Min(modifier + classLevel, leveledSpells.Count));
         }
@@ -216,48 +216,15 @@ public sealed class WizardRandomizerService(WizardContext ctx, IRngFactory rngFa
         var config = classStartingEquipmentConfigs.FirstOrDefault(e => e.ClassId == primaryClassId);
         if (config == null) return;
         var rng = rngFactory.Create();
-        ctx.ClassStartingGold = RollWealthExpression(rng, config.StartingWealthRoll);
+        ctx.ClassStartingGold = DiceHelper.TryRollExpression(rng, config.StartingWealthRoll, out int rolled)
+            ? rolled
+            : 0;
     }
 
     // ── Static helpers ────────────────────────────────────────────────────
 
-    public static int RollAbilityScore(IRng rng)
-    {
-        int r1 = rng.Next(1, 7);
-        int r2 = rng.Next(1, 7);
-        int r3 = rng.Next(1, 7);
-        int r4 = rng.Next(1, 7);
-        return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
-    }
+    public static int RollAbilityScore(IRng rng) => DiceHelper.RollAbilityScore(rng);
 
-    public static int RollWealthExpression(IRng rng, string expression)
-    {
-        int multiplier = 1;
-        var parts = expression.Split('*');
-        var dicePart = parts[0].Trim();
-        if (parts.Length == 2 && int.TryParse(parts[1].Trim(), out int m))
-            multiplier = m;
-
-        var diceParts = dicePart.Split('d');
-        if (diceParts.Length != 2) return 0;
-        if (!int.TryParse(diceParts[0], out int count) || !int.TryParse(diceParts[1], out int sides))
-            return 0;
-
-        int total = 0;
-        for (int i = 0; i < count; i++)
-            total += rng.Next(1, sides + 1);
-
-        return total * multiplier;
-    }
-
-    private static AbilityBlock GetAbilityBlock(Character c, string ability) => ability switch
-    {
-        "STR" => c.AbilityScores.STR,
-        "DEX" => c.AbilityScores.DEX,
-        "CON" => c.AbilityScores.CON,
-        "INT" => c.AbilityScores.INT,
-        "WIS" => c.AbilityScores.WIS,
-        "CHA" => c.AbilityScores.CHA,
-        _ => new AbilityBlock(),
-    };
+    public static int RollWealthExpression(IRng rng, string expression) =>
+        DiceHelper.TryRollExpression(rng, expression, out int result) ? result : 0;
 }

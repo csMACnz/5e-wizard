@@ -14,15 +14,6 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         "Rowan Whitepeak", "Vex Shadowmere", "Cleo Starhelm", "Drake Thornfield",
     ];
 
-    private static readonly List<string> _allSkillIds =
-    [
-        "skill:acrobatics", "skill:animal-handling", "skill:arcana", "skill:athletics",
-        "skill:deception", "skill:history", "skill:insight", "skill:intimidation",
-        "skill:investigation", "skill:medicine", "skill:nature", "skill:perception",
-        "skill:performance", "skill:persuasion", "skill:religion", "skill:sleight-of-hand",
-        "skill:stealth", "skill:survival",
-    ];
-
     public async Task<Character> GenerateAsync()
     {
         var abilitiesConfig = await dataService.GetAbilitiesConfigAsync();
@@ -47,9 +38,9 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         // Step 2 — Ability Scores (method from config: 4d6 drop lowest)
         string[] abilityNames = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
         int rollCount = abilitiesConfig.Roll.Count > 0 ? abilitiesConfig.Roll.Count : abilityNames.Length;
-        var rolledScores = Enumerable.Range(0, rollCount).Select(_ => RollAbilityScore(rng)).ToArray();
+        var rolledScores = Enumerable.Range(0, rollCount).Select(_ => DiceHelper.RollAbilityScore(rng)).ToArray();
         for (int i = 0; i < Math.Min(rollCount, abilityNames.Length); i++)
-            GetAbilityScoreBlock(c, abilityNames[i]).Base = rolledScores[i];
+            AbilityHelper.GetAbilityBlock(c, abilityNames[i]).Base = rolledScores[i];
 
         // Step 3 — Race
         var race = races[rng.Next(races.Count)];
@@ -57,7 +48,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         if (race.Subraces.Count > 0)
             c.SubraceId = race.Subraces[rng.Next(race.Subraces.Count)].Id;
 
-        var raceBonuses = GetCombinedRacialBonuses(race, c.SubraceId ?? string.Empty);
+        var raceBonuses = AbilityHelper.GetCombinedRacialBonuses(race, c.SubraceId ?? string.Empty);
         c.AbilityScores.STR.RacialBonus = raceBonuses.GetValueOrDefault("STR", 0);
         c.AbilityScores.DEX.RacialBonus = raceBonuses.GetValueOrDefault("DEX", 0);
         c.AbilityScores.CON.RacialBonus = raceBonuses.GetValueOrDefault("CON", 0);
@@ -100,7 +91,7 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         }
 
         var classSkillOptions = cls.SkillChoices.Options.Contains("skill:any")
-            ? _allSkillIds
+            ? SkillCatalog.AllSkillIds
             : cls.SkillChoices.Options;
         var availableClassSkills = classSkillOptions
             .Where(sk => !c.Skills.ContainsKey(sk))
@@ -176,37 +167,4 @@ public sealed class RandomCharacterService(IDataService dataService, IRngFactory
         return c;
     }
 
-    private static int RollAbilityScore(IRng rng)
-    {
-        int r1 = rng.Next(1, 7);
-        int r2 = rng.Next(1, 7);
-        int r3 = rng.Next(1, 7);
-        int r4 = rng.Next(1, 7);
-        return r1 + r2 + r3 + r4 - Math.Min(Math.Min(r1, r2), Math.Min(r3, r4));
-    }
-
-    private static AbilityBlock GetAbilityScoreBlock(Character c, string ability) => ability switch
-    {
-        "STR" => c.AbilityScores.STR,
-        "DEX" => c.AbilityScores.DEX,
-        "CON" => c.AbilityScores.CON,
-        "INT" => c.AbilityScores.INT,
-        "WIS" => c.AbilityScores.WIS,
-        "CHA" => c.AbilityScores.CHA,
-        _ => throw new ArgumentOutOfRangeException(nameof(ability), ability, null),
-    };
-
-    private static Dictionary<string, int> GetCombinedRacialBonuses(RaceDefinition race, string subraceId)
-    {
-        var bonuses = new Dictionary<string, int>(race.AbilityBonuses);
-        if (!string.IsNullOrEmpty(subraceId))
-        {
-            var sub = race.Subraces.FirstOrDefault(s => s.Id == subraceId);
-            if (sub != null)
-                foreach (var (ab, v) in sub.AbilityBonuses)
-                    bonuses[ab] = bonuses.TryGetValue(ab, out int e) ? e + v : v;
-        }
-
-        return bonuses;
-    }
 }

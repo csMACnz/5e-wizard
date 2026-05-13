@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 using CharacterWizard.Shared.Validation;
 
 namespace CharacterWizard.Client.Services;
@@ -121,10 +122,10 @@ public sealed class WizardCommitService(WizardContext ctx, CharacterWizardState 
             if (choice.AbilityOne != null)
             {
                 int bonus = choice.Mode == "split" ? 1 : 2;
-                AddOtherBonus(c.AbilityScores, choice.AbilityOne, bonus);
+                AbilityHelper.AddOtherBonus(c.AbilityScores, choice.AbilityOne, bonus);
             }
             if (choice.Mode == "split" && choice.AbilityTwo != null)
-                AddOtherBonus(c.AbilityScores, choice.AbilityTwo, 1);
+                AbilityHelper.AddOtherBonus(c.AbilityScores, choice.AbilityTwo, 1);
         }
 
         // HP entries from shadow state (only exportable levels)
@@ -317,16 +318,4 @@ public sealed class WizardCommitService(WizardContext ctx, CharacterWizardState 
         }
     }
 
-    private static void AddOtherBonus(AbilityScores scores, string ability, int amount)
-    {
-        switch (ability)
-        {
-            case "STR": scores.STR.OtherBonus += amount; break;
-            case "DEX": scores.DEX.OtherBonus += amount; break;
-            case "CON": scores.CON.OtherBonus += amount; break;
-            case "INT": scores.INT.OtherBonus += amount; break;
-            case "WIS": scores.WIS.OtherBonus += amount; break;
-            case "CHA": scores.CHA.OtherBonus += amount; break;
-        }
-    }
 }

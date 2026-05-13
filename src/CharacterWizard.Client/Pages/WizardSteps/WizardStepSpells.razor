@@ -29,7 +29,7 @@
         selectedSubrace = selectedRace?.Subraces.FirstOrDefault(s => s.Id == Ctx.SelectedSubraceId);
         racialCantripFromSubrace = selectedSubrace?.TraitIds.Contains("trait:cantrip") == true;
     }
-    bool hasRacialCantrip = racialCantripFromRace || racialCantripFromSubrace;
+    bool hasRacialCantrip = SpellSelectionRules.HasRacialCantripTrait(Races, Ctx.SelectedRaceId, Ctx.SelectedSubraceId);
     var wizardCantrips = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level == 0).ToList();
 }
 
@@ -233,7 +233,7 @@ else
                     @* Wizard spellbook section *@
                     @if (entry.ClassId == "class:wizard" && !isSubclassSpellcasting)
                     {
-                        int requiredSpellbookCount = 6 + 2 * (level - 1);
+                        int requiredSpellbookCount = SpellSelectionRules.GetWizardRequiredSpellbookCount(level);
                         var wizardBookSpells = Spells.Where(s => s.ClassIds.Contains("class:wizard") && s.Level >= 1 && s.Level <= highestSlot).ToList();
                         int spellbookCount = Ctx.WizardSpellbookIds.Count;
                         <MudText Typo="Typo.subtitle2" Class="mt-3 mb-1">
@@ -260,8 +260,7 @@ else
                     @* Bard Magical Secrets *@
                     @if (entry.ClassId == "class:bard" && !isSubclassSpellcasting)
                     {
-                        int[] msGrantLevels = [10, 14, 18];
-                        foreach (int msLevel in msGrantLevels)
+                        foreach (int msLevel in SpellSelectionRules.MagicalSecretsGrantLevels)
                         {
                             if (level < msLevel) continue;
                             string featKey = $"feat:magical-secrets-{msLevel}";
@@ -295,12 +294,10 @@ else
                     @* Warlock Mystic Arcanum *@
                     @if (entry.ClassId == "class:warlock" && !isSubclassSpellcasting)
                     {
-                        int[] arcanumMinLevels = [11, 13, 15, 17];
-                        int[] arcanumSpellLevels = [6, 7, 8, 9];
-                        for (int ai = 0; ai < arcanumMinLevels.Length; ai++)
+                        for (int ai = 0; ai < SpellSelectionRules.MysticArcanumMinLevels.Length; ai++)
                         {
-                            if (level < arcanumMinLevels[ai]) continue;
-                            int arcanumSpellLevel = arcanumSpellLevels[ai];
+                            if (level < SpellSelectionRules.MysticArcanumMinLevels[ai]) continue;
+                            int arcanumSpellLevel = SpellSelectionRules.MysticArcanumSpellLevels[ai];
                             string featKey = $"feat:mystic-arcanum-{arcanumSpellLevel}";
                             if (!Ctx.MysticArcanumSelections.ContainsKey(featKey))
                                 Ctx.MysticArcanumSelections[featKey] = string.Empty;

@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Shared.Export;
 
@@ -14,29 +15,6 @@ namespace CharacterWizard.Shared.Export;
 /// </remarks>
 public class FightClub5eImporter
 {
-    // Reverse mapping: proficiency number → skill ID (100–117 in FC5e).
-    private static readonly Dictionary<int, string> SkillIdByNumber = new()
-    {
-        [100] = "skill:acrobatics",
-        [101] = "skill:animal-handling",
-        [102] = "skill:arcana",
-        [103] = "skill:athletics",
-        [104] = "skill:deception",
-        [105] = "skill:history",
-        [106] = "skill:insight",
-        [107] = "skill:intimidation",
-        [108] = "skill:investigation",
-        [109] = "skill:medicine",
-        [110] = "skill:nature",
-        [111] = "skill:perception",
-        [112] = "skill:performance",
-        [113] = "skill:persuasion",
-        [114] = "skill:religion",
-        [115] = "skill:sleight-of-hand",
-        [116] = "skill:stealth",
-        [117] = "skill:survival",
-    };
-
     private readonly IReadOnlyList<RaceDefinition> _races;
     private readonly IReadOnlyList<ClassDefinition> _classes;
     private readonly IReadOnlyList<BackgroundDefinition> _backgrounds;
@@ -115,7 +93,7 @@ public class FightClub5eImporter
                 foreach (var profEl in classEl.Elements("proficiency"))
                 {
                     if (int.TryParse(profEl.Value, out var num) && num >= 100
-                        && SkillIdByNumber.TryGetValue(num, out var skillId))
+                        && SkillCatalog.FightClubSkillIdByNumber.TryGetValue(num, out var skillId))
                     {
                         result.Skills[skillId] = "class";
                     }
@@ -139,7 +117,7 @@ public class FightClub5eImporter
             foreach (var profEl in bgEl.Elements("proficiency"))
             {
                 if (int.TryParse(profEl.Value, out var num) && num >= 100
-                    && SkillIdByNumber.TryGetValue(num, out var skillId))
+                    && SkillCatalog.FightClubSkillIdByNumber.TryGetValue(num, out var skillId))
                 {
                     result.Skills[skillId] = "background";
                 }
