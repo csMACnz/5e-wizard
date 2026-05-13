@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Shared.Validation;
 
@@ -56,7 +57,7 @@ public class RaceValidator
         var allAbilities = new[] { "STR", "DEX", "CON", "INT", "WIS", "CHA" };
         foreach (var ability in allAbilities)
         {
-            int actualBonus = GetRacialBonus(character.AbilityScores, ability);
+            int actualBonus = AbilityHelper.GetAbilityBlock(character.AbilityScores, ability).RacialBonus;
             expectedBonuses.TryGetValue(ability, out int expectedBonus);
 
             if (actualBonus != expectedBonus)
@@ -69,15 +70,4 @@ public class RaceValidator
 
         return result;
     }
-
-    private static int GetRacialBonus(AbilityScores scores, string ability) => ability switch
-    {
-        "STR" => scores.STR.RacialBonus,
-        "DEX" => scores.DEX.RacialBonus,
-        "CON" => scores.CON.RacialBonus,
-        "INT" => scores.INT.RacialBonus,
-        "WIS" => scores.WIS.RacialBonus,
-        "CHA" => scores.CHA.RacialBonus,
-        _ => 0,
-    };
 }

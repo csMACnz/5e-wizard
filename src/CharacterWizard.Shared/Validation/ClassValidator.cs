@@ -1,4 +1,5 @@
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Shared.Validation;
 
@@ -58,7 +59,7 @@ public class ClassValidator
                 var classDef = _classes.First(c => c.Id == classLevel.ClassId);
                 foreach (var (ability, required) in classDef.MulticlassPrereqs)
                 {
-                    int actualScore = GetAbilityScore(character.AbilityScores, ability);
+                    int actualScore = AbilityHelper.GetAbilityBlock(character.AbilityScores, ability).Final;
                     if (actualScore < required)
                     {
                         result.Errors.Add(
@@ -97,15 +98,4 @@ public class ClassValidator
 
         return result;
     }
-
-    private static int GetAbilityScore(AbilityScores scores, string ability) => ability switch
-    {
-        "STR" => scores.STR.Final,
-        "DEX" => scores.DEX.Final,
-        "CON" => scores.CON.Final,
-        "INT" => scores.INT.Final,
-        "WIS" => scores.WIS.Final,
-        "CHA" => scores.CHA.Final,
-        _ => 0,
-    };
 }

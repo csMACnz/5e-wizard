@@ -2,6 +2,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using CharacterWizard.Shared.Models;
+using CharacterWizard.Shared.Utilities;
 
 namespace CharacterWizard.Shared.Export;
 
@@ -42,29 +43,6 @@ public class FightClub5eExporter
         ["CHA"] = 5,
     };
 
-    // Skill proficiency numbers used by FightClub 5e (100–117).
-    private static readonly Dictionary<string, int> SkillProficiencyNumbers = new()
-    {
-        ["skill:acrobatics"] = 100,
-        ["skill:animal-handling"] = 101,
-        ["skill:arcana"] = 102,
-        ["skill:athletics"] = 103,
-        ["skill:deception"] = 104,
-        ["skill:history"] = 105,
-        ["skill:insight"] = 106,
-        ["skill:intimidation"] = 107,
-        ["skill:investigation"] = 108,
-        ["skill:medicine"] = 109,
-        ["skill:nature"] = 110,
-        ["skill:perception"] = 111,
-        ["skill:performance"] = 112,
-        ["skill:persuasion"] = 113,
-        ["skill:religion"] = 114,
-        ["skill:sleight-of-hand"] = 115,
-        ["skill:stealth"] = 116,
-        ["skill:survival"] = 117,
-    };
-
     private readonly IReadOnlyList<RaceDefinition> _races;
     private readonly IReadOnlyList<ClassDefinition> _classes;
     private readonly IReadOnlyList<BackgroundDefinition> _backgrounds;
@@ -103,8 +81,7 @@ public class FightClub5eExporter
 
     private XElement BuildCharacterElement(Character c)
     {
-        int conMod = Modifier(c.AbilityScores.CON.Final);
-        int maxHp = CalculateMaxHp(c, conMod);
+        int maxHp = HitPointCalculator.CalculateMaxHp(c, _classes);
 
         var race = _races.FirstOrDefault(r => r.Id == c.RaceId);
         var subrace = race?.Subraces.FirstOrDefault(s => s.Id == c.SubraceId);
@@ -251,7 +228,7 @@ public class FightClub5eExporter
         // Class skill proficiencies as numeric IDs (100–117), first class only
         foreach (var skillId in classSkillIds)
         {
-            if (SkillProficiencyNumbers.TryGetValue(skillId, out var num))
+            if (SkillCatalog.FightClubNumberBySkillId.TryGetValue(skillId, out var num))
                 classElements.Add(new XElement("proficiency", num));
         }
 
@@ -269,47 +246,12 @@ public class FightClub5eExporter
         // Background skill proficiencies as numeric IDs (100–117)
         foreach (var skillId in bgSkillIds)
         {
-            if (SkillProficiencyNumbers.TryGetValue(skillId, out var num))
+            if (SkillCatalog.FightClubNumberBySkillId.TryGetValue(skillId, out var num))
                 bgElements.Add(new XElement("proficiency", num));
         }
 
         return new XElement("background", bgElements);
     }
-
-    /// <summary>
-    /// Calculates max HP from the character's HitPointEntries when present,
-    /// otherwise falls back to the fixed-average algorithm:
-    ///   level 1 per class  = max hit die value + CON modifier
-    ///   levels 2+ per class = floor(hitDie/2)+1 + CON modifier (min 1 per level)
-    /// </summary>
-    private int CalculateMaxHp(Character c, int conMod)
-    {
-        if (c.HitPointEntries.Count > 0)
-        {
-            int total = 0;
-            foreach (var entry in c.HitPointEntries)
-                total += Math.Max(1, entry.DieRollValue + conMod);
-            return total;
-        }
-
-        // Fallback: fixed-average algorithm (no HitPointEntries recorded)
-        int fallback = 0;
-        foreach (var classLevel in c.Levels)
-        {
-            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
-            int hitDie = cls?.HitDie ?? 8;
-            int average = (hitDie / 2) + 1;
-            // Level 1: always the maximum hit die value
-            if (classLevel.Level >= 1)
-                fallback += Math.Max(1, hitDie + conMod);
-            // Levels 2+: fixed average (floor(hitDie/2)+1)
-            if (classLevel.Level > 1)
-                fallback += (classLevel.Level - 1) * Math.Max(1, average + conMod);
-        }
-        return fallback;
-    }
-
-    private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
 
     private static string BuildComponentsString(SpellComponents components)
     {

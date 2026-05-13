@@ -10,38 +10,11 @@ namespace CharacterWizard.Client.Services;
 public sealed class WizardContext
 {
     // ── Constants ─────────────────────────────────────────────────────────
-    public static readonly string[] Abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+    public static readonly string[] Abilities = AbilityHelper.AbilityOrder;
 
-    public static readonly Dictionary<string, string> SkillNames = new()
-    {
-        ["skill:acrobatics"] = "Acrobatics",
-        ["skill:animal-handling"] = "Animal Handling",
-        ["skill:arcana"] = "Arcana",
-        ["skill:athletics"] = "Athletics",
-        ["skill:deception"] = "Deception",
-        ["skill:history"] = "History",
-        ["skill:insight"] = "Insight",
-        ["skill:intimidation"] = "Intimidation",
-        ["skill:investigation"] = "Investigation",
-        ["skill:medicine"] = "Medicine",
-        ["skill:nature"] = "Nature",
-        ["skill:perception"] = "Perception",
-        ["skill:performance"] = "Performance",
-        ["skill:persuasion"] = "Persuasion",
-        ["skill:religion"] = "Religion",
-        ["skill:sleight-of-hand"] = "Sleight of Hand",
-        ["skill:stealth"] = "Stealth",
-        ["skill:survival"] = "Survival",
-    };
+    public static readonly IReadOnlyDictionary<string, string> SkillNames = SkillCatalog.SkillNames;
 
-    public static readonly List<string> AllSkillIds =
-    [
-        "skill:acrobatics", "skill:animal-handling", "skill:arcana", "skill:athletics",
-        "skill:deception", "skill:history", "skill:insight", "skill:intimidation",
-        "skill:investigation", "skill:medicine", "skill:nature", "skill:perception",
-        "skill:performance", "skill:persuasion", "skill:religion", "skill:sleight-of-hand",
-        "skill:stealth", "skill:survival",
-    ];
+    public static readonly List<string> AllSkillIds = [.. SkillCatalog.AllSkillIds];
 
     // ── Step 1 state ──────────────────────────────────────────────────────
     public string CharacterName { get; set; } = string.Empty;
@@ -184,10 +157,9 @@ public sealed class WizardContext
     }
 
     // ── Pure helpers ──────────────────────────────────────────────────────
-    public static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+    public static int Modifier(int score) => AbilityHelper.GetModifier(score);
 
-    public static string SkillLabel(string id) =>
-        SkillNames.TryGetValue(id, out string? name) ? name : id;
+    public static string SkillLabel(string id) => SkillCatalog.SkillLabel(id);
 
     public static string TraitName(string id)
     {
@@ -202,19 +174,8 @@ public sealed class WizardContext
         return TraitName(id);
     }
 
-    public static Dictionary<string, int> GetCombinedRacialBonuses(RaceDefinition race, string subraceId)
-    {
-        var bonuses = new Dictionary<string, int>(race.AbilityBonuses);
-        if (!string.IsNullOrEmpty(subraceId))
-        {
-            var sub = race.Subraces.FirstOrDefault(s => s.Id == subraceId);
-            if (sub != null)
-                foreach (var (ab, v) in sub.AbilityBonuses)
-                    bonuses[ab] = bonuses.TryGetValue(ab, out int e) ? e + v : v;
-        }
-
-        return bonuses;
-    }
+    public static Dictionary<string, int> GetCombinedRacialBonuses(RaceDefinition race, string subraceId) =>
+        AbilityHelper.GetCombinedRacialBonuses(race, subraceId);
 
     // ── Smart state mutations ─────────────────────────────────────────────
 

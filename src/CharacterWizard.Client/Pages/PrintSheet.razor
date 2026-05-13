@@ -190,7 +190,7 @@ else
                 <!-- Column C: Skills -->
                 <div class="skill-col">
                     <div class="col-heading">Skills</div>
-                    @foreach (var (skillId, skillAb) in _skillAbilityMap)
+                    @foreach (var (skillId, skillAb) in SkillCatalog.SkillAbilityMap)
                     {
                         bool proficient = c.Skills.ContainsKey(skillId);
                         int abilityMod = Modifier(GetAbilityScore(c, skillAb));
@@ -461,51 +461,6 @@ else
 @code {
     private static readonly string[] _abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
 
-    private static readonly Dictionary<string, string> _skillNames = new()
-    {
-        ["skill:acrobatics"] = "Acrobatics",
-        ["skill:animal-handling"] = "Animal Handling",
-        ["skill:arcana"] = "Arcana",
-        ["skill:athletics"] = "Athletics",
-        ["skill:deception"] = "Deception",
-        ["skill:history"] = "History",
-        ["skill:insight"] = "Insight",
-        ["skill:intimidation"] = "Intimidation",
-        ["skill:investigation"] = "Investigation",
-        ["skill:medicine"] = "Medicine",
-        ["skill:nature"] = "Nature",
-        ["skill:perception"] = "Perception",
-        ["skill:performance"] = "Performance",
-        ["skill:persuasion"] = "Persuasion",
-        ["skill:religion"] = "Religion",
-        ["skill:sleight-of-hand"] = "Sleight of Hand",
-        ["skill:stealth"] = "Stealth",
-        ["skill:survival"] = "Survival",
-    };
-
-    // Maps skill id → governing ability abbreviation (D&D 5e SRD)
-    private static readonly IReadOnlyList<(string SkillId, string Ability)> _skillAbilityMap =
-    [
-        ("skill:acrobatics",     "DEX"),
-        ("skill:animal-handling","WIS"),
-        ("skill:arcana",         "INT"),
-        ("skill:athletics",      "STR"),
-        ("skill:deception",      "CHA"),
-        ("skill:history",        "INT"),
-        ("skill:insight",        "WIS"),
-        ("skill:intimidation",   "CHA"),
-        ("skill:investigation",  "INT"),
-        ("skill:medicine",       "WIS"),
-        ("skill:nature",         "INT"),
-        ("skill:perception",     "WIS"),
-        ("skill:performance",    "CHA"),
-        ("skill:persuasion",     "CHA"),
-        ("skill:religion",       "INT"),
-        ("skill:sleight-of-hand","DEX"),
-        ("skill:stealth",        "DEX"),
-        ("skill:survival",       "WIS"),
-    ];
-
     private bool _loading = true;
     private IReadOnlyList<RaceDefinition> _races = [];
     private IReadOnlyList<ClassDefinition> _classes = [];
@@ -531,19 +486,10 @@ else
 
     // ── Ability helpers ──────────────────────────────────────────────────────
 
-    private static int Modifier(int score) => (int)Math.Floor((score - 10) / 2.0);
+    private static int Modifier(int score) => AbilityHelper.GetModifier(score);
     private static string FormatBonus(int value) => value >= 0 ? $"+{value}" : $"{value}";
 
-    private static AbilityBlock GetBlock(Character c, string ab) => ab switch
-    {
-        "STR" => c.AbilityScores.STR,
-        "DEX" => c.AbilityScores.DEX,
-        "CON" => c.AbilityScores.CON,
-        "INT" => c.AbilityScores.INT,
-        "WIS" => c.AbilityScores.WIS,
-        "CHA" => c.AbilityScores.CHA,
-        _ => new AbilityBlock(),
-    };
+    private static AbilityBlock GetBlock(Character c, string ab) => AbilityHelper.GetAbilityBlock(c, ab);
 
     private static int GetAbilityScore(Character c, string ab) => GetBlock(c, ab).Final;
 
@@ -567,8 +513,7 @@ else
     private static int ProficiencyBonus(int totalLevel) =>
         (int)Math.Floor((totalLevel - 1) / 4.0) + 2;
 
-    private static string SkillLabel(string id) =>
-        _skillNames.TryGetValue(id, out string? name) ? name : id;
+    private static string SkillLabel(string id) => SkillCatalog.SkillLabel(id);
 
     private HashSet<string> GetSaveProficiencies(Character c)
     {
@@ -585,31 +530,7 @@ else
 
     private int CalculateMaxHp(Character c)
     {
-        int conMod = Modifier(c.AbilityScores.CON.Final);
-
-        if (c.HitPointEntries.Count > 0)
-        {
-            int total = 0;
-            foreach (var entry in c.HitPointEntries)
-                total += Math.Max(1, entry.DieRollValue + conMod);
-            return total;
-        }
-
-        // Fallback: fixed-average algorithm (level 1 = max, levels 2+ = floor(hitDie/2)+1)
-        int fallback = 0;
-        foreach (var classLevel in c.Levels)
-        {
-            var cls = _classes.FirstOrDefault(cl => cl.Id == classLevel.ClassId);
-            int hd = cls?.HitDie ?? 8;
-            int avg = (hd / 2) + 1;
-            // Level 1: maximum hit die value
-            if (classLevel.Level >= 1)
-                fallback += Math.Max(1, hd + conMod);
-            // Levels 2+: fixed average
-            if (classLevel.Level > 1)
-                fallback += (classLevel.Level - 1) * Math.Max(1, avg + conMod);
-        }
-        return fallback;
+        return HitPointCalculator.CalculateMaxHp(c, _classes);
     }
 
     private int PassivePerception(Character c, int profBonus)
